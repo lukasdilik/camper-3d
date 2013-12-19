@@ -7,11 +7,15 @@ namespace RenderingEngine.Engine
     {
         private const String WindowName = "MOGRE Window";
 
-        private const String ModelName = "policeStation";
-        private const String ModelFile = "policeStation.mesh";
+        private string mModelName;
+        private string mModelFilePath;
 
-        private Entity mModelEntity;
-        private SceneNode mModelSceneNode;
+        public void LoadModel(string modelFileName, string modelFilePath)
+        {
+            var temp = modelFileName.Split(".".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+            mModelName = temp[0];
+            mModelFilePath = modelFilePath;
+        }
 
         public override void SetUpRenderWindow(IntPtr handle, int width, int height)
         {
@@ -24,6 +28,14 @@ namespace RenderingEngine.Engine
 
         protected override void CreateScene()
         {
+            SetupLights();
+            LoadModel();
+
+            SceneManager.SetSkyBox(true, "Examples/CloudyNoonSkyBox");
+        }
+
+        private void SetupLights()
+        {
             SceneManager.AmbientLight = new ColourValue(0.25f, 0.25f, 0.25f);
 
             Light pointLight = SceneManager.CreateLight("pointLight");
@@ -31,12 +43,12 @@ namespace RenderingEngine.Engine
             pointLight.Position = new Vector3(250, 150, 250);
             pointLight.DiffuseColour = ColourValue.White;
             pointLight.SpecularColour = ColourValue.White;
-            
+        }
 
-            mModelEntity = SceneManager.CreateEntity(ModelName, ModelFile);
-            mModelSceneNode = SceneManager.RootSceneNode.CreateChildSceneNode(ModelName+"Node");
-
-            mModelSceneNode.AttachObject(mModelEntity);
+        private void LoadModel()
+        {
+            var entity = SceneManager.CreateEntity(mModelName, mModelFilePath);
+            SceneManager.RootSceneNode.CreateChildSceneNode(mModelName + "_node").AttachObject(entity);
         }
     }
 }
