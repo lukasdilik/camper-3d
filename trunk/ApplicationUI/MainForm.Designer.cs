@@ -144,6 +144,8 @@ namespace ApplicationUI
             this.Start_btn.Text = "Start";
             this.Start_btn.UseVisualStyleBackColor = true;
             this.Start_btn.Click += new System.EventHandler(this.Start_btn_Click);
+            this.Start_btn.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Start_btn_KeyDown);
+            this.Start_btn.KeyUp += new System.Windows.Forms.KeyEventHandler(this.Start_btn_KeyUp);
             // 
             // StatusLabel
             // 

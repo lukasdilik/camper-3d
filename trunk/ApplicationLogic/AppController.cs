@@ -60,9 +60,9 @@ namespace ApplicationLogic
         public void Start() 
         {
             if(!mIsModelLoaded) mApplicationUi.ExceptionOccured(new Exception("Model are not loaded"));
-            
-            mEngine.Start();
+
             mIsStarted = true;
+            mEngine.Start();
         }
 
         public void Dispose()
