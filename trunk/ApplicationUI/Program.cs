@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows.Forms;
 
 namespace ApplicationUI
 {
@@ -10,10 +11,9 @@ namespace ApplicationUI
         [STAThread]
         static void Main()
         {
-            using (MainForm form = new MainForm())
-            {
-                form.Start();
-            }
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            Application.Run(new MainForm());
         }
     }
 }

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Windows.Forms;
 using ApplicationLogic;
 using ApplicationLogic.Interfaces;
@@ -7,20 +9,16 @@ namespace ApplicationUI
 {
     public partial class MainForm : Form, IApplicationUI
     {
+
+        private string mFileName = null;
         private readonly AppController mAppController;
 
         public MainForm()
         {
             InitializeComponent();
-            Show();
-
+            Focus();
             mAppController = new AppController(this);
             mAppController.SetUpRenderingWindow(MainWindow.Handle, MainWindow.Width, MainWindow.Height);
-        }
-
-        public void Start() 
-        {
-            mAppController.Start();
         }
 
         private void MainForm_Disposed(object sender, EventArgs e)
@@ -78,7 +76,43 @@ namespace ApplicationUI
 
         #endregion
 
+        private void AddFile_btn_Click(object sender, EventArgs e)
+        {
+            DialogResult result = openFileDialog1.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+            }
+        }
 
+        private void LoadModel_btn_Click(object sender, EventArgs e)
+        {
+            var selected = AvailableModels_combo.SelectedIndex;
+            if (selected != -1)
+            {
+                var selectedItem = AvailableModels_combo.SelectedItem;
+                mAppController.LoadModel(selectedItem.ToString());
+            }
+        }
 
+        private void Start_btn_Click(object sender, EventArgs e)
+        {
+            Focus();
+            mAppController.Start();
+        }
+
+        public void ModelSucessfullyLoaded(string modeFileName)
+        {
+            StatusLabel.Text = "Model successfully loaded" + modeFileName;
+        }
+
+        public void ShowAvailableModels(List<string> models)
+        {
+            if (models != null) AvailableModels_combo.Items.AddRange(models.ToArray());
+        }
+
+        public void ExceptionOccured(Exception e)
+        {
+            StatusLabel.Text = e.Message;
+        }
     }
 }
