@@ -29,8 +29,13 @@ namespace RenderingEngine.Engine
         protected override void CreateScene()
         {
             SetupLights();
-            LoadModel();
+            SetSkyBox();
 
+            LoadModel();
+        }
+
+        private void SetSkyBox()
+        {
             SceneManager.SetSkyBox(true, "Examples/CloudyNoonSkyBox");
         }
 

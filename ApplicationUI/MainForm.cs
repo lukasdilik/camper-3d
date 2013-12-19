@@ -96,7 +96,6 @@ namespace ApplicationUI
 
         private void Start_btn_Click(object sender, EventArgs e)
         {
-            Focus();
             mAppController.Start();
         }
 
@@ -113,6 +112,16 @@ namespace ApplicationUI
         public void ExceptionOccured(Exception e)
         {
             StatusLabel.Text = e.Message;
+        }
+
+        private void Start_btn_KeyDown(object sender, KeyEventArgs e)
+        {
+            MainForm_KeyDown(sender,e);
+        }
+
+        private void Start_btn_KeyUp(object sender, KeyEventArgs e)
+        {
+            MainForm_KeyUp(sender,e);
         }
     }
 }
