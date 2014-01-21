@@ -9,14 +9,12 @@ namespace ApplicationUI
 {
     public partial class MainForm : Form, IApplicationUI
     {
-
-        private string mFileName = null;
         private readonly AppController mAppController;
 
         public MainForm()
         {
             InitializeComponent();
-            Focus();
+
             mAppController = new AppController(this);
             mAppController.SetUpRenderingWindow(MainWindow.Handle, MainWindow.Width, MainWindow.Height);
         }
@@ -24,24 +22,27 @@ namespace ApplicationUI
         private void MainForm_Disposed(object sender, EventArgs e)
         {
             if (mAppController != null)
+            {
                 mAppController.Dispose();
+            }
+                
         }
 
         #region Keyboard Form events
 
-        private void MainForm_KeyDown(object sender, KeyEventArgs e)
+        protected override void OnKeyDown(KeyEventArgs e)
         {
-            mAppController.KeyDown(e);
+ 	         mAppController.KeyDown(e.KeyCode);
         }
 
-        private void MainForm_KeyPress(object sender, KeyPressEventArgs e)
+        protected override void OnKeyUp(KeyEventArgs e)
         {
-            mAppController.KeyPress(e);
+            mAppController.KeyUp(e.KeyCode);
         }
 
-        private void MainForm_KeyUp(object sender, KeyEventArgs e)
+        protected override void OnKeyPress(KeyPressEventArgs e)
         {
-            mAppController.KeyUp(e);
+            mAppController.KeyPress(e.KeyChar);
         }
 
         #endregion
@@ -84,18 +85,19 @@ namespace ApplicationUI
             }
         }
 
-        private void LoadModel_btn_Click(object sender, EventArgs e)
+        private void LoadSelectedModel()
         {
             var selected = AvailableModels_combo.SelectedIndex;
-            if (selected != -1)
-            {
-                var selectedItem = AvailableModels_combo.SelectedItem;
-                mAppController.LoadModel(selectedItem.ToString());
-            }
+            
+            if (selected == -1) return;
+            
+            var selectedItem = AvailableModels_combo.SelectedItem;
+            mAppController.LoadModel(selectedItem.ToString());
         }
 
         private void Start_btn_Click(object sender, EventArgs e)
         {
+            LoadSelectedModel();
             mAppController.Start();
         }
 
@@ -114,14 +116,6 @@ namespace ApplicationUI
             StatusLabel.Text = e.Message;
         }
 
-        private void Start_btn_KeyDown(object sender, KeyEventArgs e)
-        {
-            MainForm_KeyDown(sender,e);
-        }
 
-        private void Start_btn_KeyUp(object sender, KeyEventArgs e)
-        {
-            MainForm_KeyUp(sender,e);
-        }
     }
 }

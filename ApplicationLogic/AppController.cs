@@ -73,25 +73,25 @@ namespace ApplicationLogic
 
         #region Keyboard Input
 
-        public void KeyPress(KeyPressEventArgs e)
+        public void KeyPress(char key)
         {
             if (!mIsStarted) return;
 
-            mEngine.KeyPress(e);
+            mEngine.KeyPress(key);
         }
 
-        public void KeyDown(KeyEventArgs e)
+        public void KeyDown(Keys key)
         {
             if (!mIsStarted) return;
 
-            mEngine.KeyDown(e);
+            mEngine.KeyDown(key);
         }
 
-        public void KeyUp(KeyEventArgs e)
+        public void KeyUp(Keys key)
         {
             if (!mIsStarted) return;
 
-            mEngine.KeyUp(e);
+            mEngine.KeyUp(key);
         }
 
         #endregion
