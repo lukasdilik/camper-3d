@@ -4,14 +4,14 @@ namespace RenderingEngine.Engine
 {
     public abstract partial class BaseEngine 
     {
-        public virtual void KeyPress(KeyPressEventArgs e)
+        public virtual void KeyPress(char keyChar)
         {
             
         }
 
-        public virtual void KeyDown(KeyEventArgs e)
+        public virtual void KeyDown(Keys key)
         {
-            switch (e.KeyCode)
+            switch (key)
             {
                 case Keys.W:
                 case Keys.Up:
@@ -65,9 +65,9 @@ namespace RenderingEngine.Engine
             }
         }
 
-        public virtual void KeyUp(KeyEventArgs e)
+        public virtual void KeyUp(Keys key)
         {
-            switch (e.KeyCode)
+            switch (key)
             {
                 case Keys.W:
                 case Keys.Up:

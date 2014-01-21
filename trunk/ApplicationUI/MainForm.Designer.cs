@@ -34,13 +34,12 @@ namespace ApplicationUI
             this.label1 = new System.Windows.Forms.Label();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.StatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.AddFile_btn = new System.Windows.Forms.Button();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
-            this.ShowModel_btn = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
             this.AvailableModels_combo = new System.Windows.Forms.ComboBox();
             this.Start_btn = new System.Windows.Forms.Button();
-            this.StatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.statusStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
@@ -86,6 +85,12 @@ namespace ApplicationUI
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
             this.toolStripStatusLabel1.Size = new System.Drawing.Size(0, 17);
             // 
+            // StatusLabel
+            // 
+            this.StatusLabel.Name = "StatusLabel";
+            this.StatusLabel.Size = new System.Drawing.Size(26, 17);
+            this.StatusLabel.Text = "Idle";
+            // 
             // AddFile_btn
             // 
             this.AddFile_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
@@ -101,24 +106,12 @@ namespace ApplicationUI
             // openFileDialog1
             // 
             this.openFileDialog1.FileName = "openFileDialog1";
-            this.openFileDialog1.Filter = "\"OGRE mesh|*.mesh\"";
-            // 
-            // ShowModel_btn
-            // 
-            this.ShowModel_btn.AutoSize = true;
-            this.ShowModel_btn.Location = new System.Drawing.Point(16, 84);
-            this.ShowModel_btn.Name = "ShowModel_btn";
-            this.ShowModel_btn.Size = new System.Drawing.Size(151, 27);
-            this.ShowModel_btn.TabIndex = 5;
-            this.ShowModel_btn.Text = "Load Model";
-            this.ShowModel_btn.UseVisualStyleBackColor = true;
-            this.ShowModel_btn.Click += new System.EventHandler(this.LoadModel_btn_Click);
+            this.openFileDialog1.Filter = "\"OGRE mesh|*.mesh";
             // 
             // panel1
             // 
             this.panel1.Controls.Add(this.AvailableModels_combo);
             this.panel1.Controls.Add(this.Start_btn);
-            this.panel1.Controls.Add(this.ShowModel_btn);
             this.panel1.Controls.Add(this.AddFile_btn);
             this.panel1.Controls.Add(this.label1);
             this.panel1.Location = new System.Drawing.Point(820, 10);
@@ -137,21 +130,13 @@ namespace ApplicationUI
             // Start_btn
             // 
             this.Start_btn.AutoSize = true;
-            this.Start_btn.Location = new System.Drawing.Point(198, 84);
+            this.Start_btn.Location = new System.Drawing.Point(16, 81);
             this.Start_btn.Name = "Start_btn";
             this.Start_btn.Size = new System.Drawing.Size(131, 27);
             this.Start_btn.TabIndex = 6;
             this.Start_btn.Text = "Start";
             this.Start_btn.UseVisualStyleBackColor = true;
             this.Start_btn.Click += new System.EventHandler(this.Start_btn_Click);
-            this.Start_btn.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Start_btn_KeyDown);
-            this.Start_btn.KeyUp += new System.Windows.Forms.KeyEventHandler(this.Start_btn_KeyUp);
-            // 
-            // StatusLabel
-            // 
-            this.StatusLabel.Name = "StatusLabel";
-            this.StatusLabel.Size = new System.Drawing.Size(26, 17);
-            this.StatusLabel.Text = "Idle";
             // 
             // MainForm
             // 
@@ -162,13 +147,11 @@ namespace ApplicationUI
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.MainWindow);
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.KeyPreview = true;
             this.Margin = new System.Windows.Forms.Padding(4);
             this.MinimumSize = new System.Drawing.Size(1024, 768);
             this.Name = "MainForm";
             this.Text = "CAMPER";
-            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MainForm_KeyDown);
-            this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.MainForm_KeyPress);
-            this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.MainForm_KeyUp);
             this.Disposed += new System.EventHandler(this.MainForm_Disposed);
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
@@ -189,7 +172,6 @@ namespace ApplicationUI
         private ToolStripStatusLabel toolStripStatusLabel1;
         private Button AddFile_btn;
         private OpenFileDialog openFileDialog1;
-        private Button ShowModel_btn;
         private Panel panel1;
         private Button Start_btn;
         private ComboBox AvailableModels_combo;

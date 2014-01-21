@@ -216,6 +216,7 @@
     <None Include="Resources\materials\programs\oceanHLSL_Cg.vert" />
     <None Include="Resources\materials\scripts\BlackAndWhite.material" />
     <None Include="Resources\materials\scripts\Bloom.material" />
+    <None Include="Resources\materials\scripts\cctvCamera.material" />
     <None Include="Resources\materials\scripts\DepthShadowmap.material" />
     <None Include="Resources\materials\scripts\DOF.material" />
     <None Include="Resources\materials\scripts\Embossed.material" />
@@ -259,6 +260,7 @@
     <None Include="Resources\materials\textures\Sepia1D.tga" />
     <None Include="Resources\materials\textures\WaterNormal1.tga" />
     <None Include="Resources\materials\textures\WaterNormal2.tga" />
+    <None Include="Resources\models\cctvCamera.mesh" />
     <None Include="Resources\models\policeStation.mesh" />
     <None Include="Resources\models\trainStation.mesh" />
     <None Include="Resources\overlays\Compositor.overlay" />

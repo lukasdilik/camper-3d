@@ -4,8 +4,8 @@ namespace ApplicationLogic.Interfaces
 {
     public interface IKeyboardInput
     {
-        void KeyPress(KeyPressEventArgs e);
-        void KeyDown(KeyEventArgs e);
-        void KeyUp(KeyEventArgs e);
+        void KeyPress(char keyChar);
+        void KeyDown(Keys key);
+        void KeyUp(Keys key);
     }
 }
