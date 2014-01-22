@@ -114,11 +114,11 @@ namespace RenderingEngine.Engine
 
         protected virtual void CreateCamera()
         {
-            Camera = SceneManager.CreateCamera("PlayerCam");
+            Camera = SceneManager.CreateCamera("MainCamera");
 
-            Camera.Position = new Vector3(300, 100, 250);
+            Camera.Position = new Vector3(0, 0, 0);
 
-            Camera.LookAt(new Vector3(750, 10, 750));
+            Camera.LookAt(new Vector3(0, 0, -1));
             Camera.NearClipDistance = 5;
 
             CameraMan = new CameraMan(Camera);

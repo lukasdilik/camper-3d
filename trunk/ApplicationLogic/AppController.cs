@@ -110,6 +110,11 @@ namespace ApplicationLogic
         {
             if (!mIsStarted) return;
 
+            if (e.Button == MouseButtons.Left)
+            {
+                mEngine.SelectObject(e.X,e.Y);
+            }
+
             if (e.Button == MouseButtons.Right)
             {
                 mEngine.CreateCamera(e.X,e.Y);
