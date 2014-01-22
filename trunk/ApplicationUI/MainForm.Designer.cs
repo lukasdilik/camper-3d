@@ -40,6 +40,8 @@ namespace ApplicationUI
             this.panel1 = new System.Windows.Forms.Panel();
             this.AvailableModels_combo = new System.Windows.Forms.ComboBox();
             this.Start_btn = new System.Windows.Forms.Button();
+            this.Log_textBox = new System.Windows.Forms.TextBox();
+            this.CameraCoords_label = new System.Windows.Forms.ToolStripStatusLabel();
             this.statusStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
@@ -72,7 +74,8 @@ namespace ApplicationUI
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabel1,
-            this.StatusLabel});
+            this.StatusLabel,
+            this.CameraCoords_label});
             this.statusStrip1.Location = new System.Drawing.Point(0, 707);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Padding = new System.Windows.Forms.Padding(1, 0, 19, 0);
@@ -88,8 +91,8 @@ namespace ApplicationUI
             // StatusLabel
             // 
             this.StatusLabel.Name = "StatusLabel";
-            this.StatusLabel.Size = new System.Drawing.Size(26, 17);
-            this.StatusLabel.Text = "Idle";
+            this.StatusLabel.Size = new System.Drawing.Size(64, 17);
+            this.StatusLabel.Text = "Status: Idle";
             // 
             // AddFile_btn
             // 
@@ -116,7 +119,7 @@ namespace ApplicationUI
             this.panel1.Controls.Add(this.label1);
             this.panel1.Location = new System.Drawing.Point(820, 10);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(344, 480);
+            this.panel1.Size = new System.Drawing.Size(344, 694);
             this.panel1.TabIndex = 6;
             // 
             // AvailableModels_combo
@@ -138,11 +141,26 @@ namespace ApplicationUI
             this.Start_btn.UseVisualStyleBackColor = true;
             this.Start_btn.Click += new System.EventHandler(this.Start_btn_Click);
             // 
+            // Log_textBox
+            // 
+            this.Log_textBox.Location = new System.Drawing.Point(13, 617);
+            this.Log_textBox.Multiline = true;
+            this.Log_textBox.Name = "Log_textBox";
+            this.Log_textBox.Size = new System.Drawing.Size(800, 87);
+            this.Log_textBox.TabIndex = 7;
+            // 
+            // CameraCoords_label
+            // 
+            this.CameraCoords_label.Name = "CameraCoords_label";
+            this.CameraCoords_label.Size = new System.Drawing.Size(131, 17);
+            this.CameraCoords_label.Text = "Camera [N/A;N/A;N/A]";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1175, 729);
+            this.Controls.Add(this.Log_textBox);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.MainWindow);
@@ -176,6 +194,8 @@ namespace ApplicationUI
         private Button Start_btn;
         private ComboBox AvailableModels_combo;
         private ToolStripStatusLabel StatusLabel;
+        private TextBox Log_textBox;
+        private ToolStripStatusLabel CameraCoords_label;
 
     }
 }

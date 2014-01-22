@@ -62,9 +62,8 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Engine\BaseEngine.Input.cs" />
-    <Compile Include="Engine\CameraMan.cs" />
-    <Compile Include="Engine\DebugOverlay.cs" />
+    <Compile Include="Helpers\CameraMan.cs" />
+    <Compile Include="Helpers\DebugOverlay.cs" />
     <Compile Include="Engine\Engine.cs" />
     <Compile Include="Engine\BaseEngine.cs" />
     <Compile Include="Helpers\WindowParams.cs" />
@@ -260,9 +259,9 @@
     <None Include="Resources\materials\textures\Sepia1D.tga" />
     <None Include="Resources\materials\textures\WaterNormal1.tga" />
     <None Include="Resources\materials\textures\WaterNormal2.tga" />
-    <None Include="Resources\models\cctvCamera.mesh" />
-    <None Include="Resources\models\policeStation.mesh" />
-    <None Include="Resources\models\trainStation.mesh" />
+    <None Include="Resources\models\misc\cctvCamera.mesh" />
+    <None Include="Resources\models\scene\policeStation.mesh" />
+    <None Include="Resources\models\scene\trainStation.mesh" />
     <None Include="Resources\overlays\Compositor.overlay" />
     <None Include="Resources\overlays\DP3.overlay" />
     <None Include="Resources\overlays\Example-CubeMapping.overlay" />
@@ -304,9 +303,7 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Structs\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="Includes\BulletSharp.dll" />
     <Content Include="Includes\cg.dll" />
@@ -418,6 +415,7 @@
     <Content Include="Resources\materials\textures\fw12b.jpg" />
     <Content Include="Resources\materials\textures\GLX_icon.png" />
     <Content Include="Resources\materials\textures\grass_1024.jpg" />
+    <Content Include="Resources\materials\textures\grass_tex.jpg" />
     <Content Include="Resources\materials\textures\gras_02.png" />
     <Content Include="Resources\materials\textures\GreenSkin.jpg" />
     <Content Include="Resources\materials\textures\morning_BK.jpg" />

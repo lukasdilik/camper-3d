@@ -7,13 +7,13 @@ using RenderingEngine.Engine;
 
 namespace ApplicationLogic
 {
-    public class AppController : IDisposable, IKeyboardInput, IMouseInput
+    public partial class AppController : IDisposable, IKeyboardInput, IMouseInput
     {
-        private const string StoredModelsPath = "./Resources/models";
+        private const string StoredModelsPath = "./Resources/models/scene";
 
         private bool mIsStarted;
         private bool mIsModelLoaded;
-        private List<string> mAvailableModels;
+        private readonly List<string> mAvailableModels;
         private readonly Engine mEngine;
         private readonly IApplicationUI mApplicationUi;
 
@@ -54,7 +54,7 @@ namespace ApplicationLogic
             var temp = fileName.Split(".".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
             mEngine.LoadModel(temp[0],fileName);
             mIsModelLoaded = true;
-            mApplicationUi.ModelSucessfullyLoaded(fileName);
+            mApplicationUi.SendMessage("Model successfully loaded");
         }
 
         public void Start() 
@@ -77,54 +77,68 @@ namespace ApplicationLogic
         {
             if (!mIsStarted) return;
 
-            mEngine.KeyPress(key);
+            HandleKeyPress(key);
         }
 
         public void KeyDown(Keys key)
         {
             if (!mIsStarted) return;
 
-            mEngine.KeyDown(key);
+            HandleKeyDown(key);
+            UpdateUI();
         }
 
         public void KeyUp(Keys key)
         {
             if (!mIsStarted) return;
 
-            mEngine.KeyUp(key);
+            HandleKeyUp(key);
         }
 
         #endregion
 
         #region Mouse Input
+
         public void MouseUp(MouseEventArgs e)
         {
             if (!mIsStarted) return;
 
-            mEngine.MouseUp(e);
+            HandleMouseUp(e);
         }
 
         public void MouseDown(MouseEventArgs e)
         {
             if (!mIsStarted) return;
 
-            mEngine.MouseDown(e);
+            if (e.Button == MouseButtons.Right)
+            {
+                mEngine.CreateCamera(e.X,e.Y);
+            }
+
+            HandleMouseDown(e);
         }
 
         public void MouseMove(MouseEventArgs e)
         {
             if (!mIsStarted) return;
 
-            mEngine.MouseMove(e);
+            HandleMouseMove(e);
+            UpdateUI();
         }
 
         public void MouseDoubleClick(MouseEventArgs e)
         {
             if (!mIsStarted) return;
 
-            mEngine.MouseDoubleClick(e);
+            HandleMouseDoubleClick(e);
         }
 
+
         #endregion
+
+        public void UpdateUI()
+        {
+            mApplicationUi.UpdateCameraCoordinates(mEngine.Camera.Position.x, mEngine.Camera.Position.y, mEngine.Camera.Position.z);
+        }
     }
 }

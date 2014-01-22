@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Windows.Forms;
 using ApplicationLogic;
 using ApplicationLogic.Interfaces;
 
 namespace ApplicationUI
 {
-    public partial class MainForm : Form, IApplicationUI
+    public partial class MainForm : IApplicationUI
     {
         private readonly AppController mAppController;
 
@@ -101,14 +100,19 @@ namespace ApplicationUI
             mAppController.Start();
         }
 
-        public void ModelSucessfullyLoaded(string modeFileName)
+        public void SendMessage(string msg)
         {
-            StatusLabel.Text = "Model successfully loaded" + modeFileName;
+            Log_textBox.AppendText(msg);
         }
 
         public void ShowAvailableModels(List<string> models)
         {
             if (models != null) AvailableModels_combo.Items.AddRange(models.ToArray());
+        }
+
+        public void UpdateCameraCoordinates(float x, float y, float z)
+        {
+            CameraCoords_label.Text = string.Format("[{0};{1};{2};]", x, y, z);
         }
 
         public void ExceptionOccured(Exception e)

@@ -1,6 +1,6 @@
 ﻿using Mogre;
 
-namespace RenderingEngine.Engine
+namespace RenderingEngine.Helpers
 {
     public class DebugOverlay
     {
