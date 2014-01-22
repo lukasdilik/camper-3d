@@ -1,6 +1,6 @@
 ﻿using Mogre;
 
-namespace RenderingEngine.Engine
+namespace RenderingEngine.Helpers
 {
     public class CameraMan
     {
@@ -12,7 +12,6 @@ namespace RenderingEngine.Engine
         private bool mGoingUp;
         private bool mGoingDown;
         private bool mFastMove;
-        private bool mPressed;
         private int mOldX, mOldY;
 
         public CameraMan(Camera camera)
@@ -20,11 +19,7 @@ namespace RenderingEngine.Engine
             mCamera = camera;
         }
 
-        public bool Pressed
-        {
-            set { mPressed = value; }
-            get { return mPressed; }
-        }
+        public bool Pressed { get; set; }
 
 
         public bool GoingForward

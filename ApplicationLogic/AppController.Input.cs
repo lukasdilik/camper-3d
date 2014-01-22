@@ -1,125 +1,125 @@
 ﻿using System.Windows.Forms;
 
-namespace RenderingEngine.Engine
+namespace ApplicationLogic
 {
-    public abstract partial class BaseEngine 
+    public partial class AppController 
     {
-        public virtual void KeyPress(char keyChar)
+        protected virtual void HandleKeyPress(char keyChar)
         {
             
         }
 
-        public virtual void KeyDown(Keys key)
+        protected virtual void HandleKeyDown(Keys key)
         {
             switch (key)
             {
                 case Keys.W:
                 case Keys.Up:
-                    CameraMan.GoingForward = true;
+                    mEngine.CameraMan.GoingForward = true;
                     break;
 
                 case Keys.S:
                 case Keys.Down:
-                    CameraMan.GoingBack = true;
+                    mEngine.CameraMan.GoingBack = true;
                     break;
 
                 case Keys.A:
                 case Keys.Left:
-                    CameraMan.GoingLeft = true;
+                    mEngine.CameraMan.GoingLeft = true;
                     break;
 
                 case Keys.D:
                 case Keys.Right:
-                    CameraMan.GoingRight = true;
+                    mEngine.CameraMan.GoingRight = true;
                     break;
 
                 case Keys.Q:
                 case Keys.PageUp:
-                    CameraMan.GoingUp = true;
+                    mEngine.CameraMan.GoingUp = true;
                     break;
 
                 case Keys.E:
                 case Keys.PageDown:
-                    CameraMan.GoingDown = true;
+                    mEngine.CameraMan.GoingDown = true;
                     break;
 
                 case Keys.RShiftKey:
-                    CameraMan.FastMove = true;
+                    mEngine.CameraMan.FastMove = true;
                     break;
 
                 case Keys.T:
-                    CycleTextureFilteringMode();
+                    mEngine.CycleTextureFilteringMode();
                     break;
 
                 case Keys.R:
-                    CyclePolygonMode();
+                    mEngine.CyclePolygonMode();
                     break;
 
                 case Keys.F5:
-                    ReloadAllTextures();
+                    mEngine.ReloadAllTextures();
                     break;
 
                 case Keys.Escape:
-                    Shutdown();
+                    mEngine.Shutdown();
                     break;
             }
         }
 
-        public virtual void KeyUp(Keys key)
+        protected virtual void HandleKeyUp(Keys key)
         {
             switch (key)
             {
                 case Keys.W:
                 case Keys.Up:
-                    CameraMan.GoingForward = false;
+                    mEngine.CameraMan.GoingForward = false;
                     break;
 
                 case Keys.S:
                 case Keys.Down:
-                    CameraMan.GoingBack = false;
+                    mEngine.CameraMan.GoingBack = false;
                     break;
 
                 case Keys.A:
                 case Keys.Left:
-                    CameraMan.GoingLeft = false;
+                    mEngine.CameraMan.GoingLeft = false;
                     break;
 
                 case Keys.D:
                 case Keys.Right:
-                    CameraMan.GoingRight = false;
+                    mEngine.CameraMan.GoingRight = false;
                     break;
 
                 case Keys.Q:
                 case Keys.PageUp:
-                    CameraMan.GoingUp = false;
+                    mEngine.CameraMan.GoingUp = false;
                     break;
 
                 case Keys.E:
                 case Keys.PageDown:
-                    CameraMan.GoingDown = false;
+                    mEngine.CameraMan.GoingDown = false;
                     break;
 
                 case Keys.RShiftKey:
-                    CameraMan.FastMove = false;
+                    mEngine.CameraMan.FastMove = false;
                     break;
             }
         }
 
-        public virtual void MouseUp(MouseEventArgs e)
+        protected virtual void HandleMouseUp(MouseEventArgs e)
         {
         }
 
-        public virtual void MouseDown(MouseEventArgs e)
+        protected virtual void HandleMouseDown(MouseEventArgs e)
         {
-            CameraMan.Click(e.X,e.Y);
+            mEngine.CameraMan.Click(e.X,e.Y);
         }
 
-        public virtual void MouseMove(MouseEventArgs e)
+        protected virtual void HandleMouseMove(MouseEventArgs e)
         {
-            CameraMan.MouseMovement(e.X, e.Y);
+            mEngine.CameraMan.MouseMovement(e.X, e.Y);
         }
 
-        public virtual void MouseDoubleClick(MouseEventArgs e)
+        protected virtual void HandleMouseDoubleClick(MouseEventArgs e)
         {
 
         }

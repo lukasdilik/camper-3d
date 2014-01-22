@@ -6,14 +6,14 @@ namespace RenderingEngine.Engine
 {
     class ShutdownException : Exception { }
 
-    public abstract partial class BaseEngine : IDisposable
+    public abstract class BaseEngine : IDisposable
     {
-        protected WindowParams WindowParams;
+        public Camera Camera;
+        public CameraMan CameraMan;
 
         protected Root Root;
         protected SceneManager SceneManager;
-        protected Camera Camera;
-        protected CameraMan CameraMan;
+        protected WindowParams WindowParams;
         protected RenderWindow RenderWindow;
         protected RenderSystem RenderSystem;
         protected bool ShutDown = false;
@@ -109,16 +109,16 @@ namespace RenderingEngine.Engine
 
         protected virtual void ChooseSceneManager()
         {
-            SceneManager = Root.CreateSceneManager(SceneType.ST_GENERIC);
+            SceneManager = Root.CreateSceneManager(SceneType.ST_EXTERIOR_CLOSE);
         }
 
         protected virtual void CreateCamera()
         {
             Camera = SceneManager.CreateCamera("PlayerCam");
 
-            Camera.Position = new Vector3(0, 100, 250);
+            Camera.Position = new Vector3(300, 100, 250);
 
-            Camera.LookAt(new Vector3(0, 50, 0));
+            Camera.LookAt(new Vector3(750, 10, 750));
             Camera.NearClipDistance = 5;
 
             CameraMan = new CameraMan(Camera);
@@ -153,12 +153,12 @@ namespace RenderingEngine.Engine
             ResourceGroupManager.Singleton.InitialiseAllResourceGroups();
         }
 
-        protected void ReloadAllTextures()
+        public void ReloadAllTextures()
         {
             TextureManager.Singleton.ReloadAll();
         }
 
-        protected void CycleTextureFilteringMode()
+        public void CycleTextureFilteringMode()
         {
             TextureMode = (TextureMode + 1) % 4;
             switch (TextureMode)
@@ -187,7 +187,7 @@ namespace RenderingEngine.Engine
             }
         }
 
-        protected void CyclePolygonMode()
+        public void CyclePolygonMode()
         {
             RenderMode = (RenderMode + 1) % 3;
             switch (RenderMode)
@@ -208,7 +208,7 @@ namespace RenderingEngine.Engine
 
         protected virtual void CreateFrameListeners()
         {
-            Root.FrameRenderingQueued += new FrameListener.FrameRenderingQueuedHandler(OnFrameRenderingQueued);
+            Root.FrameRenderingQueued += OnFrameRenderingQueued;
         }
 
         protected virtual bool OnFrameRenderingQueued(FrameEvent evt)
@@ -236,7 +236,7 @@ namespace RenderingEngine.Engine
             }
         }
 
-        protected void Shutdown()
+        public void Shutdown()
         {
             Root.Shutdown();
         }

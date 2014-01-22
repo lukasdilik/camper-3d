@@ -31,6 +31,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Mogre, Version=1.7.3.0, Culture=neutral, PublicKeyToken=96bb577564343f16, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\RenderingEngine\bin\Debug\Mogre.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="Microsoft.CSharp" />
@@ -38,6 +42,7 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AppController.Input.cs" />
     <Compile Include="Interfaces\IApplicationUI.cs" />
     <Compile Include="AppController.cs" />
     <Compile Include="Interfaces\IKeyboardInput.cs" />
