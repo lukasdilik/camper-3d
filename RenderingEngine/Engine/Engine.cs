@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
 using Mogre;
 using Math = System.Math;
@@ -14,6 +15,9 @@ namespace RenderingEngine.Engine
 
         private RaySceneQuery mRaySceneQuery = null;      // The ray scene query pointer
         private int mCount;                           // The number of robots on the screen
+
+        public Dictionary<string,Entity> SceneEntities;  
+
         private SceneNode mCurrentObject = null;          // The newly created object
 
         public void LoadModel(string modelFileName, string modelFilePath)
@@ -34,6 +38,7 @@ namespace RenderingEngine.Engine
 
         protected override void CreateScene()
         {
+            SceneEntities = new Dictionary<string, Entity>();
             mCount = 0;
             SetupLights();
             SetSkyBox();
@@ -72,6 +77,10 @@ namespace RenderingEngine.Engine
             var node = SceneManager.RootSceneNode.CreateChildSceneNode(mModelName + "Node");
             node.AttachObject(entity);
             node.Translate(750,1,750);
+
+            SceneEntities.Add(entity.Name,entity);
+            
+            AlignCamera();
         }
 
         private Vector2 GetNormalizedCoords(int X, int Y)
@@ -86,14 +95,32 @@ namespace RenderingEngine.Engine
             var coords = GetNormalizedCoords(mouseX, mouseY);
 
             Ray mouseRay = Camera.GetCameraToViewportRay(coords.x, coords.y);
-            mRaySceneQuery.Ray = mouseRay;
+            RaySceneQuery query = SceneManager.CreateRayQuery(mouseRay);
+            RaySceneQueryResult results = query.Execute();
 
-            RaySceneQueryResult result = mRaySceneQuery.Execute();
-            RaySceneQueryResult.Enumerator itr = (RaySceneQueryResult.Enumerator)(result.GetEnumerator());
-
-            if (itr.MoveNext())
+            MovableObject intersectedNode = null;
+            foreach (RaySceneQueryResultEntry entry in results)
             {
+                intersectedNode = entry.movable;
             }
+            if (intersectedNode != null)
+            {
+                var name = intersectedNode.Name;
+                if (SceneEntities.ContainsKey(name))
+                {
+                    SelectSceneNode(intersectedNode.ParentSceneNode);
+                }
+            }
+        }
+
+        private void SelectSceneNode(SceneNode node)
+        {
+            if (mCurrentObject != null)
+            {
+                mCurrentObject.ShowBoundingBox = false;
+            }
+            mCurrentObject = node;
+            mCurrentObject.ShowBoundingBox = true;
         }
 
         public void CreateCamera(int mouseX, int mouseY)
@@ -108,9 +135,20 @@ namespace RenderingEngine.Engine
             if (itr.MoveNext())
             {
                 var cameraEntity = SceneManager.CreateEntity("Camera" + mCount, "cctvCamera.mesh");
-                mCurrentObject = SceneManager.RootSceneNode.CreateChildSceneNode("CameraNode" + mCount, itr.Current.worldFragment.singleIntersection);
-                mCurrentObject.ShowBoundingBox = true;
-                mCurrentObject.AttachObject(cameraEntity);
+                SceneEntities.Add(cameraEntity.Name,cameraEntity);
+                var node = SceneManager.RootSceneNode.CreateChildSceneNode("CameraNode" + mCount);
+                node.AttachObject(cameraEntity);
+
+                if (itr.Current.movable == null)
+                {
+                    node.Position = itr.Current.worldFragment.singleIntersection;
+                }
+                else
+                {
+                    node.Position = itr.Current.movable.ParentSceneNode.Position;
+                }
+
+                SelectSceneNode(node);
                 mCount++;
             }
         }
@@ -132,6 +170,16 @@ namespace RenderingEngine.Engine
 
                 if ((terrainHeight + 10.0f) > camPos.y)
                     Camera.SetPosition(camPos.x, terrainHeight + 10.0f, camPos.z);
+            }
+        }
+
+        protected void AlignCamera()
+        {
+            if (SceneEntities.Count > 0)
+            {
+                var nodePos = SceneEntities[mModelName].ParentSceneNode.Position;
+                var pos = new Vector3(nodePos.x, nodePos.y+50, nodePos.z+200);
+                Camera.Position = pos;
             }
         }
 
