@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Windows.Forms;
 using Mogre;
 using Math = System.Math;
 
@@ -8,17 +7,22 @@ namespace RenderingEngine.Engine
 {
     public class Engine : BaseEngine
     {
-        private const String WindowName = "MOGRE Window";
+        public const String WindowName = "MOGRE Window";
 
+        private static Engine mInstance;
         private string mModelName;
         private string mModelFilePath;
 
-        private RaySceneQuery mRaySceneQuery = null;      // The ray scene query pointer
-        private int mCount;                           // The number of robots on the screen
+        public Dictionary<string, Entity> SceneEntities { get; private set; }
+        public Dictionary<string, SecurityCamera> SecurityCameras { get; private set; }
+        public RaySceneQuery RaySceneQuery { get; private set; }
 
-        public Dictionary<string,Entity> SceneEntities;  
+        private Engine() {}
 
-        private SceneNode mCurrentObject = null;          // The newly created object
+        public static Engine Instance
+        {
+            get { return mInstance ?? (mInstance = new Engine()); }
+        }
 
         public void LoadModel(string modelFileName, string modelFilePath)
         {
@@ -38,14 +42,18 @@ namespace RenderingEngine.Engine
 
         protected override void CreateScene()
         {
+            SecurityCameras = new Dictionary<string, SecurityCamera>();
             SceneEntities = new Dictionary<string, Entity>();
-            mCount = 0;
+            
             SetupLights();
+            
             SetSkyBox();
+            
             SceneManager.SetWorldGeometry("terrain.cfg");
-            mRaySceneQuery = SceneManager.CreateRayQuery(new Ray());
 
             LoadModel();
+
+            RaySceneQuery = mInstance.SceneManager.CreateRayQuery(new Ray());
         }
 
         private void SetSkyBox()
@@ -83,16 +91,10 @@ namespace RenderingEngine.Engine
             AlignCamera();
         }
 
-        private Vector2 GetNormalizedCoords(int X, int Y)
+        public void SelectObject(int screenX, int screenY)
         {
-            float normX = Math.Abs(X / (float) WindowParams.Width);
-            float normY = Math.Abs(Y / (float) WindowParams.Height);
-            return new Vector2(normX, normY);
-        }
-
-        public void SelectObject(int mouseX, int mouseY)
-        {
-            var coords = GetNormalizedCoords(mouseX, mouseY);
+            DeselectAllSecurityCameras();
+            var coords = GetNormalizedCoords(screenX, screenY);
 
             Ray mouseRay = Camera.GetCameraToViewportRay(coords.x, coords.y);
             RaySceneQuery query = SceneManager.CreateRayQuery(mouseRay);
@@ -106,50 +108,54 @@ namespace RenderingEngine.Engine
             if (intersectedNode != null)
             {
                 var name = intersectedNode.Name;
-                if (SceneEntities.ContainsKey(name))
+                if (SecurityCameras.ContainsKey(name))
                 {
-                    SelectSceneNode(intersectedNode.ParentSceneNode);
+                    SecurityCameras[name].Selected = true;
                 }
             }
         }
 
-        private void SelectSceneNode(SceneNode node)
+        private void GetIntersectionWithTerrain(int screenX, int screenY)
         {
-            if (mCurrentObject != null)
-            {
-                mCurrentObject.ShowBoundingBox = false;
-            }
-            mCurrentObject = node;
-            mCurrentObject.ShowBoundingBox = true;
-        }
-
-        public void CreateCamera(int mouseX, int mouseY)
-        {
-            var coords = GetNormalizedCoords(mouseX, mouseY);
+            var coords = GetNormalizedCoords(screenX, screenY);
             Ray mouseRay = Camera.GetCameraToViewportRay(coords.x, coords.y);
-            mRaySceneQuery.Ray = mouseRay;
+            Engine.Instance.RaySceneQuery.Ray = mouseRay;
 
-            RaySceneQueryResult result = mRaySceneQuery.Execute();
-            RaySceneQueryResult.Enumerator itr = (RaySceneQueryResult.Enumerator)(result.GetEnumerator());
+            RaySceneQueryResult result = Engine.Instance.RaySceneQuery.Execute();
+            RaySceneQueryResult.Enumerator iter = (RaySceneQueryResult.Enumerator)(result.GetEnumerator());
+        }
 
-            if (itr.MoveNext())
+        private void DeselectAllSecurityCameras()
+        {
+            foreach (var camera in SecurityCameras)
             {
-                var cameraEntity = SceneManager.CreateEntity("Camera" + mCount, "cctvCamera.mesh");
-                SceneEntities.Add(cameraEntity.Name,cameraEntity);
-                var node = SceneManager.RootSceneNode.CreateChildSceneNode("CameraNode" + mCount);
-                node.AttachObject(cameraEntity);
+                camera.Value.Selected = false;
+            }
+        }
 
-                if (itr.Current.movable == null)
-                {
-                    node.Position = itr.Current.worldFragment.singleIntersection;
-                }
-                else
-                {
-                    node.Position = itr.Current.movable.ParentSceneNode.Position;
-                }
+        private Vector2 GetNormalizedCoords(int X, int Y)
+        {
+            float normX = Math.Abs(X / (float) WindowParams.Width);
+            float normY = Math.Abs(Y / (float) WindowParams.Height);
+            return new Vector2(normX, normY);
+        }
 
-                SelectSceneNode(node);
-                mCount++;
+        public void CreateCamera(int screenX, int screenY)
+        {
+            DeselectAllSecurityCameras();
+            var normCoords = GetNormalizedCoords(screenX, screenY);
+            Ray mouseRay = Camera.GetCameraToViewportRay(normCoords.x, normCoords.y);
+            
+            Vector3 startPosition = mouseRay.Origin;
+            Vector3 rayDirection = mouseRay.Direction;
+            PolygonRayCast rayCast = new PolygonRayCast();
+            Vector3 result = new Vector3(), normal = new Vector3();
+            var isHit = rayCast.RaycastFromPoint(startPosition, rayDirection, ref result, ref normal);
+
+            if (isHit)
+            {
+                var securityCamera = new SecurityCamera(result);
+                SecurityCameras.Add(securityCamera.Name, securityCamera);    
             }
         }
 
@@ -157,10 +163,10 @@ namespace RenderingEngine.Engine
         {
             Vector3 camPos = Camera.Position;
             Ray cameraRay = new Ray(new Vector3(camPos.x, 5000.0f, camPos.z),Vector3.NEGATIVE_UNIT_Y);
-            mRaySceneQuery.Ray = cameraRay;
+            RaySceneQuery.Ray = cameraRay;
 
             // Perform the scene query;
-            RaySceneQueryResult result = mRaySceneQuery.Execute();
+            RaySceneQueryResult result = RaySceneQuery.Execute();
             RaySceneQueryResult.Enumerator itr = (RaySceneQueryResult.Enumerator)(result.GetEnumerator());
 
             // Get the results, set the camera height
@@ -186,7 +192,7 @@ namespace RenderingEngine.Engine
         protected override void DestroyScene()
         {
             base.DestroyScene();
-            mRaySceneQuery.Dispose();
+            RaySceneQuery.Dispose();
         }
     }
 }

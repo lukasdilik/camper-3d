@@ -35,13 +35,13 @@ namespace ApplicationUI
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.StatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.CameraCoords_label = new System.Windows.Forms.ToolStripStatusLabel();
             this.AddFile_btn = new System.Windows.Forms.Button();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.panel1 = new System.Windows.Forms.Panel();
             this.AvailableModels_combo = new System.Windows.Forms.ComboBox();
             this.Start_btn = new System.Windows.Forms.Button();
             this.Log_textBox = new System.Windows.Forms.TextBox();
-            this.CameraCoords_label = new System.Windows.Forms.ToolStripStatusLabel();
             this.statusStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
@@ -93,6 +93,12 @@ namespace ApplicationUI
             this.StatusLabel.Name = "StatusLabel";
             this.StatusLabel.Size = new System.Drawing.Size(64, 17);
             this.StatusLabel.Text = "Status: Idle";
+            // 
+            // CameraCoords_label
+            // 
+            this.CameraCoords_label.Name = "CameraCoords_label";
+            this.CameraCoords_label.Size = new System.Drawing.Size(131, 17);
+            this.CameraCoords_label.Text = "Camera [N/A;N/A;N/A]";
             // 
             // AddFile_btn
             // 
@@ -148,12 +154,6 @@ namespace ApplicationUI
             this.Log_textBox.Name = "Log_textBox";
             this.Log_textBox.Size = new System.Drawing.Size(800, 87);
             this.Log_textBox.TabIndex = 7;
-            // 
-            // CameraCoords_label
-            // 
-            this.CameraCoords_label.Name = "CameraCoords_label";
-            this.CameraCoords_label.Size = new System.Drawing.Size(131, 17);
-            this.CameraCoords_label.Text = "Camera [N/A;N/A;N/A]";
             // 
             // MainForm
             // 

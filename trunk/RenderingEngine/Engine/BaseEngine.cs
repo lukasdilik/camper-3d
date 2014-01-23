@@ -12,7 +12,7 @@ namespace RenderingEngine.Engine
         public CameraMan CameraMan;
 
         protected Root Root;
-        protected SceneManager SceneManager;
+        public SceneManager SceneManager;
         protected WindowParams WindowParams;
         protected RenderWindow RenderWindow;
         protected RenderSystem RenderSystem;
@@ -57,7 +57,7 @@ namespace RenderingEngine.Engine
             if (!Configure())
                 return false;
 
-            ChooseSceneManager();
+            CreateSceneManager();
             CreateCamera();
             CreateViewports();
 
@@ -107,7 +107,7 @@ namespace RenderingEngine.Engine
             RenderWindow = Root.CreateRenderWindow(WindowParams.Name, WindowParams.Width, WindowParams.Height, false, miscParams);
         }
 
-        protected virtual void ChooseSceneManager()
+        protected virtual void CreateSceneManager()
         {
             SceneManager = Root.CreateSceneManager(SceneType.ST_EXTERIOR_CLOSE);
         }
