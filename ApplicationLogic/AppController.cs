@@ -19,7 +19,7 @@ namespace ApplicationLogic
 
         public AppController(IApplicationUI appUi)
         {
-            mEngine = new Engine();
+            mEngine = Engine.Instance;
             mAvailableModels = new List<string>();
             mApplicationUi = appUi;
             GetAvailableModels();
