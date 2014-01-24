@@ -123,22 +123,22 @@ namespace RenderingEngine.Engine
                 result = new Vector3(closest_result.x, closest_result.y, closest_result.z);
                 resNormal = vNormal / vNormal.Normalise();
 
-                /*
+                
                 // this visualizes the 'result' position 
-                if (!sceneMgr.HasSceneNode("marker"))
+                if (!Engine.Instance.SceneManager.HasSceneNode("marker"))
                 {
-                    SceneNode node = sceneMgr.CreateSceneNode("marker");
-                    Entity ent = sceneMgr.CreateEntity("marker", "Cube.mesh");
+                    SceneNode node = Engine.Instance.SceneManager.CreateSceneNode("marker");
+                    Entity ent = Engine.Instance.SceneManager.CreateEntity("marker", "Cube.mesh");
                     node.AttachObject(ent);
                     node.Position = result;
                     node.Scale(0.25f, 0.25f, 0.25f);
-                    sceneMgr.RootSceneNode.AddChild(node);
+                    Engine.Instance.SceneManager.RootSceneNode.AddChild(node);
                 }
                 else
                 {
-                    sceneMgr.GetSceneNode("marker").Position = result;
+                    Engine.Instance.SceneManager.GetSceneNode("marker").Position = result;
                 }
-                */
+                
 
                 // raycast success
                 return true;

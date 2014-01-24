@@ -62,6 +62,7 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Drawing\Draw.cs" />
     <Compile Include="Engine\PolygonRayCast.cs" />
     <Compile Include="Engine\SecurityCamera.cs" />
     <Compile Include="Helpers\CameraMan.cs" />
@@ -262,6 +263,7 @@
     <None Include="Resources\materials\textures\WaterNormal1.tga" />
     <None Include="Resources\materials\textures\WaterNormal2.tga" />
     <None Include="Resources\models\misc\cctvCamera.mesh" />
+    <None Include="Resources\models\misc\cube.mesh" />
     <None Include="Resources\models\scene\policeStation.mesh" />
     <None Include="Resources\models\scene\trainStation.mesh" />
     <None Include="Resources\overlays\Compositor.overlay" />
