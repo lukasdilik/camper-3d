@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Mogre;
+using RenderingEngine.Drawing;
 using Math = System.Math;
 
 namespace RenderingEngine.Engine
@@ -115,16 +116,6 @@ namespace RenderingEngine.Engine
             }
         }
 
-        private void GetIntersectionWithTerrain(int screenX, int screenY)
-        {
-            var coords = GetNormalizedCoords(screenX, screenY);
-            Ray mouseRay = Camera.GetCameraToViewportRay(coords.x, coords.y);
-            Engine.Instance.RaySceneQuery.Ray = mouseRay;
-
-            RaySceneQueryResult result = Engine.Instance.RaySceneQuery.Execute();
-            RaySceneQueryResult.Enumerator iter = (RaySceneQueryResult.Enumerator)(result.GetEnumerator());
-        }
-
         private void DeselectAllSecurityCameras()
         {
             foreach (var camera in SecurityCameras)
@@ -151,12 +142,24 @@ namespace RenderingEngine.Engine
             PolygonRayCast rayCast = new PolygonRayCast();
             Vector3 result = new Vector3(), normal = new Vector3();
             var isHit = rayCast.RaycastFromPoint(startPosition, rayDirection, ref result, ref normal);
-
+            
+            Draw.Instance.CreateLineObject(result, normal);
+            
             if (isHit)
             {
                 var securityCamera = new SecurityCamera(result);
                 SecurityCameras.Add(securityCamera.Name, securityCamera);    
             }
+        }
+
+        private void DrawNormal(Vector3 normal)
+        {
+            
+        }
+
+        public void LookFromTop()
+        {
+            
         }
 
         protected override void UpdateScene(FrameEvent evt)

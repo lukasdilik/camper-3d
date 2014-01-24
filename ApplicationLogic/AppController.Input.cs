@@ -58,6 +58,9 @@ namespace ApplicationLogic
                 case Keys.F5:
                     mEngine.ReloadAllTextures();
                     break;
+                case Keys.NumPad1:
+                    mEngine.LookFromTop();
+                    break;
 
                 case Keys.Escape:
                     mEngine.Shutdown();
