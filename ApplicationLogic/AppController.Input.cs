@@ -46,8 +46,8 @@ namespace ApplicationLogic
                 case Keys.F5:
                     mEngine.ChangeTerrainClamping();
                     break;
-                case Keys.NumPad1:
-                    mEngine.LookFromTop();
+                case Keys.Delete:
+                    mEngine.DeleteSelectedCamera();
                     break;
                 case Keys.Escape:
                     mEngine.Shutdown();

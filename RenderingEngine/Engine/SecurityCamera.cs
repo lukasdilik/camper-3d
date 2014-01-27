@@ -29,7 +29,6 @@ namespace RenderingEngine.Engine
         public Vector3 Normal { get; private set; }
         public Entity Entity { get; private set; }
         public SceneNode SceneNode { get; private set; }
-        public AxisAlignedBox BoundingBox { get; private set; }
 
         public SecurityCamera(Vector3 position, Vector3 normal)
         {
@@ -53,9 +52,11 @@ namespace RenderingEngine.Engine
             RotateToDirection(Normal);
             DrawNormal();
 
-            var aabb = Entity.GetMesh().Bounds;
-            var size = aabb.Size;
-            Translate(new Vector3(0,0,-size.z));
+            var aabb = Entity.BoundingBox;
+            aabb.Scale(Scale);
+            var min = aabb.Minimum;
+
+            Translate(min);
             Selected = true;
         }
 
@@ -94,13 +95,13 @@ namespace RenderingEngine.Engine
             switch (key)
             {
                 case Keys.Up: 
-                    Translate(new Vector3(0,TranslationRate,0));
+                    Translate(new Vector3(0,-TranslationRate,0));
                     break;
                 case Keys.Left: 
                     Translate(new Vector3(-TranslationRate,0,0)); 
                     break;
                 case Keys.Down:
-                    Translate(new Vector3(0,-TranslationRate, 0)); 
+                    Translate(new Vector3(0,TranslationRate, 0)); 
                     break;
                 case Keys.Right:
                     Translate(new Vector3(TranslationRate,0, 0));
@@ -123,15 +124,24 @@ namespace RenderingEngine.Engine
            }
         }
 
+        public void Delete()
+        {
+            SceneNode.RemoveAndDestroyAllChildren();
+        }
+
         public void MouseMove(MouseEventArgs e)
         {
-           if (e.Button == MouseButtons.Left)
-           {
-               int dx = e.X - mOldX;
-               int dy = e.Y - mOldY;
-               SceneNode.Yaw(new Degree(dx*0.05f));
-               SceneNode.Roll(new Degree(dy*0.05f));  
-           }
+            if (e.Button != MouseButtons.Left) return;
+            
+            int dx = e.X - mOldX;
+            int dy = e.Y - mOldY;
+            Vector2 dir = new Vector2(Math.Sign(dx), Math.Sign(dy));
+   
+            SceneNode.Pitch(new Degree(dir.y));
+            SceneNode.Yaw(new Degree(dir.x));
+
+            mOldX = e.X;
+            mOldY = e.Y;
         }
     }
 }

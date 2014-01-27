@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using Mogre;
-using RenderingEngine.Drawing;
 using Math = System.Math;
 
 namespace RenderingEngine.Engine
@@ -168,6 +167,16 @@ namespace RenderingEngine.Engine
                 SecurityCameras.Add(securityCamera.Name, securityCamera);
                 SelectedSecurityCamera = securityCamera;
             }
+        }
+
+        public void DeleteSelectedCamera()
+        {
+            if (SelectedSecurityCamera != null)
+            {
+                SelectedSecurityCamera.SceneNode.DetachAllObjects();
+                SecurityCameras.Remove(SelectedSecurityCamera.Name);
+            }
+            
         }
 
         public void CameraControl(Keys key)
