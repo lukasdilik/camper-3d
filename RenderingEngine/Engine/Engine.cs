@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Windows.Forms;
 using Mogre;
 using RenderingEngine.Drawing;
 using Math = System.Math;
@@ -11,12 +12,14 @@ namespace RenderingEngine.Engine
         public const String WindowName = "MOGRE Window";
 
         private static Engine mInstance;
+        private PolygonRayCast mRayCast;
         private string mModelName;
         private string mModelFilePath;
 
         public Dictionary<string, Entity> SceneEntities { get; private set; }
         public Dictionary<string, SecurityCamera> SecurityCameras { get; private set; }
         public RaySceneQuery RaySceneQuery { get; private set; }
+        public SecurityCamera SelectedSecurityCamera { get; private set; }
 
         private Engine() {}
 
@@ -41,10 +44,17 @@ namespace RenderingEngine.Engine
             WindowParams.ColorDepth = 32;
         }
 
-        protected override void CreateScene()
+        private void InitVariables()
         {
             SecurityCameras = new Dictionary<string, SecurityCamera>();
             SceneEntities = new Dictionary<string, Entity>();
+            SelectedSecurityCamera = null;
+            mRayCast = new PolygonRayCast();
+        }
+
+        protected override void CreateScene()
+        {
+            InitVariables();
             
             SetupLights();
             
@@ -112,6 +122,7 @@ namespace RenderingEngine.Engine
                 if (SecurityCameras.ContainsKey(name))
                 {
                     SecurityCameras[name].Selected = true;
+                    SelectedSecurityCamera = SecurityCameras[name];
                 }
             }
         }
@@ -122,6 +133,7 @@ namespace RenderingEngine.Engine
             {
                 camera.Value.Selected = false;
             }
+            SelectedSecurityCamera = null;
         }
 
         private Vector2 GetNormalizedCoords(int X, int Y)
@@ -139,28 +151,54 @@ namespace RenderingEngine.Engine
             
             Vector3 startPosition = mouseRay.Origin;
             Vector3 rayDirection = mouseRay.Direction;
-            PolygonRayCast rayCast = new PolygonRayCast();
-            Vector3 result = new Vector3(), normal = new Vector3();
-            var isHit = rayCast.RaycastFromPoint(startPosition, rayDirection, ref result, ref normal);
-            
-            Draw.Instance.CreateLineObject(result, normal);
-            
+            Vector3 contactPoint = new Vector3(), normal = new Vector3();
+            var isHit = mRayCast.RaycastFromPoint(startPosition, rayDirection, ref contactPoint, ref normal);
+            //otocim normalu pretoze smeruje do vnutra meshu
+            normal *= -1;
+           
             if (isHit)
             {
-                var securityCamera = new SecurityCamera(result);
-                SecurityCameras.Add(securityCamera.Name, securityCamera);    
+                var securityCamera = new SecurityCamera(contactPoint, normal);
+                
+                SecurityCameras.Add(securityCamera.Name, securityCamera);
+                SelectedSecurityCamera = securityCamera;
             }
         }
 
-        private void DrawNormal(Vector3 normal)
+        public void CameraControl(Keys key)
         {
-            
+            if (SelectedSecurityCamera != null)
+            {
+                SelectedSecurityCamera.HandleKey(key);
+            }
+        }
+
+        public bool IsSecurityCameraSelected()
+        {
+            return SelectedSecurityCamera != null;
+        }
+
+        public void CameraMouseClick(MouseEventArgs e)
+        {
+            if (SelectedSecurityCamera != null)
+            {
+                SelectedSecurityCamera.MouseClick(e);
+            }
+        }
+
+        public void CameraMouseMove(MouseEventArgs e)
+        {
+            if (SelectedSecurityCamera != null)
+            {
+                SelectedSecurityCamera.MouseMove(e);
+            }
         }
 
         public void LookFromTop()
         {
             
         }
+
 
         protected override void UpdateScene(FrameEvent evt)
         {

@@ -84,6 +84,7 @@ namespace ApplicationLogic
         {
             if (!mIsStarted) return;
 
+            mEngine.CameraControl(key);
             HandleKeyDown(key);
             UpdateUI();
         }
@@ -120,14 +121,29 @@ namespace ApplicationLogic
                 mEngine.CreateCamera(e.X,e.Y);
             }
 
-            HandleMouseDown(e);
+            if (mEngine.IsSecurityCameraSelected())
+            {
+                mEngine.CameraMouseClick(e);
+            }
+            else
+            {
+                HandleMouseDown(e);    
+            }
         }
 
         public void MouseMove(MouseEventArgs e)
         {
             if (!mIsStarted) return;
-
-            HandleMouseMove(e);
+            
+            if (mEngine.IsSecurityCameraSelected())
+            {
+                mEngine.CameraMouseMove(e);
+            }
+            else
+            {
+                HandleMouseMove(e);
+            }
+            
             UpdateUI();
         }
 
@@ -143,7 +159,14 @@ namespace ApplicationLogic
 
         public void UpdateUI()
         {
-            mApplicationUi.UpdateCameraCoordinates(mEngine.Camera.Position.x, mEngine.Camera.Position.y, mEngine.Camera.Position.z);
+            int x = (int) Math.Round(mEngine.Camera.Position.x);
+            int y = (int) Math.Round(mEngine.Camera.Position.y);
+            int z = (int) Math.Round(mEngine.Camera.Position.z);
+            int dirX = (int) Math.Round(mEngine.Camera.Direction.x);
+            int dirY = (int) Math.Round(mEngine.Camera.Direction.y);
+            int dirZ = (int) Math.Round(mEngine.Camera.Direction.z);
+            string info = string.Format("Camera Pos:[{0} ; {1}; {2}] | Dir:[{3} ; {4} ; {5}]",x,y,z,dirX,dirY,dirZ);
+            mApplicationUi.UpdateCameraInformation(info);
         }
     }
 }

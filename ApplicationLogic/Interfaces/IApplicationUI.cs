@@ -7,7 +7,7 @@ namespace ApplicationLogic.Interfaces
     {
         void SendMessage(string msg);
         void ShowAvailableModels(List<string> models);
-        void UpdateCameraCoordinates(float x, float y, float z);
+        void UpdateCameraInformation(string info);
         void ExceptionOccured(Exception e);
     }
 }

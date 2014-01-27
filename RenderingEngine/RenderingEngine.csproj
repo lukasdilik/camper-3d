@@ -159,6 +159,7 @@
     <None Include="Resources\gui\TaharezLook.tga" />
     <None Include="Resources\gui\TaharezLookSkin.scheme" />
     <None Include="Resources\gui\TaharezLookWidgetAliases.scheme" />
+    <None Include="Resources\materials\cctv1.material" />
     <None Include="Resources\materials\programs\Cg\Combine_fp.cg" />
     <None Include="Resources\materials\programs\Cg\DOF_ps.cg" />
     <None Include="Resources\materials\programs\Cg\Example_Basic.cg" />
@@ -262,6 +263,7 @@
     <None Include="Resources\materials\textures\Sepia1D.tga" />
     <None Include="Resources\materials\textures\WaterNormal1.tga" />
     <None Include="Resources\materials\textures\WaterNormal2.tga" />
+    <None Include="Resources\models\misc\cctv1.mesh" />
     <None Include="Resources\models\misc\cctvCamera.mesh" />
     <None Include="Resources\models\misc\cube.mesh" />
     <None Include="Resources\models\scene\policeStation.mesh" />

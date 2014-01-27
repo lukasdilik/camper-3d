@@ -3,7 +3,7 @@ using Mogre;
 
 namespace RenderingEngine.Engine
 {
-    class PolygonRayCast
+    public class PolygonRayCast
     {
         private RaySceneQuery mRaySceneQuery;
 
@@ -16,7 +16,7 @@ namespace RenderingEngine.Engine
         // raycast from a point in to the scene.
         // returns success or failure.
         // on success the point is returned in the result.
-        public bool RaycastFromPoint(Vector3 point, Vector3 normal, ref Vector3 result,ref Vector3 resNormal)
+        public bool RaycastFromPoint(Vector3 point, Vector3 normal, ref Vector3 result,ref Vector3 resultNormal)
         {
             // create the ray to test
             Ray ray = new Ray(point, normal);
@@ -121,25 +121,7 @@ namespace RenderingEngine.Engine
             if (closest_distance >= 0.0f)
             {
                 result = new Vector3(closest_result.x, closest_result.y, closest_result.z);
-                resNormal = vNormal / vNormal.Normalise();
-
-                
-                // this visualizes the 'result' position 
-                if (!Engine.Instance.SceneManager.HasSceneNode("marker"))
-                {
-                    SceneNode node = Engine.Instance.SceneManager.CreateSceneNode("marker");
-                    Entity ent = Engine.Instance.SceneManager.CreateEntity("marker", "Cube.mesh");
-                    node.AttachObject(ent);
-                    node.Position = result;
-                    node.Scale(0.25f, 0.25f, 0.25f);
-                    Engine.Instance.SceneManager.RootSceneNode.AddChild(node);
-                }
-                else
-                {
-                    Engine.Instance.SceneManager.GetSceneNode("marker").Position = result;
-                }
-                
-
+                resultNormal = vNormal / vNormal.Normalise();
                 // raycast success
                 return true;
             }

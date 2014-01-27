@@ -13,55 +13,39 @@ namespace ApplicationLogic
         {
             switch (key)
             {
-                case Keys.W:
                 case Keys.Up:
                     mEngine.CameraMan.GoingForward = true;
                     break;
-
-                case Keys.S:
                 case Keys.Down:
                     mEngine.CameraMan.GoingBack = true;
                     break;
-
-                case Keys.A:
                 case Keys.Left:
                     mEngine.CameraMan.GoingLeft = true;
                     break;
-
-                case Keys.D:
                 case Keys.Right:
                     mEngine.CameraMan.GoingRight = true;
                     break;
-
-                case Keys.Q:
                 case Keys.PageUp:
                     mEngine.CameraMan.GoingUp = true;
                     break;
-
-                case Keys.E:
                 case Keys.PageDown:
                     mEngine.CameraMan.GoingDown = true;
                     break;
-
                 case Keys.RShiftKey:
                     mEngine.CameraMan.FastMove = true;
                     break;
-
                 case Keys.T:
                     mEngine.CycleTextureFilteringMode();
                     break;
-
                 case Keys.R:
                     mEngine.CyclePolygonMode();
                     break;
-
                 case Keys.F5:
                     mEngine.ReloadAllTextures();
                     break;
                 case Keys.NumPad1:
                     mEngine.LookFromTop();
                     break;
-
                 case Keys.Escape:
                     mEngine.Shutdown();
                     break;
@@ -72,32 +56,26 @@ namespace ApplicationLogic
         {
             switch (key)
             {
-                case Keys.W:
                 case Keys.Up:
                     mEngine.CameraMan.GoingForward = false;
                     break;
 
-                case Keys.S:
                 case Keys.Down:
                     mEngine.CameraMan.GoingBack = false;
                     break;
 
-                case Keys.A:
                 case Keys.Left:
                     mEngine.CameraMan.GoingLeft = false;
                     break;
 
-                case Keys.D:
                 case Keys.Right:
                     mEngine.CameraMan.GoingRight = false;
                     break;
 
-                case Keys.Q:
                 case Keys.PageUp:
                     mEngine.CameraMan.GoingUp = false;
                     break;
 
-                case Keys.E:
                 case Keys.PageDown:
                     mEngine.CameraMan.GoingDown = false;
                     break;

@@ -8,11 +8,11 @@ namespace RenderingEngine.Drawing
         public const string ResourceGroupName = "drawing";
         public const string LineMaterialName = "line_material";
 
-        private static Vector3 mColor = new Vector3();
+        private Vector3 mColor = new Vector3(0,0,0);
 
         private static Draw mInstance;
 
-        public static Dictionary<string, ManualObject> Lines { get; private set; }
+        public  Dictionary<string, ManualObject> Lines { get; private set; }
 
         public static Draw Instance
         {
@@ -46,6 +46,8 @@ namespace RenderingEngine.Drawing
 
         private void CreateMaterial(Vector3 color)
         {
+            if(color == mColor) return;
+
             MaterialPtr lineMaterial = MaterialManager.Singleton.Create(LineMaterialName, ResourceGroupName);
             lineMaterial.ReceiveShadows = false;
             lineMaterial.GetTechnique(0).SetLightingEnabled(true);
@@ -55,7 +57,7 @@ namespace RenderingEngine.Drawing
             lineMaterial.Dispose();  
         }
 
-        public string CreateLineObject(Vector3 start, Vector3 end)
+        public SceneNode DrawLine(Vector3 start, Vector3 end)
         {
             string name = "line" + Lines.Count;
 
@@ -66,11 +68,11 @@ namespace RenderingEngine.Drawing
             manObj.End();
 
             SceneNode manObjNode = Engine.Engine.Instance.SceneManager.RootSceneNode.CreateChildSceneNode(name+"_node");
-            manObjNode.SetPosition(start.x, start.y, start.z);
+            //manObjNode.SetPosition(start.x, start.y, start.z);
             
             manObjNode.AttachObject(manObj);
             Lines.Add(name,manObj);
-            return name;
+            return manObjNode;
         }
 
         public void ShowLine(string name)

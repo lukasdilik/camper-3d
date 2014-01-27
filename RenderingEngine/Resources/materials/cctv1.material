@@ -1,0 +1,100 @@
+material 1390815867_1_<Burnt_Umber>2
+{
+  technique
+  {
+    pass
+    {
+      scene_blend alpha_blend
+      depth_check on
+      depth_write off
+      ambient 0.0 0.0 0.0 0.800000011920929
+      diffuse 0.0274509803921569 0.0117647058823529 0.00784313725490196 0.800000011920929
+      specular 0.0 0.0 0.0 0.800000011920929 0.0
+      emissive 0.0 0.0 0.0 1.0
+    }
+  }
+}
+material 1390815867_2_0103_Blue
+{
+  technique
+  {
+    pass
+    {
+      ambient 0.0 0.0 0.0
+      diffuse 0.0 0.0 1.0
+      specular 0.0 0.0 0.0 0.0
+      emissive 0.0 0.0 0.0
+    }
+  }
+}
+material 1390815867_3_Translucent_Glass_Blue
+{
+  technique
+  {
+    pass
+    {
+      scene_blend alpha_blend
+      depth_check on
+      depth_write off
+      ambient 0.0 0.0 0.0 0.5
+      diffuse 0.392156862745098 0.584313725490196 0.929411764705882 0.5
+      specular 0.0 0.0 0.0 0.5 0.0
+      emissive 0.0 0.0 0.0 1.0
+    }
+  }
+}
+material 1390815867_4_[0020_Red]1
+{
+  technique
+  {
+    pass
+    {
+      ambient 0.0 0.0 0.0
+      diffuse 1.0 0.0 0.0
+      specular 0.0 0.0 0.0 0.0
+      emissive 0.0 0.0 0.0
+    }
+  }
+}
+material 1390815867_5_0020_Red
+{
+  technique
+  {
+    pass
+    {
+      scene_blend alpha_blend
+      depth_check on
+      depth_write off
+      ambient 0.0 0.0 0.0 0.899999976158142
+      diffuse 1.0 0.0 0.0 0.899999976158142
+      specular 0.0 0.0 0.0 0.899999976158142 0.0
+      emissive 0.0 0.0 0.0 1.0
+    }
+  }
+}
+material 1390815867_6_jean_blue
+{
+  technique
+  {
+    pass
+    {
+      ambient 0.0 0.0 0.0
+      diffuse 0.141176470588235 0.184313725490196 0.258823529411765
+      specular 0.0 0.0 0.0 0.0
+      emissive 0.0 0.0 0.0
+    }
+  }
+}
+material 1390815867_SketchupDefault
+{
+  technique
+  {
+    pass
+    {
+      ambient 0.0 0.0 0.0
+      diffuse 1.0 1.0 1.0
+      specular 0.0 0.0 0.0 0.0
+      emissive 0.0 0.0 0.0
+    }
+  }
+}
