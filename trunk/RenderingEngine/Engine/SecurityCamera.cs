@@ -7,7 +7,7 @@ namespace RenderingEngine.Engine
     public class SecurityCamera
     {
         public const float NormalLength = 10f;
-        public const float TranslationRate = 0.1f;
+        public const float TranslationRate = 0.2f;
         public const string MeshName = "cctv1.mesh";
         public static readonly Vector3 Scale = new Vector3(8,8,8);
 
@@ -48,20 +48,23 @@ namespace RenderingEngine.Engine
             SceneNode = Engine.Instance.SceneManager.RootSceneNode.CreateChildSceneNode(Name + "Node");
             SceneNode.AttachObject(Entity);
             SceneNode.Position = position;
-            
+
             SceneNode.Scale(Scale);
             RotateToDirection(Normal);
             DrawNormal();
-            
+
+            var aabb = Entity.GetMesh().Bounds;
+            var size = aabb.Size;
+            Translate(new Vector3(0,0,-size.z));
             Selected = true;
         }
 
         public void RotateToDirection(Vector3 destination)
         {
-            Vector3 direction = destination - SceneNode.Position;    // B-A = A->B (see vector questions above)
-            Vector3 src = SceneNode.Position * Vector3.UNIT_Z;  //facing direction of this mesh is +Z
+            Vector3 direction = destination - SceneNode.Position; // B-A = A->B (see vector questions above)
+            Vector3 src = SceneNode.Position * Vector3.UNIT_Z; //facing direction of this mesh is +Z
             direction.Normalise();
-            Quaternion quat = src.GetRotationTo(direction);             // Get a quaternion rotation operation 
+            Quaternion quat = src.GetRotationTo(direction);  // Get a quaternion rotation operation 
             
             SceneNode.Rotate(quat); 
         }
@@ -74,6 +77,10 @@ namespace RenderingEngine.Engine
 
         private void Translate(Vector3 t)
         {
+            if (Engine.Instance.Camera != null)
+            {
+                t = t*Engine.Instance.Camera.Direction;
+            }
             SceneNode.Translate(t);
             if (mNormalNode != null)
             {
@@ -86,22 +93,22 @@ namespace RenderingEngine.Engine
         {
             switch (key)
             {
-                case Keys.W: 
+                case Keys.Up: 
                     Translate(new Vector3(0,TranslationRate,0));
                     break;
-                case Keys.A: 
+                case Keys.Left: 
                     Translate(new Vector3(-TranslationRate,0,0)); 
                     break;
-                case Keys.S:
+                case Keys.Down:
                     Translate(new Vector3(0,-TranslationRate, 0)); 
                     break;
-                case Keys.D:
+                case Keys.Right:
                     Translate(new Vector3(TranslationRate,0, 0));
                     break;
-                case Keys.Q:
+                case Keys.Add:
                     Translate(new Vector3(0, 0, -TranslationRate));
                     break;
-                case Keys.E:
+                case Keys.Subtract:
                     Translate(new Vector3(0,0, TranslationRate));
                     break;
             }
@@ -122,8 +129,8 @@ namespace RenderingEngine.Engine
            {
                int dx = e.X - mOldX;
                int dy = e.Y - mOldY;
-               SceneNode.Yaw(new Degree(dx*0.15f));
-               SceneNode.Roll(new Degree(dy*0.15f));  
+               SceneNode.Yaw(new Degree(dx*0.05f));
+               SceneNode.Roll(new Degree(dy*0.05f));  
            }
         }
     }
