@@ -10,18 +10,23 @@ namespace RenderingEngine.Engine
     public class Engine : BaseEngine
     {
         public const String WindowName = "MOGRE Window";
+        public const float MaxHeight = 10f;
 
         private static Engine mInstance;
         private PolygonRayCast mRayCast;
         private string mModelName;
         private string mModelFilePath;
+        private bool mIsClampedToTerrain = false;
 
         public Dictionary<string, Entity> SceneEntities { get; private set; }
         public Dictionary<string, SecurityCamera> SecurityCameras { get; private set; }
         public RaySceneQuery RaySceneQuery { get; private set; }
         public SecurityCamera SelectedSecurityCamera { get; private set; }
-
-        private Engine() {}
+        
+        public void ChangeTerrainClamping()
+        {
+            mIsClampedToTerrain = !mIsClampedToTerrain;
+        }
 
         public static Engine Instance
         {
@@ -153,7 +158,7 @@ namespace RenderingEngine.Engine
             Vector3 rayDirection = mouseRay.Direction;
             Vector3 contactPoint = new Vector3(), normal = new Vector3();
             var isHit = mRayCast.RaycastFromPoint(startPosition, rayDirection, ref contactPoint, ref normal);
-            //otocim normalu pretoze smeruje do vnutra meshu
+            //mesh normal is directed into polygon
             normal *= -1;
            
             if (isHit)
@@ -211,12 +216,18 @@ namespace RenderingEngine.Engine
             RaySceneQueryResult.Enumerator itr = (RaySceneQueryResult.Enumerator)(result.GetEnumerator());
 
             // Get the results, set the camera height
-            if ((itr != null) && itr.MoveNext())
+            if (itr.MoveNext())
             {
                 float terrainHeight = itr.Current.worldFragment.singleIntersection.y;
-
-                if ((terrainHeight + 10.0f) > camPos.y)
+                if (mIsClampedToTerrain)
+                {
                     Camera.SetPosition(camPos.x, terrainHeight + 10.0f, camPos.z);
+                }
+                else
+                {
+                    if ((terrainHeight + MaxHeight) > camPos.y)
+                        Camera.SetPosition(camPos.x, terrainHeight + 10.0f, camPos.z);
+                }
             }
         }
 
