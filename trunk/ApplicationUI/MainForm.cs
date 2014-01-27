@@ -16,6 +16,10 @@ namespace ApplicationUI
 
             mAppController = new AppController(this);
             mAppController.SetUpRenderingWindow(MainWindow.Handle, MainWindow.Width, MainWindow.Height);
+
+            //preselect first model
+            AvailableModels_combo.SelectedIndex = 1;
+            LoadSelectedModel();
         }
 
         private void MainForm_Disposed(object sender, EventArgs e)
@@ -102,7 +106,7 @@ namespace ApplicationUI
 
         public void SendMessage(string msg)
         {
-            Log_textBox.AppendText(msg);
+            Log_textBox.AppendText(msg+Environment.NewLine);
         }
 
         public void ShowAvailableModels(List<string> models)
@@ -110,9 +114,9 @@ namespace ApplicationUI
             if (models != null) AvailableModels_combo.Items.AddRange(models.ToArray());
         }
 
-        public void UpdateCameraCoordinates(float x, float y, float z)
+        public void UpdateCameraInformation(string info)
         {
-            CameraCoords_label.Text = string.Format("[{0};{1};{2};]", x, y, z);
+            CameraCoords_label.Text = info;
         }
 
         public void ExceptionOccured(Exception e)
