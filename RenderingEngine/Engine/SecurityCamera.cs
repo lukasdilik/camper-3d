@@ -13,6 +13,7 @@ namespace RenderingEngine.Engine
 
         private bool mSelected = false;
         private int mOldX, mOldY;
+        private SceneNode mNormalNode;
 
         public bool Selected {
             get { return mSelected; }
@@ -68,19 +69,41 @@ namespace RenderingEngine.Engine
         private void DrawNormal()
         {
             Draw.Instance.Color = new Vector3(0, 0, 1f);
-            Draw.Instance.DrawLine(SceneNode.Position, Normal);
+            mNormalNode = Draw.Instance.DrawLine(SceneNode.Position, Normal);
+        }
+
+        private void Translate(Vector3 t)
+        {
+            SceneNode.Translate(t);
+            if (mNormalNode != null)
+            {
+                mNormalNode.Translate(t);
+            }
+
         }
 
         public void HandleKey(Keys key)
         {
             switch (key)
             {
-                case Keys.W: SceneNode.Translate(0,TranslationRate,0);break;
-                case Keys.A: SceneNode.Translate(-TranslationRate,0,0); break;
-                case Keys.S: SceneNode.Translate(0,-TranslationRate,0); break;
-                case Keys.D: SceneNode.Translate(TranslationRate,0,0); break;
-                case Keys.Q: SceneNode.Translate(0,0,TranslationRate); break;
-                case Keys.E: SceneNode.Translate(0,0,-TranslationRate); break;
+                case Keys.W: 
+                    Translate(new Vector3(0,TranslationRate,0));
+                    break;
+                case Keys.A: 
+                    Translate(new Vector3(-TranslationRate,0,0)); 
+                    break;
+                case Keys.S:
+                    Translate(new Vector3(0,-TranslationRate, 0)); 
+                    break;
+                case Keys.D:
+                    Translate(new Vector3(TranslationRate,0, 0));
+                    break;
+                case Keys.Q:
+                    Translate(new Vector3(0, 0, -TranslationRate));
+                    break;
+                case Keys.E:
+                    Translate(new Vector3(0,0, TranslationRate));
+                    break;
             }
         }
 
