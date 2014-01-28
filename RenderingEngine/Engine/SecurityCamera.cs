@@ -49,15 +49,28 @@ namespace RenderingEngine.Engine
             SceneNode.Position = position;
 
             SceneNode.Scale(Scale);
+            
             RotateToDirection(Normal);
+            
             DrawNormal();
 
+            TranslateCameraOnPolygonFace();
+
+            Selected = true;
+        }
+
+        private void TranslateCameraOnPolygonFace()
+        {
             var aabb = Entity.BoundingBox;
             aabb.Scale(Scale);
-            var min = aabb.Minimum;
-
-            Translate(min);
-            Selected = true;
+            var center = aabb.Center;
+            var dist = 2 * new Vector3(center.z, center.z, center.z);
+            var dir = Engine.Instance.GetCameraDirection();
+            var t = dist * dir;
+            t = (dir.z < 0) ? -t : t;
+            t = (dir.y > 0) ? -t : t;
+            t = (dir.x < 0) ? -t : t;
+            Translate(t);
         }
 
         public void RotateToDirection(Vector3 destination)

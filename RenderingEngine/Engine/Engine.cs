@@ -208,11 +208,23 @@ namespace RenderingEngine.Engine
             }
         }
 
-        public void LookFromTop()
+        public Vector3 GetCameraDirection()
         {
-            
+            Vector3 res = new Vector3(Camera.Direction.x,Camera.Direction.y,Camera.Direction.z);
+            res.x = (float) Math.Round(res.x);
+            res.y = (float) Math.Round(res.y);
+            res.z = (float) Math.Round(res.z);
+            return res;
         }
 
+        public Vector3 GetCameraPosition()
+        {
+            Vector3 res = new Vector3(Camera.Position.x, Camera.Position.y, Camera.Position.z);
+            res.x = (float)Math.Round(res.x);
+            res.y = (float)Math.Round(res.y);
+            res.z = (float)Math.Round(res.z);
+            return res;
+        }
 
         protected override void UpdateScene(FrameEvent evt)
         {
