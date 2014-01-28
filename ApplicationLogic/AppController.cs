@@ -113,12 +113,12 @@ namespace ApplicationLogic
 
             if (e.Button == MouseButtons.Left)
             {
-                mEngine.SelectObject(e.X,e.Y);
+                mEngine.SelectModel(e.X,e.Y);
             }
 
             if (e.Button == MouseButtons.Right)
             {
-                mEngine.CreateCamera(e.X,e.Y);
+                mEngine.CreateSecurityCamera(e.X, e.Y);
             }
 
             if (mEngine.IsSecurityCameraSelected())
@@ -127,8 +127,10 @@ namespace ApplicationLogic
             }
             else
             {
-                HandleMouseDown(e);    
+                HandleMouseDown(e);        
             }
+
+            UpdateUI();
         }
 
         public void MouseMove(MouseEventArgs e)
@@ -141,7 +143,7 @@ namespace ApplicationLogic
             }
             else
             {
-                HandleMouseMove(e);
+                HandleMouseMove(e);    
             }
             
             UpdateUI();

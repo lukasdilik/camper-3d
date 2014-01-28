@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using Mogre;
+using RenderingEngine.Scene;
 using Math = System.Math;
 
 namespace RenderingEngine.Engine
@@ -12,15 +13,14 @@ namespace RenderingEngine.Engine
         public const float MaxHeight = 10f;
 
         private static Engine mInstance;
-        private PolygonRayCast mRayCast;
+
         private string mModelName;
         private string mModelFilePath;
         private bool mIsClampedToTerrain = false;
 
-        public Dictionary<string, Entity> SceneEntities { get; private set; }
-        public Dictionary<string, SecurityCamera> SecurityCameras { get; private set; }
         public RaySceneQuery RaySceneQuery { get; private set; }
-        public SecurityCamera SelectedSecurityCamera { get; private set; }
+        public Dictionary<string, Model> Models { get; private set; }
+        public Model SelectedModel { get; private set; }
         
         public void ChangeTerrainClamping()
         {
@@ -50,10 +50,8 @@ namespace RenderingEngine.Engine
 
         private void InitVariables()
         {
-            SecurityCameras = new Dictionary<string, SecurityCamera>();
-            SceneEntities = new Dictionary<string, Entity>();
-            SelectedSecurityCamera = null;
-            mRayCast = new PolygonRayCast();
+            Models = new Dictionary<string, Model>();
+            SelectedModel = null;
         }
 
         protected override void CreateScene()
@@ -68,7 +66,7 @@ namespace RenderingEngine.Engine
 
             LoadModel();
 
-            RaySceneQuery = mInstance.SceneManager.CreateRayQuery(new Ray());
+            RaySceneQuery = SceneManager.CreateRayQuery(new Ray());
         }
 
         private void SetSkyBox()
@@ -94,21 +92,20 @@ namespace RenderingEngine.Engine
             pointLight.SpecularColour = ColourValue.White;
         }
 
+        #region Model controls
+
         private void LoadModel()
         {
-            var entity = SceneManager.CreateEntity(mModelName, mModelFilePath);
-            var node = SceneManager.RootSceneNode.CreateChildSceneNode(mModelName + "Node");
-            node.AttachObject(entity);
-            node.Translate(750,1,750);
+            Model model = new Model(mModelName,mModelFilePath);
+            model.Selected = true;
+            Models.Add(model.Name,model);
 
-            SceneEntities.Add(entity.Name,entity);
-            
             AlignCamera();
         }
 
-        public void SelectObject(int screenX, int screenY)
+        public void SelectModel(int screenX, int screenY)
         {
-            DeselectAllSecurityCameras();
+            DeselectAllModels();
             var coords = GetNormalizedCoords(screenX, screenY);
 
             Ray mouseRay = Camera.GetCameraToViewportRay(coords.x, coords.y);
@@ -123,90 +120,85 @@ namespace RenderingEngine.Engine
             if (intersectedNode != null)
             {
                 var name = intersectedNode.Name;
-                if (SecurityCameras.ContainsKey(name))
+                if (Models.ContainsKey(name))
                 {
-                    SecurityCameras[name].Selected = true;
-                    SelectedSecurityCamera = SecurityCameras[name];
+                    Models[name].Selected = true;
+                    SelectedModel = Models[name];
+                    SelectedModel.SelectSecurityCamera(screenX,screenY);
                 }
             }
         }
 
-        private void DeselectAllSecurityCameras()
+        private void DeselectAllModels()
         {
-            foreach (var camera in SecurityCameras)
+            foreach (var model in Models)
             {
-                camera.Value.Selected = false;
+                model.Value.Selected = false;
+                model.Value.DeselectAllSecurityCameras();
             }
-            SelectedSecurityCamera = null;
         }
 
-        private Vector2 GetNormalizedCoords(int X, int Y)
+        public void CreateSecurityCamera(int screenX, int screenY)
+        {
+            if (SelectedModel != null)
+            {
+                SelectedModel.CreateCamera(screenX, screenY);
+            }
+        }
+
+        public bool IsSecurityCameraSelected()
+        {
+            if (SelectedModel != null)
+            {
+                return SelectedModel.IsSecurityCameraSelected();
+            }
+            return false;
+        }
+
+        public void CameraMouseClick(MouseEventArgs e)
+        {
+            if (SelectedModel != null)
+            {
+                SelectedModel.CameraMouseClick(e);
+            }
+        }
+
+        public void CameraMouseMove(MouseEventArgs e)
+        {
+            if (SelectedModel != null)
+            {
+                SelectedModel.CameraMouseMove(e);
+            }
+        }
+
+        public void CameraControl(Keys key)
+        {
+            if (SelectedModel != null)
+            {
+                SelectedModel.CameraControl(key);
+            }
+        }
+
+        public void DeleteSelectedCamera()
+        {
+            if (SelectedModel != null)
+            {
+                SelectedModel.DeleteSelectedCamera();
+            }
+        }
+
+        #endregion
+
+        #region Helpers
+
+        public Vector2 GetNormalizedCoords(int X, int Y)
         {
             float normX = Math.Abs(X / (float) WindowParams.Width);
             float normY = Math.Abs(Y / (float) WindowParams.Height);
             return new Vector2(normX, normY);
         }
 
-        public void CreateCamera(int screenX, int screenY)
-        {
-            DeselectAllSecurityCameras();
-            var normCoords = GetNormalizedCoords(screenX, screenY);
-            Ray mouseRay = Camera.GetCameraToViewportRay(normCoords.x, normCoords.y);
-            
-            Vector3 startPosition = mouseRay.Origin;
-            Vector3 rayDirection = mouseRay.Direction;
-            Vector3 contactPoint = new Vector3(), normal = new Vector3();
-            var isHit = mRayCast.RaycastFromPoint(startPosition, rayDirection, ref contactPoint, ref normal);
-            //mesh normal is directed into polygon
-            normal *= -1;
-           
-            if (isHit)
-            {
-                var securityCamera = new SecurityCamera(contactPoint, normal);
-                
-                SecurityCameras.Add(securityCamera.Name, securityCamera);
-                SelectedSecurityCamera = securityCamera;
-            }
-        }
 
-        public void DeleteSelectedCamera()
-        {
-            if (SelectedSecurityCamera != null)
-            {
-                SelectedSecurityCamera.SceneNode.DetachAllObjects();
-                SecurityCameras.Remove(SelectedSecurityCamera.Name);
-            }
-            
-        }
-
-        public void CameraControl(Keys key)
-        {
-            if (SelectedSecurityCamera != null)
-            {
-                SelectedSecurityCamera.HandleKey(key);
-            }
-        }
-
-        public bool IsSecurityCameraSelected()
-        {
-            return SelectedSecurityCamera != null;
-        }
-
-        public void CameraMouseClick(MouseEventArgs e)
-        {
-            if (SelectedSecurityCamera != null)
-            {
-                SelectedSecurityCamera.MouseClick(e);
-            }
-        }
-
-        public void CameraMouseMove(MouseEventArgs e)
-        {
-            if (SelectedSecurityCamera != null)
-            {
-                SelectedSecurityCamera.MouseMove(e);
-            }
-        }
 
         public Vector3 GetCameraDirection()
         {
@@ -225,6 +217,8 @@ namespace RenderingEngine.Engine
             res.z = (float)Math.Round(res.z);
             return res;
         }
+
+        #endregion
 
         protected override void UpdateScene(FrameEvent evt)
         {
@@ -254,9 +248,9 @@ namespace RenderingEngine.Engine
 
         protected void AlignCamera()
         {
-            if (SceneEntities.Count > 0)
+            if (Models.Count > 0)
             {
-                var nodePos = SceneEntities[mModelName].ParentSceneNode.Position;
+                var nodePos = Models[mModelName+"0"].SceneNode.Position;
                 var pos = new Vector3(nodePos.x, nodePos.y+50, nodePos.z+200);
                 Camera.Position = pos;
             }

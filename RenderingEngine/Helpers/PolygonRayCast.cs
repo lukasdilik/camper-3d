@@ -1,15 +1,15 @@
 ﻿using System;
 using Mogre;
 
-namespace RenderingEngine.Engine
+namespace RenderingEngine.Helpers
 {
     public class PolygonRayCast
     {
-        private RaySceneQuery mRaySceneQuery;
+        private readonly RaySceneQuery mRaySceneQuery;
 
         public PolygonRayCast()
         {
-            mRaySceneQuery = Engine.Instance.SceneManager.CreateRayQuery(new Ray(), SceneManager.WORLD_GEOMETRY_TYPE_MASK);
+            mRaySceneQuery = Engine.Engine.Instance.SceneManager.CreateRayQuery(new Ray(), SceneManager.WORLD_GEOMETRY_TYPE_MASK);
             mRaySceneQuery.SetSortByDistance(true);
         }
 
@@ -45,27 +45,27 @@ namespace RenderingEngine.Engine
             // there are some minor optimizations (distance based) that mean we wont have to
             // check all of the objects most of the time, but the worst case scenario is that
             // we need to test every triangle of every object.
-            float closest_distance = -1.0f;
-            Vector3 closest_result = Vector3.ZERO;
+            float closestDistance = -1.0f;
+            Vector3 closestResult = Vector3.ZERO;
             Vector3 vNormal = Vector3.ZERO;
-            RaySceneQueryResult query_result = mRaySceneQuery.GetLastResults();
+            RaySceneQueryResult queryResult = mRaySceneQuery.GetLastResults();
 
-            foreach (RaySceneQueryResultEntry this_result in query_result)
+            foreach (RaySceneQueryResultEntry thisResult in queryResult)
             {
                 // stop checking if we have found a raycast hit that is closer
                 // than all remaining entities
-                if ((closest_distance >= 0.0f) &&
-                    (closest_distance < this_result.distance))
+                if ((closestDistance >= 0.0f) &&
+                    (closestDistance < thisResult.distance))
                 {
                     break;
                 }
 
                 // only check this result if its a hit against an entity
-                if ((this_result.movable != null) &&
-                    (this_result.movable.MovableType == "Entity"))
+                if ((thisResult.movable != null) &&
+                    (thisResult.movable.MovableType == "Entity"))
                 {
                     // get the entity to check
-                    Entity pentity = (Entity)this_result.movable;
+                    Entity pentity = (Entity)thisResult.movable;
 
                     // mesh data to retrieve 
                     ulong vertex_count = 0;
@@ -91,11 +91,11 @@ namespace RenderingEngine.Engine
                         // if it was a hit check if its the closest
                         if (hit.first)
                         {
-                            if ((closest_distance < 0.0f) ||
-                                (hit.second < closest_distance))
+                            if ((closestDistance < 0.0f) ||
+                                (hit.second < closestDistance))
                             {
                                 // this is the closest so far, save it off
-                                closest_distance = hit.second;
+                                closestDistance = hit.second;
                                 ncf = i;
                             }
                         }
@@ -103,7 +103,7 @@ namespace RenderingEngine.Engine
 
                     if (ncf > -1)
                     {
-                        closest_result = ray.GetPoint(closest_distance);
+                        closestResult = ray.GetPoint(closestDistance);
                         // if you don't need the normal, comment this out; you'll save some CPU cycles.
                         Vector3 v1 = vertices[indices[ncf]] - vertices[indices[ncf + 1]];
                         Vector3 v2 = vertices[indices[ncf + 2]] - vertices[indices[ncf + 1]];
@@ -118,9 +118,9 @@ namespace RenderingEngine.Engine
 
             // if we found a new closest raycast for this object, update the
             // closest_result before moving on to the next object.
-            if (closest_distance >= 0.0f)
+            if (closestDistance >= 0.0f)
             {
-                result = new Vector3(closest_result.x, closest_result.y, closest_result.z);
+                result = new Vector3(closestResult.x, closestResult.y, closestResult.z);
                 resultNormal = vNormal / vNormal.Normalise();
                 // raycast success
                 return true;
