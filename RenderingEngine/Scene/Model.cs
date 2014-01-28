@@ -42,32 +42,19 @@ namespace RenderingEngine.Scene
             Entity = mEngine.SceneManager.CreateEntity(Name, filePath);
             SceneNode = mEngine.SceneManager.RootSceneNode.CreateChildSceneNode(Name + "Node");
             SceneNode.AttachObject(Entity);
-
-            SceneNode.Translate(750, 1, 750);
         }
 
-        public void SelectSecurityCamera(int screenX, int screenY)
+        public void Translate(Vector3 t)
         {
-            DeselectAllSecurityCameras();
-            var coords = Engine.Engine.Instance.GetNormalizedCoords(screenX, screenY);
+            SceneNode.Translate(new Vector3(t.x,1,t.z));
+        }
 
-            Ray mouseRay = mEngine.Camera.GetCameraToViewportRay(coords.x, coords.y);
-            RaySceneQuery query = mEngine.SceneManager.CreateRayQuery(mouseRay);
-            RaySceneQueryResult results = query.Execute();
-
-            MovableObject intersectedNode = null;
-            foreach (RaySceneQueryResultEntry entry in results)
+        public void SelectSecurityCamera(string name)
+        {
+            if (SecurityCameras.ContainsKey(name))
             {
-                intersectedNode = entry.movable;
-            }
-            if (intersectedNode != null)
-            {
-                var name = intersectedNode.Name;
-                if (SecurityCameras.ContainsKey(name))
-                {
-                    SecurityCameras[name].Selected = true;
-                    SelectedSecurityCamera = SecurityCameras[name];
-                }
+                SecurityCameras[name].Selected = true;
+                SelectedSecurityCamera = SecurityCameras[name];
             }
         }
 
@@ -76,6 +63,7 @@ namespace RenderingEngine.Scene
             foreach (var camera in SecurityCameras)
             {
                 camera.Value.Selected = false;
+                Selected = true;
             }
             SelectedSecurityCamera = null;
         }
@@ -87,7 +75,7 @@ namespace RenderingEngine.Scene
                 DeselectAllSecurityCameras();
 
                 var normCoords = mEngine.GetNormalizedCoords(screenX, screenY);
-                Ray mouseRay = mEngine.Camera.GetCameraToViewportRay(normCoords.x, normCoords.y);
+                Ray mouseRay = mEngine.MainCamera.GetCameraToViewportRay(normCoords.x, normCoords.y);
 
                 Vector3 startPosition = mouseRay.Origin;
                 Vector3 rayDirection = mouseRay.Direction;

@@ -54,6 +54,7 @@ namespace ApplicationUI
             this.MainWindow.Name = "MainWindow";
             this.MainWindow.Size = new System.Drawing.Size(800, 600);
             this.MainWindow.TabIndex = 0;
+            this.MainWindow.MouseClick += new System.Windows.Forms.MouseEventHandler(this.MainWindow_MouseClick);
             this.MainWindow.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.MainWindow_MouseDoubleClick);
             this.MainWindow.MouseDown += new System.Windows.Forms.MouseEventHandler(this.MainWindow_MouseDown);
             this.MainWindow.MouseLeave += new System.EventHandler(this.MainWindow_MouseLeave);
@@ -135,6 +136,7 @@ namespace ApplicationUI
             this.AvailableModels_combo.Name = "AvailableModels_combo";
             this.AvailableModels_combo.Size = new System.Drawing.Size(248, 24);
             this.AvailableModels_combo.TabIndex = 7;
+            this.AvailableModels_combo.SelectedIndexChanged += new System.EventHandler(this.AvailableModels_combo_SelectedIndexChanged);
             // 
             // Start_btn
             // 
