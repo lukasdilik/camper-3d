@@ -2,7 +2,7 @@
 using Mogre;
 using RenderingEngine.Drawing;
 
-namespace RenderingEngine.Engine
+namespace RenderingEngine.Scene
 {
     public class SecurityCamera
     {
@@ -11,7 +11,7 @@ namespace RenderingEngine.Engine
         public const string MeshName = "cctv1.mesh";
         public static readonly Vector3 Scale = new Vector3(8,8,8);
 
-        private bool mSelected = false;
+        private bool mSelected;
         private int mOldX, mOldY;
         private SceneNode mNormalNode;
 
@@ -29,9 +29,11 @@ namespace RenderingEngine.Engine
         public Vector3 Normal { get; private set; }
         public Entity Entity { get; private set; }
         public SceneNode SceneNode { get; private set; }
+        public Model Parent { get; private set; }
 
-        public SecurityCamera(Vector3 position, Vector3 normal)
+        public SecurityCamera(Vector3 position, Vector3 normal, Model parent)
         {
+            Parent = parent;
             Normal = normal;
             Normal = position + (Normal * NormalLength);
 
@@ -40,11 +42,12 @@ namespace RenderingEngine.Engine
 
         private void CreateCamera(Vector3 position)
         {
-            int index = Engine.Instance.SecurityCameras.Count;
+            int index = Parent.SecurityCameras.Count;
             Name = "SecurityCamera" + index;
 
-            Entity = Engine.Instance.SceneManager.CreateEntity(Name, MeshName);
-            SceneNode = Engine.Instance.SceneManager.RootSceneNode.CreateChildSceneNode(Name + "Node");
+            Entity = Engine.Engine.Instance.SceneManager.CreateEntity(Name, MeshName);
+
+            SceneNode = Engine.Engine.Instance.SceneManager.RootSceneNode.CreateChildSceneNode(Name + "Node");
             SceneNode.AttachObject(Entity);
             SceneNode.Position = position;
 
@@ -65,7 +68,7 @@ namespace RenderingEngine.Engine
             aabb.Scale(Scale);
             var center = aabb.Center;
             var dist = 2 * new Vector3(center.z, center.z, center.z);
-            var dir = Engine.Instance.GetCameraDirection();
+            var dir = Engine.Engine.Instance.GetCameraDirection();
             var t = dist * dir;
             t = (dir.z < 0) ? -t : t;
             t = (dir.y > 0) ? -t : t;
@@ -91,9 +94,9 @@ namespace RenderingEngine.Engine
 
         private void Translate(Vector3 t)
         {
-            if (Engine.Instance.Camera != null)
+            if (Engine.Engine.Instance.Camera != null)
             {
-                t = t*Engine.Instance.Camera.Direction;
+                t = t*Engine.Engine.Instance.Camera.Direction;
             }
             SceneNode.Translate(t);
             if (mNormalNode != null)

@@ -63,8 +63,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Drawing\Draw.cs" />
-    <Compile Include="Engine\PolygonRayCast.cs" />
-    <Compile Include="Engine\SecurityCamera.cs" />
+    <Compile Include="Helpers\PolygonRayCast.cs" />
+    <Compile Include="Scene\Model.cs" />
+    <Compile Include="Scene\SecurityCamera.cs" />
     <Compile Include="Helpers\CameraMan.cs" />
     <Compile Include="Helpers\DebugOverlay.cs" />
     <Compile Include="Engine\Engine.cs" />
