@@ -159,13 +159,9 @@ namespace ApplicationLogic
 
         public void UpdateUI()
         {
-            int x = (int) Math.Round(mEngine.Camera.Position.x);
-            int y = (int) Math.Round(mEngine.Camera.Position.y);
-            int z = (int) Math.Round(mEngine.Camera.Position.z);
-            int dirX = (int) Math.Round(mEngine.Camera.Direction.x);
-            int dirY = (int) Math.Round(mEngine.Camera.Direction.y);
-            int dirZ = (int) Math.Round(mEngine.Camera.Direction.z);
-            string info = string.Format("Camera Pos:[{0} ; {1}; {2}] | Dir:[{3} ; {4} ; {5}]",x,y,z,dirX,dirY,dirZ);
+            var pos = mEngine.GetCameraPosition();
+            var dir = mEngine.GetCameraDirection();
+            string info = string.Format("Camera Pos:[{0} ; {1}; {2}] | Dir:[{3} ; {4} ; {5}]",pos.x,pos.y,pos.z,dir.x,dir.y,dir.z);
             mApplicationUi.UpdateCameraInformation(info);
         }
     }
