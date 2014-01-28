@@ -124,6 +124,16 @@ namespace ApplicationUI
             StatusLabel.Text = e.Message;
         }
 
+        private void AvailableModels_combo_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            LoadSelectedModel();
+        }
+
+        private void MainWindow_MouseClick(object sender, MouseEventArgs e)
+        {
+            Activate();
+        }
+
 
     }
 }

@@ -113,7 +113,7 @@ namespace ApplicationLogic
 
             if (e.Button == MouseButtons.Left)
             {
-                mEngine.SelectModel(e.X,e.Y);
+                mEngine.SelectObject(e.X,e.Y);
             }
 
             if (e.Button == MouseButtons.Right)
@@ -152,6 +152,11 @@ namespace ApplicationLogic
         public void MouseDoubleClick(MouseEventArgs e)
         {
             if (!mIsStarted) return;
+
+            if (e.Button == MouseButtons.Left)
+            {
+                mEngine.AddModel(e.X,e.Y);
+            }
 
             HandleMouseDoubleClick(e);
         }

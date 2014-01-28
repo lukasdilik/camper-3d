@@ -99,18 +99,40 @@ namespace RenderingEngine.Engine
             Model model = new Model(mModelName,mModelFilePath);
             model.Selected = true;
             Models.Add(model.Name,model);
+            model.Translate(new Vector3(750,1,750));
 
             AlignCamera();
         }
 
-        public void SelectModel(int screenX, int screenY)
+        public void AddModel(int screenX, int screenY)
+        {
+            var coords = GetNormalizedCoords(screenX, screenY);
+
+            var results = GetRaySceneQueryResult(coords);
+
+            bool isIntersection = false;
+            Vector3 intersection = new Vector3();
+            foreach (RaySceneQueryResultEntry entry in results)
+            {
+                if(entry == null || entry.worldFragment == null) continue;
+               intersection = entry.worldFragment.singleIntersection;
+               isIntersection = true;
+            }
+            
+            if (isIntersection)
+            {
+                Model model = new Model(mModelName, mModelFilePath) {Selected = true};
+                Models.Add(model.Name, model);
+                model.Translate(intersection);
+            }
+        }
+
+        public void SelectObject(int screenX, int screenY)
         {
             DeselectAllModels();
             var coords = GetNormalizedCoords(screenX, screenY);
 
-            Ray mouseRay = Camera.GetCameraToViewportRay(coords.x, coords.y);
-            RaySceneQuery query = SceneManager.CreateRayQuery(mouseRay);
-            RaySceneQueryResult results = query.Execute();
+            var results = GetRaySceneQueryResult(coords);
 
             MovableObject intersectedNode = null;
             foreach (RaySceneQueryResultEntry entry in results)
@@ -120,13 +142,32 @@ namespace RenderingEngine.Engine
             if (intersectedNode != null)
             {
                 var name = intersectedNode.Name;
-                if (Models.ContainsKey(name))
+                foreach (var model in Models)
                 {
-                    Models[name].Selected = true;
-                    SelectedModel = Models[name];
-                    SelectedModel.SelectSecurityCamera(screenX,screenY);
+                    if (name == model.Value.Name)
+                    {
+                        model.Value.Selected = true;
+                        SelectedModel = model.Value;
+                    }
+                    foreach (var camera in model.Value.SecurityCameras)
+                    {
+                        if (name == camera.Value.Name)
+                        {
+                            model.Value.SelectSecurityCamera(name);
+                            model.Value.Selected = true;
+                            SelectedModel = model.Value;
+                        }
+                    }
                 }
             }
+        }
+
+        public IEnumerable<RaySceneQueryResultEntry> GetRaySceneQueryResult(Vector2 coords)
+        {
+            Ray mouseRay = MainCamera.GetCameraToViewportRay(coords.x, coords.y);
+            RaySceneQuery query = SceneManager.CreateRayQuery(mouseRay);
+            RaySceneQueryResult results = query.Execute();
+            return results;
         }
 
         private void DeselectAllModels()
@@ -202,7 +243,7 @@ namespace RenderingEngine.Engine
 
         public Vector3 GetCameraDirection()
         {
-            Vector3 res = new Vector3(Camera.Direction.x,Camera.Direction.y,Camera.Direction.z);
+            Vector3 res = new Vector3(MainCamera.Direction.x,MainCamera.Direction.y,MainCamera.Direction.z);
             res.x = (float) Math.Round(res.x);
             res.y = (float) Math.Round(res.y);
             res.z = (float) Math.Round(res.z);
@@ -211,7 +252,7 @@ namespace RenderingEngine.Engine
 
         public Vector3 GetCameraPosition()
         {
-            Vector3 res = new Vector3(Camera.Position.x, Camera.Position.y, Camera.Position.z);
+            Vector3 res = new Vector3(MainCamera.Position.x, MainCamera.Position.y, MainCamera.Position.z);
             res.x = (float)Math.Round(res.x);
             res.y = (float)Math.Round(res.y);
             res.z = (float)Math.Round(res.z);
@@ -222,7 +263,7 @@ namespace RenderingEngine.Engine
 
         protected override void UpdateScene(FrameEvent evt)
         {
-            Vector3 camPos = Camera.Position;
+            Vector3 camPos = MainCamera.Position;
             Ray cameraRay = new Ray(new Vector3(camPos.x, 5000.0f, camPos.z),Vector3.NEGATIVE_UNIT_Y);
             RaySceneQuery.Ray = cameraRay;
 
@@ -236,12 +277,12 @@ namespace RenderingEngine.Engine
                 float terrainHeight = itr.Current.worldFragment.singleIntersection.y;
                 if (mIsClampedToTerrain)
                 {
-                    Camera.SetPosition(camPos.x, terrainHeight + 10.0f, camPos.z);
+                    MainCamera.SetPosition(camPos.x, terrainHeight + 10.0f, camPos.z);
                 }
                 else
                 {
                     if ((terrainHeight + MaxHeight) > camPos.y)
-                        Camera.SetPosition(camPos.x, terrainHeight + 10.0f, camPos.z);
+                        MainCamera.SetPosition(camPos.x, terrainHeight + 10.0f, camPos.z);
                 }
             }
         }
@@ -252,7 +293,7 @@ namespace RenderingEngine.Engine
             {
                 var nodePos = Models[mModelName+"0"].SceneNode.Position;
                 var pos = new Vector3(nodePos.x, nodePos.y+50, nodePos.z+200);
-                Camera.Position = pos;
+                MainCamera.Position = pos;
             }
         }
 

@@ -8,7 +8,7 @@ namespace RenderingEngine.Engine
 
     public abstract class BaseEngine : IDisposable
     {
-        public Camera Camera;
+        public Camera MainCamera;
         public CameraMan CameraMan;
 
         protected Root Root;
@@ -58,12 +58,15 @@ namespace RenderingEngine.Engine
                 return false;
 
             CreateSceneManager();
+            
             CreateCamera();
+            
             CreateViewports();
 
             TextureManager.Singleton.DefaultNumMipmaps = 5;
 
             CreateResourceListener();
+            
             LoadResources();
 
             CreateScene();
@@ -114,22 +117,22 @@ namespace RenderingEngine.Engine
 
         protected virtual void CreateCamera()
         {
-            Camera = SceneManager.CreateCamera("MainCamera");
+            MainCamera = SceneManager.CreateCamera("MainCamera");
 
-            Camera.Position = new Vector3(0, 0, 0);
+            MainCamera.Position = new Vector3(0, 0, 0);
 
-            Camera.LookAt(new Vector3(0, 0, -1));
-            Camera.NearClipDistance = 5;
+            MainCamera.LookAt(new Vector3(0, 0, -1));
+            MainCamera.NearClipDistance = 5;
 
-            CameraMan = new CameraMan(Camera);
+            CameraMan = new CameraMan(MainCamera);
         }
 
         protected virtual void CreateViewports()
         {
-            var vp = RenderWindow.AddViewport(Camera);
+            var vp = RenderWindow.AddViewport(MainCamera);
             vp.BackgroundColour = ColourValue.Black;
 
-            Camera.AspectRatio = ((float)vp.ActualWidth / (float)vp.ActualHeight);
+            MainCamera.AspectRatio = ((float)vp.ActualWidth / (float)vp.ActualHeight);
         }
 
         protected virtual void CreateResourceListener()
@@ -193,15 +196,15 @@ namespace RenderingEngine.Engine
             switch (RenderMode)
             {
                 case 0:
-                    Camera.PolygonMode = PolygonMode.PM_SOLID;
+                    MainCamera.PolygonMode = PolygonMode.PM_SOLID;
                     break;
 
                 case 1:
-                    Camera.PolygonMode = PolygonMode.PM_WIREFRAME;
+                    MainCamera.PolygonMode = PolygonMode.PM_WIREFRAME;
                     break;
 
                 case 2:
-                    Camera.PolygonMode = PolygonMode.PM_POINTS;
+                    MainCamera.PolygonMode = PolygonMode.PM_POINTS;
                     break;
             }
         }

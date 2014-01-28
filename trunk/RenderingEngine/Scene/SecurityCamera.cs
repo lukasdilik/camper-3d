@@ -94,9 +94,9 @@ namespace RenderingEngine.Scene
 
         private void Translate(Vector3 t)
         {
-            if (Engine.Engine.Instance.Camera != null)
+            if (Engine.Engine.Instance.MainCamera != null)
             {
-                t = t*Engine.Engine.Instance.Camera.Direction;
+                t = t*Engine.Engine.Instance.MainCamera.Direction;
             }
             SceneNode.Translate(t);
             if (mNormalNode != null)
