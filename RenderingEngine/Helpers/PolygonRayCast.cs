@@ -85,8 +85,7 @@ namespace RenderingEngine.Helpers
                     for (int i = 0; i < (int)index_count; i += 3)
                     {
                         // check for a hit against this triangle
-                        Pair<bool, float> hit = Mogre.Math.Intersects(ray, vertices[indices[i]],
-                            vertices[indices[i + 1]], vertices[indices[i + 2]], true, false);
+                        Pair<bool, float> hit = Mogre.Math.Intersects(ray, vertices[indices[i]],vertices[indices[i + 1]], vertices[indices[i + 2]], true, false);
 
                         // if it was a hit check if its the closest
                         if (hit.first)

@@ -16,6 +16,7 @@ namespace RenderingEngine.Engine
         protected WindowParams WindowParams;
         protected RenderWindow RenderWindow;
         protected RenderSystem RenderSystem;
+        protected Viewport Viewport;
         protected bool ShutDown = false;
         protected int TextureMode = 0;
         protected int RenderMode = 0;
@@ -129,10 +130,10 @@ namespace RenderingEngine.Engine
 
         protected virtual void CreateViewports()
         {
-            var vp = RenderWindow.AddViewport(MainCamera);
-            vp.BackgroundColour = ColourValue.Black;
+            Viewport = RenderWindow.AddViewport(MainCamera);
+            Viewport.BackgroundColour = ColourValue.Black;
 
-            MainCamera.AspectRatio = ((float)vp.ActualWidth / (float)vp.ActualHeight);
+            MainCamera.AspectRatio = ((float)Viewport.ActualWidth / (float)Viewport.ActualHeight);
         }
 
         protected virtual void CreateResourceListener()
