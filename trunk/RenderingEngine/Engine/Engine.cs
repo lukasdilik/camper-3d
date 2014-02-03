@@ -17,6 +17,7 @@ namespace RenderingEngine.Engine
         private string mModelName;
         private string mModelFilePath;
         private bool mIsClampedToTerrain = false;
+        private bool mIsMainCameraActivated = true;
 
         public RaySceneQuery RaySceneQuery { get; private set; }
         public Dictionary<string, Model> Models { get; private set; }
@@ -97,11 +98,35 @@ namespace RenderingEngine.Engine
         private void LoadModel()
         {
             Model model = new Model(mModelName,mModelFilePath);
-            model.Selected = true;
+
             Models.Add(model.Name,model);
+            
             model.Translate(new Vector3(750,1,750));
 
             AlignCamera();
+        }
+
+        public void SwitchToSelectedCamera()
+        {
+            
+            if (SelectedModel != null)
+            {
+                var selected = SelectedModel.SelectedSecurityCamera;
+                if (selected != null)
+                {
+                    if (mIsMainCameraActivated)
+                    {
+                        Viewport.Camera = selected.Camera;
+                        mIsMainCameraActivated = false;
+                    }
+                    else
+                    {
+                        Viewport.Camera = MainCamera;
+                        mIsMainCameraActivated = true;
+                    }
+                }
+            }
+            
         }
 
         public void AddModel(int screenX, int screenY)

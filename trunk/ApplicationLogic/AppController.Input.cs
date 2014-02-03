@@ -49,6 +49,9 @@ namespace ApplicationLogic
                 case Keys.Delete:
                     mEngine.DeleteSelectedCamera();
                     break;
+                case Keys.Enter:
+                    mEngine.SwitchToSelectedCamera();
+                    break;
                 case Keys.Escape:
                     mEngine.Shutdown();
                     break;

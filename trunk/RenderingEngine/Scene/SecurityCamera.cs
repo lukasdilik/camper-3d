@@ -30,6 +30,7 @@ namespace RenderingEngine.Scene
         public Entity Entity { get; private set; }
         public SceneNode SceneNode { get; private set; }
         public Model Parent { get; private set; }
+        public Camera Camera { get; private set; }
 
         public SecurityCamera(Vector3 position, Vector3 normal, Model parent)
         {
@@ -43,13 +44,10 @@ namespace RenderingEngine.Scene
         private void CreateCamera(Vector3 position)
         {
             int index = Parent.SecurityCameras.Count;
-            Name = "SecurityCamera" + index;
+            
+            AddToScene(position, index);
 
-            Entity = Engine.Engine.Instance.SceneManager.CreateEntity(Name, MeshName);
-
-            SceneNode = Engine.Engine.Instance.SceneManager.RootSceneNode.CreateChildSceneNode(Name + "Node");
-            SceneNode.AttachObject(Entity);
-            SceneNode.Position = position;
+            AddCamera();
 
             SceneNode.Scale(Scale);
             
@@ -60,6 +58,25 @@ namespace RenderingEngine.Scene
             TranslateCameraOnPolygonFace();
 
             Selected = true;
+        }
+
+        private void AddToScene(Vector3 position, int index)
+        {
+            Name = "SecurityCamera" + index;
+
+            Entity = Engine.Engine.Instance.SceneManager.CreateEntity(Name, MeshName);
+
+            SceneNode = Engine.Engine.Instance.SceneManager.RootSceneNode.CreateChildSceneNode(Name + "Node");
+            SceneNode.AttachObject(Entity);
+            SceneNode.Position = position;
+        }
+
+        private void AddCamera()
+        {
+            Camera = Engine.Engine.Instance.SceneManager.CreateCamera(Name+"Camera");
+            Camera.Position = SceneNode.Position;
+            Camera.LookAt(Normal);
+            Camera.NearClipDistance = 5;
         }
 
         private void TranslateCameraOnPolygonFace()
@@ -103,6 +120,7 @@ namespace RenderingEngine.Scene
             {
                 mNormalNode.Translate(t);
             }
+            Camera.Position = SceneNode.Position;
 
         }
 
@@ -154,7 +172,9 @@ namespace RenderingEngine.Scene
             Vector2 dir = new Vector2(Math.Sign(dx), Math.Sign(dy));
    
             SceneNode.Pitch(new Degree(dir.y));
+            Camera.Pitch(new Degree(-dir.y));
             SceneNode.Yaw(new Degree(dir.x));
+            Camera.Yaw(new Degree(dir.x));
 
             mOldX = e.X;
             mOldY = e.Y;
