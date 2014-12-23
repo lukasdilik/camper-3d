@@ -16,7 +16,6 @@ namespace ApplicationUI
 
             mAppController = new AppController(this);
             mAppController.SetUpRenderingWindow(MainWindow.Handle, MainWindow.Width, MainWindow.Height);
-
             //preselect first model
             AvailableModels_combo.SelectedIndex = 1;
             LoadSelectedModel();
