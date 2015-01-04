@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms;
+﻿using System.Collections.Generic;
+using System.Windows.Forms;
 using Mogre;
 using RenderingEngine.Drawing;
 
@@ -31,6 +32,8 @@ namespace RenderingEngine.Scene
         public SceneNode SceneNode { get; private set; }
         public Model Parent { get; private set; }
         public Camera Camera { get; private set; }
+        public SecurityCameraFrustum SecurityCameraFrustum { get; private set; }
+        
 
         public SecurityCamera(Vector3 position, Vector3 normal, Model parent)
         {
@@ -77,6 +80,30 @@ namespace RenderingEngine.Scene
             Camera.Position = SceneNode.Position;
             Camera.LookAt(Normal);
             Camera.NearClipDistance = 5;
+            Camera.FarClipDistance = 25;
+            var worldSpaceCorners = new List<Vector3>();
+            unsafe
+            {
+                worldSpaceCorners = GetWorldSpaceCorners(Camera.WorldSpaceCorners);    
+            }
+            
+            CreateCameraFrustum(worldSpaceCorners);
+        }
+
+        private unsafe List<Vector3> GetWorldSpaceCorners(Vector3* points)
+        {
+            var  worldSpaceCorners = new List<Vector3>();
+            Vector3* corners = Camera.WorldSpaceCorners;
+            for (int i = 0; i < 8; i++)
+            {
+                worldSpaceCorners.Add(corners[i]);
+            }
+            return worldSpaceCorners;
+        }
+
+        private void CreateCameraFrustum(List<Vector3> worldSpaceCorners)
+        {
+            SecurityCameraFrustum = new SecurityCameraFrustum(Name + "Frustum", worldSpaceCorners);
         }
 
         private void TranslateCameraOnPolygonFace()
