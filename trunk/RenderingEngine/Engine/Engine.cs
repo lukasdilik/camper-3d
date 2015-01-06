@@ -111,17 +111,19 @@ namespace RenderingEngine.Engine
             
             if (SelectedModel != null)
             {
-                var selected = SelectedModel.SelectedSecurityCamera;
-                if (selected != null)
+                var selectedCamera = SelectedModel.SelectedSecurityCamera;
+                if (selectedCamera != null)
                 {
                     if (mIsMainCameraActivated)
                     {
-                        Viewport.Camera = selected.Camera;
+                        Viewport.Camera = selectedCamera.Camera;
+                        selectedCamera.Frustum.SceneNode.FlipVisibility();
                         mIsMainCameraActivated = false;
                     }
                     else
                     {
                         Viewport.Camera = MainCamera;
+                        selectedCamera.Frustum.SceneNode.FlipVisibility();
                         mIsMainCameraActivated = true;
                     }
                 }

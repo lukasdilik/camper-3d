@@ -49,10 +49,10 @@ namespace ApplicationUI
             // MainWindow
             // 
             this.MainWindow.BackColor = System.Drawing.Color.White;
-            this.MainWindow.Location = new System.Drawing.Point(13, 10);
+            this.MainWindow.Location = new System.Drawing.Point(0, 0);
             this.MainWindow.Margin = new System.Windows.Forms.Padding(4);
             this.MainWindow.Name = "MainWindow";
-            this.MainWindow.Size = new System.Drawing.Size(800, 600);
+            this.MainWindow.Size = new System.Drawing.Size(1233, 742);
             this.MainWindow.TabIndex = 0;
             this.MainWindow.MouseClick += new System.Windows.Forms.MouseEventHandler(this.MainWindow_MouseClick);
             this.MainWindow.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.MainWindow_MouseDoubleClick);
@@ -77,10 +77,10 @@ namespace ApplicationUI
             this.toolStripStatusLabel1,
             this.StatusLabel,
             this.CameraCoords_label});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 707);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 839);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Padding = new System.Windows.Forms.Padding(1, 0, 19, 0);
-            this.statusStrip1.Size = new System.Drawing.Size(1175, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(1584, 22);
             this.statusStrip1.TabIndex = 2;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -124,9 +124,10 @@ namespace ApplicationUI
             this.panel1.Controls.Add(this.Start_btn);
             this.panel1.Controls.Add(this.AddFile_btn);
             this.panel1.Controls.Add(this.label1);
-            this.panel1.Location = new System.Drawing.Point(820, 10);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Right;
+            this.panel1.Location = new System.Drawing.Point(1240, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(344, 694);
+            this.panel1.Size = new System.Drawing.Size(344, 839);
             this.panel1.TabIndex = 6;
             // 
             // AvailableModels_combo
@@ -151,17 +152,17 @@ namespace ApplicationUI
             // 
             // Log_textBox
             // 
-            this.Log_textBox.Location = new System.Drawing.Point(13, 617);
+            this.Log_textBox.Location = new System.Drawing.Point(0, 749);
             this.Log_textBox.Multiline = true;
             this.Log_textBox.Name = "Log_textBox";
-            this.Log_textBox.Size = new System.Drawing.Size(800, 87);
+            this.Log_textBox.Size = new System.Drawing.Size(1233, 87);
             this.Log_textBox.TabIndex = 7;
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1175, 729);
+            this.ClientSize = new System.Drawing.Size(1584, 861);
             this.Controls.Add(this.Log_textBox);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.statusStrip1);

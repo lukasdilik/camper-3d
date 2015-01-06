@@ -10,17 +10,21 @@ namespace RenderingEngine.Scene
         public const float NormalLength = 10f;
         public const float TranslationRate = 0.2f;
         public const string MeshName = "cctv1.mesh";
-        public static readonly Vector3 Scale = new Vector3(8,8,8);
+        public static readonly Vector3 Scale = new Vector3(8, 8, 8);
 
         private bool mSelected;
         private int mOldX, mOldY;
         private SceneNode mNormalNode;
 
-        public bool Selected {
+        public bool Selected
+        {
             get { return mSelected; }
             set
             {
-                if (SceneNode != null) { SceneNode.ShowBoundingBox = value; }
+                if (SceneNode != null)
+                {
+                    SceneNode.ShowBoundingBox = value;
+                }
                 mSelected = value;
             }
 
@@ -28,18 +32,18 @@ namespace RenderingEngine.Scene
 
         public string Name { get; private set; }
         public Vector3 Normal { get; private set; }
-        public Entity Entity { get; private set; }
+        public Entity Mesh { get; private set; }
         public SceneNode SceneNode { get; private set; }
         public Model Parent { get; private set; }
         public Camera Camera { get; private set; }
-        public SecurityCameraFrustum SecurityCameraFrustum { get; private set; }
-        
+        public SecurityCameraFrustum Frustum { get; private set; }
+
 
         public SecurityCamera(Vector3 position, Vector3 normal, Model parent)
         {
             Parent = parent;
             Normal = normal;
-            Normal = position + (Normal * NormalLength);
+            Normal = position + (Normal*NormalLength);
 
             CreateCamera(position);
         }
@@ -47,15 +51,13 @@ namespace RenderingEngine.Scene
         private void CreateCamera(Vector3 position)
         {
             int index = Parent.SecurityCameras.Count;
-            
-            AddToScene(position, index);
 
-            AddCamera();
+            AddCamera(position, index);
 
             SceneNode.Scale(Scale);
-            
+
             RotateToDirection(Normal);
-            
+
             DrawNormal();
 
             TranslateCameraOnPolygonFace();
@@ -63,57 +65,44 @@ namespace RenderingEngine.Scene
             Selected = true;
         }
 
-        private void AddToScene(Vector3 position, int index)
+        private void AddCamera(Vector3 position, int index)
         {
             Name = "SecurityCamera" + index;
 
-            Entity = Engine.Engine.Instance.SceneManager.CreateEntity(Name, MeshName);
+            Mesh = Engine.Engine.Instance.SceneManager.CreateEntity(Name, MeshName);
+            SceneNode = Engine.Engine.Instance.SceneManager.RootSceneNode.CreateChildSceneNode(Name + "_node");
+            SceneNode.AttachObject(Mesh);
 
-            SceneNode = Engine.Engine.Instance.SceneManager.RootSceneNode.CreateChildSceneNode(Name + "Node");
-            SceneNode.AttachObject(Entity);
             SceneNode.Position = position;
-        }
-
-        private void AddCamera()
-        {
-            Camera = Engine.Engine.Instance.SceneManager.CreateCamera(Name+"Camera");
+            
+            Camera = Engine.Engine.Instance.SceneManager.CreateCamera(Name+"_camera");
+            
             Camera.Position = SceneNode.Position;
             Camera.LookAt(Normal);
             Camera.NearClipDistance = 5;
-            Camera.FarClipDistance = 25;
-            var worldSpaceCorners = new List<Vector3>();
-            unsafe
-            {
-                worldSpaceCorners = GetWorldSpaceCorners(Camera.WorldSpaceCorners);    
-            }
-            
-            CreateCameraFrustum(worldSpaceCorners);
+            Camera.FarClipDistance = 50;
+
+            CreateCameraFrustum();
         }
 
-        private unsafe List<Vector3> GetWorldSpaceCorners(Vector3* points)
+        private void CreateCameraFrustum()
         {
-            var  worldSpaceCorners = new List<Vector3>();
-            Vector3* corners = Camera.WorldSpaceCorners;
-            for (int i = 0; i < 8; i++)
-            {
-                worldSpaceCorners.Add(corners[i]);
-            }
-            return worldSpaceCorners;
+            Frustum = new SecurityCameraFrustum(this);    
         }
 
-        private void CreateCameraFrustum(List<Vector3> worldSpaceCorners)
+        public void FlipVisibility()
         {
-            SecurityCameraFrustum = new SecurityCameraFrustum(Name + "Frustum", worldSpaceCorners);
+            Frustum.SceneNode.FlipVisibility();
         }
 
         private void TranslateCameraOnPolygonFace()
         {
-            var aabb = Entity.BoundingBox;
+            var aabb = Mesh.BoundingBox;
             aabb.Scale(Scale);
             var center = aabb.Center;
-            var dist = 2 * new Vector3(center.z, center.z, center.z);
+            var dist = 2*new Vector3(center.z, center.z, center.z);
             var dir = Engine.Engine.Instance.GetCameraDirection();
-            var t = dist * dir;
+            var t = dist*dir;
             t = (dir.z < 0) ? -t : t;
             t = (dir.y > 0) ? -t : t;
             t = (dir.x < 0) ? -t : t;
@@ -123,11 +112,11 @@ namespace RenderingEngine.Scene
         public void RotateToDirection(Vector3 destination)
         {
             Vector3 direction = destination - SceneNode.Position; // B-A = A->B (see vector questions above)
-            Vector3 src = SceneNode.Position * Vector3.UNIT_Z; //facing direction of this mesh is +Z
+            Vector3 src = SceneNode.Position*Vector3.UNIT_Z; //facing direction of this mesh is +Z
             direction.Normalise();
-            Quaternion quat = src.GetRotationTo(direction);  // Get a quaternion rotation operation 
-            
-            SceneNode.Rotate(quat); 
+            Quaternion quat = src.GetRotationTo(direction); // Get a quaternion rotation operation 
+
+            SceneNode.Rotate(quat);
         }
 
         private void DrawNormal()
@@ -142,69 +131,76 @@ namespace RenderingEngine.Scene
             {
                 t = t*Engine.Engine.Instance.MainCamera.Direction;
             }
+
             SceneNode.Translate(t);
             if (mNormalNode != null)
             {
                 mNormalNode.Translate(t);
             }
-            Camera.Position = SceneNode.Position;
 
+            Camera.Position = SceneNode.Position;
         }
 
         public void HandleKey(Keys key)
         {
             switch (key)
             {
-                case Keys.Up: 
-                    Translate(new Vector3(0,-TranslationRate,0));
+                case Keys.Up:
+                    Translate(new Vector3(0, -TranslationRate, 0));
                     break;
-                case Keys.Left: 
-                    Translate(new Vector3(-TranslationRate,0,0)); 
+                case Keys.Left:
+                    Translate(new Vector3(-TranslationRate, 0, 0));
                     break;
                 case Keys.Down:
-                    Translate(new Vector3(0,TranslationRate, 0)); 
+                    Translate(new Vector3(0, TranslationRate, 0));
                     break;
                 case Keys.Right:
-                    Translate(new Vector3(TranslationRate,0, 0));
+                    Translate(new Vector3(TranslationRate, 0, 0));
                     break;
                 case Keys.Add:
                     Translate(new Vector3(0, 0, -TranslationRate));
                     break;
                 case Keys.Subtract:
-                    Translate(new Vector3(0,0, TranslationRate));
+                    Translate(new Vector3(0, 0, TranslationRate));
                     break;
             }
         }
 
         public void MouseClick(MouseEventArgs e)
         {
-           if (e.Button == MouseButtons.Left)
-           {
-               mOldX = e.X;
-               mOldY = e.Y;   
-           }
+            if (e.Button == MouseButtons.Left)
+            {
+                mOldX = e.X;
+                mOldY = e.Y;
+            }
         }
 
         public void Delete()
         {
+            SceneNode.ShowBoundingBox = false;
             SceneNode.RemoveAndDestroyAllChildren();
         }
 
         public void MouseMove(MouseEventArgs e)
         {
             if (e.Button != MouseButtons.Left) return;
-            
+
             int dx = e.X - mOldX;
             int dy = e.Y - mOldY;
             Vector2 dir = new Vector2(Math.Sign(dx), Math.Sign(dy));
-   
+
+            CameraRotation(dir);
+
+            mOldX = e.X;
+            mOldY = e.Y;
+        }
+
+        private void CameraRotation(Vector2 dir)
+        {
             SceneNode.Pitch(new Degree(dir.y));
             Camera.Pitch(new Degree(-dir.y));
             SceneNode.Yaw(new Degree(dir.x));
             Camera.Yaw(new Degree(dir.x));
-
-            mOldX = e.X;
-            mOldY = e.Y;
         }
     }
 }
