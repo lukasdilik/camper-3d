@@ -111,6 +111,11 @@ namespace RenderingEngine.Engine
             RenderWindow = Root.CreateRenderWindow(WindowParams.Name, WindowParams.Width, WindowParams.Height, false, miscParams);
         }
 
+        public void Resize(int width, int height)
+        {
+            RenderWindow.Resize((uint)width,(uint)height);
+        }
+
         protected virtual void CreateSceneManager()
         {
             SceneManager = Root.CreateSceneManager(SceneType.ST_EXTERIOR_CLOSE);

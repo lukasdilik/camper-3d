@@ -133,6 +133,11 @@ namespace ApplicationUI
             Activate();
         }
 
+        private void MainWindow_SizeChanged(object sender, EventArgs e)
+        {
+           // mAppController.Resize(MainWindow.Width, MainWindow.Height);
+        }
+
 
     }
 }

@@ -229,7 +229,6 @@
     <None Include="Resources\materials\scripts\Example-DynTex.material" />
     <None Include="Resources\materials\scripts\Example-Water.material" />
     <None Include="Resources\materials\scripts\Example.material" />
-    <None Include="Resources\materials\scripts\Examples-Advanced.material" />
     <None Include="Resources\materials\scripts\Examples.compositor" />
     <None Include="Resources\materials\scripts\Examples.program" />
     <None Include="Resources\materials\scripts\facial.material" />

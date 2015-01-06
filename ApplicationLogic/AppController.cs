@@ -65,6 +65,11 @@ namespace ApplicationLogic
             mEngine.Start();
         }
 
+        public void Resize(int width, int height)
+        {
+            mEngine.Resize(width, height);
+        }
+
         public void Dispose()
         {
             if(mEngine != null)

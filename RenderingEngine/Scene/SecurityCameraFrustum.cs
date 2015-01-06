@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Mogre;
 
 namespace RenderingEngine.Scene
 {
     public class SecurityCameraFrustum
     {
-        //A,B,C,D,E,F,G,H
-        //0,1,2,3,4,5,6,7
         private readonly uint[] mIndices = { 
                                                1, 2, 5, 
                                                2, 5, 6,
@@ -23,41 +20,72 @@ namespace RenderingEngine.Scene
                                                7, 0, 3
                                              };
 
-        private readonly List<Vector3> mCorners = new List<Vector3>();
+        private List<Vector3> mCorners = new List<Vector3>();
+        private readonly SecurityCamera mParentCamera;
         public string Name { private set; get; }
-        public ManualObject FrustumManualObject { private set; get; }
-        public SceneNode FrustumSceneNode{ private set; get; }
-        public SecurityCameraFrustum(String name, List<Vector3> corners)
+        public ManualObject ManualObject { private set; get; }
+        public SceneNode SceneNode{ private set; get; }
+
+        public SecurityCameraFrustum(SecurityCamera parentCamera)
         {
-            mCorners = corners;
-            Name = name;
+            mParentCamera = parentCamera;
+            Name = parentCamera.Name + "Frustum";
 
-            FrustumManualObject = Engine.Engine.Instance.SceneManager.CreateManualObject(name);
-
+            ManualObject = Engine.Engine.Instance.SceneManager.CreateManualObject(Name);
+            SceneNode = Engine.Engine.Instance.SceneManager.RootSceneNode.CreateChildSceneNode(Name + "_node");
+            
+            CreateMaterial();
             DrawFrustum();
 
-            FrustumSceneNode = Engine.Engine.Instance.SceneManager.RootSceneNode.CreateChildSceneNode();
-            FrustumSceneNode.AttachObject(FrustumManualObject);
+            SceneNode.AttachObject(ManualObject);
         }
 
-        private void DrawFrustum()
+        private unsafe void DrawFrustum()
         {
-            FrustumManualObject.Begin("Frustum", RenderOperation.OperationTypes.OT_TRIANGLE_STRIP);
-                FrustumManualObject.Colour(0,0,1,0.5f);
+            mCorners = GetWorldSpaceCorners(mParentCamera.Camera.WorldSpaceCorners);
+            ManualObject.Begin("frustum_material", RenderOperation.OperationTypes.OT_TRIANGLE_STRIP);
+                ManualObject.Colour(0,0,1,0.5f);
 
-                FrustumManualObject.Position(mCorners[0]);
-                FrustumManualObject.Position(mCorners[1]);
-                FrustumManualObject.Position(mCorners[2]);
-                FrustumManualObject.Position(mCorners[3]);
+                ManualObject.Position(mCorners[0]);
+                ManualObject.Position(mCorners[1]);
+                ManualObject.Position(mCorners[2]);
+                ManualObject.Position(mCorners[3]);
 
-                FrustumManualObject.Position(mCorners[4]);
-                FrustumManualObject.Position(mCorners[5]);
-                FrustumManualObject.Position(mCorners[6]);
-                FrustumManualObject.Position(mCorners[7]);
+                ManualObject.Position(mCorners[4]);
+                ManualObject.Position(mCorners[5]);
+                ManualObject.Position(mCorners[6]);
+                ManualObject.Position(mCorners[7]);
 
-                foreach (var index in mIndices){ FrustumManualObject.Index(index); }
+                foreach (var index in mIndices){ ManualObject.Index(index); }
 
-            FrustumManualObject.End();
+            ManualObject.End();
+        }
+
+        private unsafe List<Vector3> GetWorldSpaceCorners(Vector3* corners)
+        {
+            var worldSpaceCorners = new List<Vector3>();
+            for (int i = 0; i < 8; i++)
+            {
+                worldSpaceCorners.Add(corners[i]);
+            }
+            return worldSpaceCorners;
+        }
+
+        private void CreateMaterial()
+        {
+            const string resourceGroupName = "default";
+            if (ResourceGroupManager.Singleton.ResourceGroupExists(resourceGroupName) == false)
+            {
+                ResourceGroupManager.Singleton.CreateResourceGroup(resourceGroupName);
+            }
+            MaterialPtr moMaterial = MaterialManager.Singleton.Create("frustum_material", resourceGroupName);
+            moMaterial.ReceiveShadows = false;
+            moMaterial.GetTechnique(0).SetSceneBlending(SceneBlendType.SBT_TRANSPARENT_ALPHA);
+            moMaterial.GetTechnique(0).SetLightingEnabled(true);
+            moMaterial.GetTechnique(0).GetPass(0).SetDiffuse(0, 0, 1, 0.5f);
+            moMaterial.GetTechnique(0).GetPass(0).SetAmbient(0, 0, 1);
+            moMaterial.GetTechnique(0).GetPass(0).SetSelfIllumination(0, 0, 1);
+            moMaterial.Dispose(); 
         }
     }
 }
