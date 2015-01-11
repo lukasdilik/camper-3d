@@ -133,6 +133,7 @@ namespace RenderingEngine.Scene
             }
 
             SceneNode.Translate(t);
+            Frustum.SceneNode.Translate(t);
             if (mNormalNode != null)
             {
                 mNormalNode.Translate(t);
@@ -201,6 +202,8 @@ namespace RenderingEngine.Scene
             Camera.Pitch(new Degree(-dir.y));
             SceneNode.Yaw(new Degree(dir.x));
             Camera.Yaw(new Degree(dir.x));
+            Frustum.Delete();
+            CreateCameraFrustum();
         }
     }
 }

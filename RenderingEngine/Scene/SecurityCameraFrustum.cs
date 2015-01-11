@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Dynamic;
 using Mogre;
 
 namespace RenderingEngine.Scene
@@ -86,6 +87,14 @@ namespace RenderingEngine.Scene
             moMaterial.GetTechnique(0).GetPass(0).SetAmbient(0, 0, 1);
             moMaterial.GetTechnique(0).GetPass(0).SetSelfIllumination(0, 0, 1);
             moMaterial.Dispose(); 
+        }
+
+        public void Delete()
+        {
+            SceneNode.DetachAllObjects();
+            SceneNode.RemoveAndDestroyAllChildren();
+            Engine.Engine.Instance.SceneManager.DestroyManualObject(ManualObject);
+            Engine.Engine.Instance.SceneManager.DestroySceneNode(SceneNode);
         }
     }
 }
