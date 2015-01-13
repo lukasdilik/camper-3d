@@ -1,0 +1,507 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{7AB3FD7F-0210-4717-9BC4-76B6915F2441}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>RenderingEngine</RootNamespace>
+    <AssemblyName>RenderingEngine</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>x64</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Mogre, Version=1.7.3.0, Culture=neutral, PublicKeyToken=96bb577564343f16, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Includes\Mogre.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Windows.Forms" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Drawing\Draw.cs" />
+    <Compile Include="Helpers\PolygonRayCast.cs" />
+    <Compile Include="Scene\Model.cs" />
+    <Compile Include="Scene\SecurityCamera.cs" />
+    <Compile Include="Helpers\CameraMan.cs" />
+    <Compile Include="Helpers\DebugOverlay.cs" />
+    <Compile Include="Engine\Engine.cs" />
+    <Compile Include="Engine\BaseEngine.cs" />
+    <Compile Include="Helpers\WindowParams.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Scene\SecurityCameraFrustum.cs" />
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <EmbeddedResource Include="Resources\gui\cegui8.layout" />
+    <EmbeddedResource Include="Resources\gui\CompositorDemo.layout" />
+    <EmbeddedResource Include="Resources\gui\CrowdDemo.layout" />
+    <EmbeddedResource Include="Resources\gui\facial.layout" />
+    <EmbeddedResource Include="Resources\gui\InstancingDemo.layout" />
+    <EmbeddedResource Include="Resources\gui\ogregui.layout" />
+    <EmbeddedResource Include="Resources\gui\shadows.layout" />
+    <None Include="Configs\media.cfg" />
+    <None Include="Configs\plugins.cfg" />
+    <None Include="Configs\resources.cfg" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <None Include="Resources\DeferredShadingMedia\deferred.glsl.program" />
+    <None Include="Resources\DeferredShadingMedia\deferred.hlsl.program" />
+    <None Include="Resources\DeferredShadingMedia\deferred.material" />
+    <None Include="Resources\DeferredShadingMedia\DeferredShading\material\glsl\nm_notex_ps.glsl" />
+    <None Include="Resources\DeferredShadingMedia\DeferredShading\material\glsl\nm_ps.glsl" />
+    <None Include="Resources\DeferredShadingMedia\DeferredShading\material\glsl\nm_vs.glsl" />
+    <None Include="Resources\DeferredShadingMedia\DeferredShading\material\glsl\notex_ps.glsl" />
+    <None Include="Resources\DeferredShadingMedia\DeferredShading\material\glsl\ps.glsl" />
+    <None Include="Resources\DeferredShadingMedia\DeferredShading\material\glsl\vs.glsl" />
+    <None Include="Resources\DeferredShadingMedia\DeferredShading\post\glsl\Ambient_ps.glsl" />
+    <None Include="Resources\DeferredShadingMedia\DeferredShading\post\glsl\GlobalLight_ps.glsl" />
+    <None Include="Resources\DeferredShadingMedia\DeferredShading\post\glsl\LightMaterial_ps.glsl" />
+    <None Include="Resources\DeferredShadingMedia\DeferredShading\post\glsl\LightMaterial_vs.glsl" />
+    <None Include="Resources\DeferredShadingMedia\DeferredShading\post\glsl\ShowColour_ps.glsl" />
+    <None Include="Resources\DeferredShadingMedia\DeferredShading\post\glsl\ShowDS_ps.glsl" />
+    <None Include="Resources\DeferredShadingMedia\DeferredShading\post\glsl\ShowNormal_ps.glsl" />
+    <None Include="Resources\DeferredShadingMedia\DeferredShading\post\glsl\SinglePass_ps.glsl" />
+    <None Include="Resources\DeferredShadingMedia\DeferredShading\post\glsl\vs.glsl" />
+    <None Include="Resources\DeferredShadingMedia\deferred_post_debug.glsl.program" />
+    <None Include="Resources\DeferredShadingMedia\deferred_post_debug.hlsl.program" />
+    <None Include="Resources\DeferredShadingMedia\deferred_post_debug.material" />
+    <None Include="Resources\DeferredShadingMedia\deferred_post_minilight.glsl.program" />
+    <None Include="Resources\DeferredShadingMedia\deferred_post_minilight.hlsl.program" />
+    <None Include="Resources\DeferredShadingMedia\deferred_post_minilight.material" />
+    <None Include="Resources\DeferredShadingMedia\deferred_post_multipass.glsl.program" />
+    <None Include="Resources\DeferredShadingMedia\deferred_post_multipass.hlsl.program" />
+    <None Include="Resources\DeferredShadingMedia\deferred_post_multipass.material" />
+    <None Include="Resources\DeferredShadingMedia\deferred_post_onepass.glsl.program" />
+    <None Include="Resources\DeferredShadingMedia\deferred_post_onepass.hlsl.program" />
+    <None Include="Resources\DeferredShadingMedia\deferred_post_onepass.material" />
+    <None Include="Resources\fonts\bluebold.ttf" />
+    <None Include="Resources\fonts\bluecond.ttf" />
+    <None Include="Resources\fonts\bluehigh.ttf" />
+    <None Include="Resources\fonts\solo5.ttf" />
+    <None Include="Resources\gui\bluehighway-10.font" />
+    <None Include="Resources\gui\bluehighway-12.font" />
+    <None Include="Resources\gui\bluehighway-8.font" />
+    <None Include="Resources\gui\CompositorDemoCegui.config" />
+    <None Include="Resources\gui\Falagard.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Resources\gui\Font.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Resources\gui\GUILayout.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Resources\gui\GUIScheme.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Resources\gui\Imageset.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Resources\gui\OceanDemoCegui.config" />
+    <None Include="Resources\gui\TaharezLook.imageset" />
+    <None Include="Resources\gui\TaharezLook.looknfeel" />
+    <None Include="Resources\gui\TaharezLook.tga" />
+    <None Include="Resources\gui\TaharezLookSkin.scheme" />
+    <None Include="Resources\gui\TaharezLookWidgetAliases.scheme" />
+    <None Include="Resources\materials\cctv1.material" />
+    <None Include="Resources\materials\programs\Cg\Combine_fp.cg" />
+    <None Include="Resources\materials\programs\Cg\DOF_ps.cg" />
+    <None Include="Resources\materials\programs\Cg\Example_Basic.cg" />
+    <None Include="Resources\materials\programs\Cg\Example_BumpMapping.cg" />
+    <None Include="Resources\materials\programs\Cg\Example_CelShading.cg" />
+    <None Include="Resources\materials\programs\Cg\Example_Fresnel.cg" />
+    <None Include="Resources\materials\programs\Cg\Example_Projection.cg" />
+    <None Include="Resources\materials\programs\Cg\GlassFP.cg" />
+    <None Include="Resources\materials\programs\Cg\Grass.cg" />
+    <None Include="Resources\materials\programs\Cg\GrayScale.cg" />
+    <None Include="Resources\materials\programs\Cg\hdr.cg" />
+    <None Include="Resources\materials\programs\Cg\HeatVision.cg" />
+    <None Include="Resources\materials\programs\Cg\instancing.cg" />
+    <None Include="Resources\materials\programs\Cg\InvertFP.cg" />
+    <None Include="Resources\materials\programs\Cg\LaplaceFP.cg" />
+    <None Include="Resources\materials\programs\Cg\OffsetMapping.cg" />
+    <None Include="Resources\materials\programs\Cg\OldMovieFP.cg" />
+    <None Include="Resources\materials\programs\Cg\OldTV.cg" />
+    <None Include="Resources\materials\programs\Cg\PosterizeFP.cg" />
+    <None Include="Resources\materials\programs\Cg\SharpenEdgesFP.cg" />
+    <None Include="Resources\materials\programs\Cg\StdQuad_vp.cg" />
+    <None Include="Resources\materials\programs\Cg\TilingFP.cg" />
+    <None Include="Resources\materials\programs\Cg\varianceshadowcasterfp.cg" />
+    <None Include="Resources\materials\programs\Cg\varianceshadowcastervp.cg" />
+    <None Include="Resources\materials\programs\Cg\varianceshadowreceiverfp.cg" />
+    <None Include="Resources\materials\programs\Cg\varianceshadowreceivervp.cg" />
+    <None Include="Resources\materials\programs\GLSL\AmbientOneTexture.glsl" />
+    <None Include="Resources\materials\programs\GLSL\Blur0_vs.glsl" />
+    <None Include="Resources\materials\programs\GLSL\Blur1_vs.glsl" />
+    <None Include="Resources\materials\programs\GLSL\Blur_ps.glsl" />
+    <None Include="Resources\materials\programs\GLSL\crowdVp.glsl" />
+    <None Include="Resources\materials\programs\GLSL\DepthShadowmapCasterFp.glsl" />
+    <None Include="Resources\materials\programs\GLSL\DepthShadowmapCasterVp.glsl" />
+    <None Include="Resources\materials\programs\GLSL\DepthShadowmapNormalMapReceiverFp.glsl" />
+    <None Include="Resources\materials\programs\GLSL\DepthShadowmapNormalMapReceiverVp.glsl" />
+    <None Include="Resources\materials\programs\GLSL\DepthShadowmapReceiverFp.glsl" />
+    <None Include="Resources\materials\programs\GLSL\DepthShadowmapReceiverVp.glsl" />
+    <None Include="Resources\materials\programs\GLSL\hdr_bloom.glsl" />
+    <None Include="Resources\materials\programs\GLSL\hdr_downscale2x2luminence.glsl" />
+    <None Include="Resources\materials\programs\GLSL\hdr_downscale3x3.glsl" />
+    <None Include="Resources\materials\programs\GLSL\hdr_downscale3x3brightpass.glsl" />
+    <None Include="Resources\materials\programs\GLSL\hdr_finalToneMapping.glsl" />
+    <None Include="Resources\materials\programs\GLSL\hdr_tonemap_util.glsl" />
+    <None Include="Resources\materials\programs\GLSL\instancingVp.glsl" />
+    <None Include="Resources\materials\programs\GLSL\OffsetMappingFp.glsl" />
+    <None Include="Resources\materials\programs\GLSL\OffsetMappingVp.glsl" />
+    <None Include="Resources\materials\programs\GLSL\skinningTwoWeightsShadowCasterVp.glsl" />
+    <None Include="Resources\materials\programs\GLSL\skinningTwoWeightsVp.glsl" />
+    <None Include="Resources\materials\programs\GLSL\StdQuad_vp.glsl" />
+    <None Include="Resources\materials\programs\Ocean2GLSL.frag" />
+    <None Include="Resources\materials\programs\Ocean2GLSL.vert" />
+    <None Include="Resources\materials\programs\Ocean2HLSL_Cg.frag" />
+    <None Include="Resources\materials\programs\Ocean2HLSL_Cg.vert" />
+    <None Include="Resources\materials\programs\oceanGLSL.frag" />
+    <None Include="Resources\materials\programs\oceanGLSL.vert" />
+    <None Include="Resources\materials\programs\oceanHLSL_Cg.frag" />
+    <None Include="Resources\materials\programs\oceanHLSL_Cg.vert" />
+    <None Include="Resources\materials\scripts\BlackAndWhite.material" />
+    <None Include="Resources\materials\scripts\Bloom.material" />
+    <None Include="Resources\materials\scripts\cctvCamera.material" />
+    <None Include="Resources\materials\scripts\Default.material" />
+    <None Include="Resources\materials\scripts\DepthShadowmap.material" />
+    <None Include="Resources\materials\scripts\DOF.material" />
+    <None Include="Resources\materials\scripts\Embossed.material" />
+    <None Include="Resources\materials\scripts\Example-DynTex.material" />
+    <None Include="Resources\materials\scripts\Example-Water.material" />
+    <None Include="Resources\materials\scripts\Example.material" />
+    <None Include="Resources\materials\scripts\Examples.compositor" />
+    <None Include="Resources\materials\scripts\Examples.program" />
+    <None Include="Resources\materials\scripts\facial.material" />
+    <None Include="Resources\materials\scripts\Glass.material" />
+    <None Include="Resources\materials\scripts\hdr.material" />
+    <None Include="Resources\materials\scripts\HeatVision.material" />
+    <None Include="Resources\materials\scripts\Hurt.material" />
+    <None Include="Resources\materials\scripts\instancing.material" />
+    <None Include="Resources\materials\scripts\Invert.material" />
+    <None Include="Resources\materials\scripts\Laplace.material" />
+    <None Include="Resources\materials\scripts\MotionBlur.material" />
+    <None Include="Resources\materials\scripts\Ocean.controls" />
+    <None Include="Resources\materials\scripts\Ocean.material" />
+    <None Include="Resources\materials\scripts\OffsetMapping.material" />
+    <None Include="Resources\materials\scripts\Ogre.material" />
+    <None Include="Resources\materials\scripts\OgreNewt_Example.material" />
+    <None Include="Resources\materials\scripts\OldMovie.material" />
+    <None Include="Resources\materials\scripts\OldTV.material" />
+    <None Include="Resources\materials\scripts\policeStation.material" />
+    <None Include="Resources\materials\scripts\Posterize.material" />
+    <None Include="Resources\materials\scripts\RZR-002.material" />
+    <None Include="Resources\materials\scripts\SharpenEdges.material" />
+    <None Include="Resources\materials\scripts\smoke.material" />
+    <None Include="Resources\materials\scripts\StdQuad_vp.program" />
+    <None Include="Resources\materials\scripts\Tiling.material" />
+    <None Include="Resources\materials\scripts\trainStation.material" />
+    <None Include="Resources\materials\scripts\VarianceShadowmap.material" />
+    <None Include="Resources\materials\textures\HeatLookup.tga" />
+    <None Include="Resources\materials\textures\HeatNoise.tga" />
+    <None Include="Resources\materials\textures\NPRMetallic.tga" />
+    <None Include="Resources\materials\textures\ogregui.tga" />
+    <None Include="Resources\materials\textures\rockwall.tga" />
+    <None Include="Resources\materials\textures\rockwall_NH.tga" />
+    <None Include="Resources\materials\textures\Sepia1D.tga" />
+    <None Include="Resources\materials\textures\WaterNormal1.tga" />
+    <None Include="Resources\materials\textures\WaterNormal2.tga" />
+    <None Include="Resources\models\misc\cctv1.mesh" />
+    <None Include="Resources\models\misc\cctvCamera.mesh" />
+    <None Include="Resources\models\misc\cube.mesh" />
+    <None Include="Resources\models\scene\policeStation.mesh" />
+    <None Include="Resources\models\scene\trainStation.mesh" />
+    <None Include="Resources\overlays\Compositor.overlay" />
+    <None Include="Resources\overlays\DP3.overlay" />
+    <None Include="Resources\overlays\Example-CubeMapping.overlay" />
+    <None Include="Resources\overlays\Example-DynTex.overlay" />
+    <None Include="Resources\overlays\Example-Water.overlay" />
+    <None Include="Resources\overlays\Shadows.overlay" />
+    <None Include="Resources\packs\cubemap.zip" />
+    <None Include="Resources\packs\cubemapsJS.zip" />
+    <None Include="Resources\packs\dragon.zip" />
+    <None Include="Resources\packs\fresneldemo.zip" />
+    <None Include="Resources\packs\OgreCore.zip" />
+    <None Include="Resources\packs\ogretestmap.zip" />
+    <None Include="Resources\packs\skybox.zip" />
+    <None Include="Resources\particle\emitted_emitter.particle" />
+    <None Include="Resources\particle\Example-Water.particle" />
+    <None Include="Resources\particle\Example.particle" />
+    <None Include="Resources\particle\smoke.particle" />
+    <None Include="Resources\terrain.cfg" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.0">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.4.5">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 4.5</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Includes\BulletSharp.dll" />
+    <Content Include="Includes\cg.dll" />
+    <Content Include="Includes\FreeImage.dll" />
+    <Content Include="Includes\Mogre.dll" />
+    <Content Include="Includes\MogreDependencies.dll" />
+    <Content Include="Includes\MogreNewt.dll" />
+    <Content Include="Includes\Newton.dll" />
+    <Content Include="Includes\OgreMain.dll" />
+    <Content Include="Includes\OgrePaging.dll" />
+    <Content Include="Includes\OgreRTShaderSystem.dll" />
+    <Content Include="Includes\OgreTerrain.dll" />
+    <Content Include="Includes\Plugin_BSPSceneManager.dll" />
+    <Content Include="Includes\Plugin_CgProgramManager.dll" />
+    <Content Include="Includes\Plugin_OctreeSceneManager.dll" />
+    <Content Include="Includes\Plugin_OctreeZone.dll" />
+    <Content Include="Includes\Plugin_ParticleFX.dll" />
+    <Content Include="Includes\Plugin_PCZSceneManager.dll" />
+    <Content Include="Includes\RenderSystem_Direct3D10.dll" />
+    <Content Include="Includes\RenderSystem_Direct3D11.dll" />
+    <Content Include="Includes\RenderSystem_Direct3D9.dll" />
+    <Content Include="Includes\RenderSystem_GL.dll" />
+    <Content Include="Includes\tr1boost.dll" />
+    <Content Include="Resources\DeferredShadingMedia\DeferredShading\material\hlsl\nm_notex_ps.hlsl" />
+    <Content Include="Resources\DeferredShadingMedia\DeferredShading\material\hlsl\nm_ps.hlsl" />
+    <Content Include="Resources\DeferredShadingMedia\DeferredShading\material\hlsl\nm_vs.hlsl" />
+    <Content Include="Resources\DeferredShadingMedia\DeferredShading\material\hlsl\notex_ps.hlsl" />
+    <Content Include="Resources\DeferredShadingMedia\DeferredShading\material\hlsl\ps.hlsl" />
+    <Content Include="Resources\DeferredShadingMedia\DeferredShading\material\hlsl\vs.hlsl" />
+    <Content Include="Resources\DeferredShadingMedia\DeferredShading\post\hlsl\Ambient_ps.hlsl" />
+    <Content Include="Resources\DeferredShadingMedia\DeferredShading\post\hlsl\GlobalLight_ps.hlsl" />
+    <Content Include="Resources\DeferredShadingMedia\DeferredShading\post\hlsl\LightMaterial_ps.hlsl" />
+    <Content Include="Resources\DeferredShadingMedia\DeferredShading\post\hlsl\LightMaterial_vs.hlsl" />
+    <Content Include="Resources\DeferredShadingMedia\DeferredShading\post\hlsl\ShowColour_ps.hlsl" />
+    <Content Include="Resources\DeferredShadingMedia\DeferredShading\post\hlsl\ShowDS_ps.hlsl" />
+    <Content Include="Resources\DeferredShadingMedia\DeferredShading\post\hlsl\ShowNormal_ps.hlsl" />
+    <Content Include="Resources\DeferredShadingMedia\DeferredShading\post\hlsl\SinglePass_ps.hlsl" />
+    <Content Include="Resources\DeferredShadingMedia\DeferredShading\post\hlsl\vs.hlsl" />
+    <Content Include="Resources\gui\OceanDemoLayout.xml" />
+    <Content Include="Resources\gui\OgreHead.ico" />
+    <Content Include="Resources\gui\splash.jpg" />
+    <Content Include="Resources\materials\programs\Example_FresnelPS.asm" />
+    <Content Include="Resources\materials\programs\HLSL\Bloom_ps20.hlsl" />
+    <Content Include="Resources\materials\programs\HLSL\Bloom_vs11.hlsl" />
+    <Content Include="Resources\materials\programs\HLSL\Blur0_ps20.hlsl" />
+    <Content Include="Resources\materials\programs\HLSL\Blur0_vs11.hlsl" />
+    <Content Include="Resources\materials\programs\HLSL\Blur1_ps20.hlsl" />
+    <Content Include="Resources\materials\programs\HLSL\Blur1_vs11.hlsl" />
+    <Content Include="Resources\materials\programs\HLSL\DepthShadowmap.hlsl" />
+    <Content Include="Resources\materials\programs\HLSL\Example_Basic.hlsl" />
+    <Content Include="Resources\materials\programs\HLSL\hdr.hlsl" />
+    <Content Include="Resources\materials\programs\HLSL\OffsetMapping.hlsl" />
+    <Content Include="Resources\materials\programs\OffsetMapping_specular.asm" />
+    <Content Include="Resources\materials\textures\10points.png" />
+    <Content Include="Resources\materials\textures\1386505864_10_w04.jpg" />
+    <Content Include="Resources\materials\textures\1386505864_11_w01.jpg" />
+    <Content Include="Resources\materials\textures\1386505864_12_r001.jpg" />
+    <Content Include="Resources\materials\textures\1386505864_13_w02.jpg" />
+    <Content Include="Resources\materials\textures\1386505864_1_w05.jpg" />
+    <Content Include="Resources\materials\textures\1386505864_2_w05.jpg" />
+    <Content Include="Resources\materials\textures\1386505864_3_w03.jpg" />
+    <Content Include="Resources\materials\textures\1386505864_4_r002.jpg" />
+    <Content Include="Resources\materials\textures\1386505864_5_r007.jpg" />
+    <Content Include="Resources\materials\textures\1386505864_6_r006.jpg" />
+    <Content Include="Resources\materials\textures\1386505864_7_Google_Earth_Snapshot.jpg" />
+    <Content Include="Resources\materials\textures\1386505864_8_c02.jpg" />
+    <Content Include="Resources\materials\textures\1386505864_9_r003.jpg" />
+    <Content Include="Resources\materials\textures\1D_Noise.png" />
+    <Content Include="Resources\materials\textures\1D_Noise2.png" />
+    <Content Include="Resources\materials\textures\8x8PagesSplotches2.png" />
+    <Content Include="Resources\materials\textures\atheneNormalMap.png" />
+    <Content Include="Resources\materials\textures\aureola.png" />
+    <Content Include="Resources\materials\textures\basic_droplet.png" />
+    <Content Include="Resources\materials\textures\BeachStones.jpg" />
+    <Content Include="Resources\materials\textures\blue_jaiqua.jpg" />
+    <Content Include="Resources\materials\textures\BumpyMetal.jpg" />
+    <Content Include="Resources\materials\textures\cel_shading_diffuse.png" />
+    <Content Include="Resources\materials\textures\cel_shading_edge.png" />
+    <Content Include="Resources\materials\textures\cel_shading_specular.png" />
+    <Content Include="Resources\materials\textures\Chrome.jpg" />
+    <Content Include="Resources\materials\textures\clouds.jpg" />
+    <Content Include="Resources\materials\textures\cloudy_noon_BK.jpg" />
+    <Content Include="Resources\materials\textures\cloudy_noon_DN.jpg" />
+    <Content Include="Resources\materials\textures\cloudy_noon_FR.jpg" />
+    <Content Include="Resources\materials\textures\cloudy_noon_LF.jpg" />
+    <Content Include="Resources\materials\textures\cloudy_noon_RT.jpg" />
+    <Content Include="Resources\materials\textures\cloudy_noon_UP.jpg" />
+    <Content Include="Resources\materials\textures\cursor.png" />
+    <Content Include="Resources\materials\textures\Dirt.jpg" />
+    <Content Include="Resources\materials\textures\dirt01.jpg" />
+    <Content Include="Resources\materials\textures\dkyellow.png" />
+    <Content Include="Resources\materials\textures\droplet.png" />
+    <Content Include="Resources\materials\textures\Dr_Bunsen_Head.jpg" />
+    <Content Include="Resources\materials\textures\early_morning_BK.jpg" />
+    <Content Include="Resources\materials\textures\early_morning_DN.jpg" />
+    <Content Include="Resources\materials\textures\early_morning_FR.jpg" />
+    <Content Include="Resources\materials\textures\early_morning_LF.jpg" />
+    <Content Include="Resources\materials\textures\early_morning_RT.jpg" />
+    <Content Include="Resources\materials\textures\early_morning_UP.jpg" />
+    <Content Include="Resources\materials\textures\egyptrockyfull.jpg" />
+    <Content Include="Resources\materials\textures\evening_BK.jpg" />
+    <Content Include="Resources\materials\textures\evening_DN.jpg" />
+    <Content Include="Resources\materials\textures\evening_FR.jpg" />
+    <Content Include="Resources\materials\textures\evening_LF.jpg" />
+    <Content Include="Resources\materials\textures\evening_RT.jpg" />
+    <Content Include="Resources\materials\textures\evening_UP.jpg" />
+    <Content Include="Resources\materials\textures\flare.png" />
+    <Content Include="Resources\materials\textures\flaretrail.png" />
+    <Content Include="Resources\materials\textures\fw12b.jpg" />
+    <Content Include="Resources\materials\textures\GLX_icon.png" />
+    <Content Include="Resources\materials\textures\grass_1024.jpg" />
+    <Content Include="Resources\materials\textures\grass_tex.jpg" />
+    <Content Include="Resources\materials\textures\gras_02.png" />
+    <Content Include="Resources\materials\textures\GreenSkin.jpg" />
+    <Content Include="Resources\materials\textures\morning_BK.jpg" />
+    <Content Include="Resources\materials\textures\morning_DN.jpg" />
+    <Content Include="Resources\materials\textures\morning_FR.jpg" />
+    <Content Include="Resources\materials\textures\morning_LF.jpg" />
+    <Content Include="Resources\materials\textures\morning_RT.jpg" />
+    <Content Include="Resources\materials\textures\morning_UP.jpg" />
+    <Content Include="Resources\materials\textures\MtlPlat2.jpg" />
+    <Content Include="Resources\materials\textures\NMBalls.png" />
+    <Content Include="Resources\materials\textures\NMBumpsOut.png" />
+    <Content Include="Resources\materials\textures\NMHollyBumps.png" />
+    <Content Include="Resources\materials\textures\NMStripes.png" />
+    <Content Include="Resources\materials\textures\nm_bk.png" />
+    <Content Include="Resources\materials\textures\nm_dn.png" />
+    <Content Include="Resources\materials\textures\nm_fr.png" />
+    <Content Include="Resources\materials\textures\nm_lf.png" />
+    <Content Include="Resources\materials\textures\nm_rt.png" />
+    <Content Include="Resources\materials\textures\nm_up.png" />
+    <Content Include="Resources\materials\textures\NoiseVolume.dds" />
+    <Content Include="Resources\materials\textures\normalNoiseColor.png" />
+    <Content Include="Resources\materials\textures\nskingr.jpg" />
+    <Content Include="Resources\materials\textures\ogreborder.png" />
+    <Content Include="Resources\materials\textures\ogrebordercenter.png" />
+    <Content Include="Resources\materials\textures\ogreborderUp.png" />
+    <Content Include="Resources\materials\textures\ogrelogo-small.jpg" />
+    <Content Include="Resources\materials\textures\ogrelogo.png" />
+    <Content Include="Resources\materials\textures\perlinvolume.dds" />
+    <Content Include="Resources\materials\textures\r2skin.jpg" />
+    <Content Include="Resources\materials\textures\Random3D.dds" />
+    <Content Include="Resources\materials\textures\ribbonband.png" />
+    <Content Include="Resources\materials\textures\RustedMetal.jpg" />
+    <Content Include="Resources\materials\textures\RustyBarrel.png" />
+    <Content Include="Resources\materials\textures\RustySteel.jpg" />
+    <Content Include="Resources\materials\textures\RZR-002.png" />
+    <Content Include="Resources\materials\textures\scr-back.png" />
+    <Content Include="Resources\materials\textures\scr-down-p.png" />
+    <Content Include="Resources\materials\textures\scr-down.png" />
+    <Content Include="Resources\materials\textures\scr-thumb.png" />
+    <Content Include="Resources\materials\textures\scr-up-p.png" />
+    <Content Include="Resources\materials\textures\scr-up.png" />
+    <Content Include="Resources\materials\textures\smoke.png" />
+    <Content Include="Resources\materials\textures\smokecolors.png" />
+    <Content Include="Resources\materials\textures\snow_1024.jpg" />
+    <Content Include="Resources\materials\textures\spacesky.jpg" />
+    <Content Include="Resources\materials\textures\spheremap.png" />
+    <Content Include="Resources\materials\textures\steelhead.png" />
+    <Content Include="Resources\materials\textures\stormy_BK.jpg" />
+    <Content Include="Resources\materials\textures\stormy_DN.jpg" />
+    <Content Include="Resources\materials\textures\stormy_FR.jpg" />
+    <Content Include="Resources\materials\textures\stormy_LF.jpg" />
+    <Content Include="Resources\materials\textures\stormy_RT.jpg" />
+    <Content Include="Resources\materials\textures\stormy_UP.jpg" />
+    <Content Include="Resources\materials\textures\terrain.png" />
+    <Content Include="Resources\materials\textures\terrain_detail.jpg" />
+    <Content Include="Resources\materials\textures\terrain_texture.jpg" />
+    <Content Include="Resources\materials\textures\terr_dirt-grass.jpg" />
+    <Content Include="Resources\materials\textures\terr_rock-dirt.jpg" />
+    <Content Include="Resources\materials\textures\terr_rock6.jpg" />
+    <Content Include="Resources\materials\textures\texmap2.jpg" />
+    <Content Include="Resources\materials\textures\Water01.jpg" />
+    <Content Include="Resources\materials\textures\Water02.jpg" />
+    <Content Include="Resources\materials\textures\waveNM.png" />
+    <Content Include="Resources\materials\textures\waves2.dds" />
+    <Content Include="Resources\materials\textures\WeirdEye.png" />
+    <Content Include="Resources\materials\textures\WoodPallet.png" />
+    <Content Include="Resources\overlays\BasicOgreGuiTemplates.inc" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
