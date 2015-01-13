@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
 using ApplicationLogic.Interfaces;
+using ApplicationLogic.Scene;
+using Mogre;
 using RenderingEngine.Engine;
+
 
 namespace ApplicationLogic
 {
@@ -11,14 +14,18 @@ namespace ApplicationLogic
     {
         private const string StoredModelsPath = "./Resources/models/scene";
 
+        private int mModelCounter = 0;
         private bool mIsStarted;
-        private bool mIsModelLoaded;
+        private bool mIsMainCameraActivated = true;
         private readonly List<string> mAvailableModels;
         private readonly Engine mEngine;
         private readonly IApplicationUI mApplicationUi;
+        public Dictionary<string, Model> Models { get; private set; }
+        public Model SelectedModel { get; private set; }
 
         public AppController(IApplicationUI appUi)
         {
+            Models = new Dictionary<string, Model>();
             mEngine = Engine.Instance;
             mAvailableModels = new List<string>();
             mApplicationUi = appUi;
@@ -41,26 +48,95 @@ namespace ApplicationLogic
             mEngine.SetUpRenderWindow(handle, width, height);
         }
 
-        public void LoadModel(string fileName)
+        private Model LoadModel(string fileName)
         {
             if (!File.Exists(Path.Combine(StoredModelsPath,fileName)))
             {
-                mIsModelLoaded = false;
                 var e = new FileNotFoundException("Model file name not found on path: "+fileName);
                 mApplicationUi.ExceptionOccured(e);
-                return;
+                throw e;
             }
 
-            var temp = fileName.Split(".".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-            mEngine.LoadModel(temp[0],fileName);
-            mIsModelLoaded = true;
-            mApplicationUi.SendMessage("Model successfully loaded");
+            var modelName = fileName.Split(".".ToCharArray(), StringSplitOptions.RemoveEmptyEntries)[0];
+            modelName += mModelCounter; 
+            var newModel = new Model(modelName,fileName);
+            Models.Add(modelName, newModel);
+
+            mModelCounter++;
+
+            mApplicationUi.SendMessage("Model "+modelName+" successfully loaded");
+            return newModel;
+        }
+
+        public void SelectModel(int screenX, int screenY)
+        {
+            DeselectAllModels();
+            MovableObject movableObject = mEngine.SelectObject(screenX, screenY);
+            if (movableObject != null)
+            {
+                var name = movableObject.Name;
+                foreach (var model in Models)
+                {
+                    if (name == model.Value.Name)
+                    {
+                        model.Value.Selected = true;
+                        SelectedModel = model.Value;
+                    }
+                }
+            }
+        }
+
+        public void SwitchToSelectedCamera()
+        {
+            if (SelectedModel != null)
+            {
+                var selectedCamera = SelectedModel.GetSelectedSecurityCamera();
+                if (selectedCamera != null)
+                {
+                    if (mIsMainCameraActivated)
+                    {
+                        mEngine.SetCameraViewport(selectedCamera.Camera.MogreCamera);
+                        selectedCamera.Camera.Frustum.SceneNode.FlipVisibility();
+                        mIsMainCameraActivated = false;
+                    }
+                    else
+                    {
+                        mEngine.ResetViewportToMainCamera();
+                        selectedCamera.Camera.Frustum.SceneNode.FlipVisibility();
+                        mIsMainCameraActivated = true;
+                    }
+                }
+            }
+
+        }
+
+        public void AddModel(int screenX, int screenY)
+        {
+            Vector3 intersection;
+
+            var isIntersection = mEngine.IsIntersectionWithTerrain(screenX, screenY, out intersection);
+            
+            if (!isIntersection) return;
+            DeselectAllModels();
+            int selectedIndex = mApplicationUi.GetSelectedModelIndex();
+            string modelFileName = mAvailableModels[selectedIndex];
+            var newModel = LoadModel(modelFileName);
+            newModel.Selected = true;
+            newModel.Translate(intersection);
+        }
+
+        protected void AlignCamera()
+        {
+//            if (Models.Count > 0)
+//            {
+//                var nodePos = Models[mModelName + "0"].SceneNode.Position;
+//                var pos = new Vector3(nodePos.x, nodePos.y + 50, nodePos.z + 200);
+//                MainCamera.Position = pos;
+//            }
         }
 
         public void Start() 
         {
-            if(!mIsModelLoaded) mApplicationUi.ExceptionOccured(new Exception("Model are not loaded"));
-
             mIsStarted = true;
             mEngine.Start();
         }
@@ -76,6 +152,48 @@ namespace ApplicationLogic
                 mEngine.Dispose();
         }
 
+        private void DeselectAllModels()
+        {
+            foreach (var model in Models)
+            {
+                model.Value.Selected = false;
+                model.Value.DeselectAllSecurityCameras();
+            }
+        }
+
+        public void CreateSecurityCamera(int screenX, int screenY)
+        {
+            if (SelectedModel != null)
+            {
+                SelectedModel.CreateCamera(screenX, screenY);
+            }
+        }
+
+        public bool IsSecurityCameraSelected()
+        {
+            if (SelectedModel != null)
+            {
+                return SelectedModel.IsSecurityCameraSelected();
+            }
+            return false;
+        }
+
+        public void CameraMouseClick(MouseEventArgs e)
+        {
+            if (SelectedModel != null)
+            {
+                SelectedModel.CameraMouseClick(e);
+            }
+        }
+
+        public void CameraMouseMove(MouseEventArgs e)
+        {
+            if (SelectedModel != null)
+            {
+                SelectedModel.CameraMouseMove(e);
+            }
+        }
+
         #region Keyboard Input
 
         public void KeyPress(char key)
@@ -89,9 +207,13 @@ namespace ApplicationLogic
         {
             if (!mIsStarted) return;
 
-            mEngine.CameraControl(key);
+            if (SelectedModel != null)
+            {
+                SelectedModel.CameraControl(key);
+            }
+
             HandleKeyDown(key);
-            UpdateUI();
+            UpdateStatusBar();
         }
 
         public void KeyUp(Keys key)
@@ -118,40 +240,40 @@ namespace ApplicationLogic
 
             if (e.Button == MouseButtons.Left)
             {
-                mEngine.SelectObject(e.X,e.Y);
+                SelectModel(e.X, e.Y);
             }
 
             if (e.Button == MouseButtons.Right)
             {
-                mEngine.CreateSecurityCamera(e.X, e.Y);
+                CreateSecurityCamera(e.X, e.Y);
             }
 
-            if (mEngine.IsSecurityCameraSelected())
+            if (IsSecurityCameraSelected())
             {
-                mEngine.CameraMouseClick(e);
+                CameraMouseClick(e);
             }
             else
             {
                 HandleMouseDown(e);        
             }
 
-            UpdateUI();
+            UpdateStatusBar();
         }
 
         public void MouseMove(MouseEventArgs e)
         {
             if (!mIsStarted) return;
             
-            if (mEngine.IsSecurityCameraSelected())
+            if (IsSecurityCameraSelected())
             {
-                mEngine.CameraMouseMove(e);
+                CameraMouseMove(e);
             }
             else
             {
                 HandleMouseMove(e);    
             }
             
-            UpdateUI();
+            UpdateStatusBar();
         }
 
         public void MouseDoubleClick(MouseEventArgs e)
@@ -160,7 +282,7 @@ namespace ApplicationLogic
 
             if (e.Button == MouseButtons.Left)
             {
-                mEngine.AddModel(e.X,e.Y);
+                AddModel(e.X,e.Y);
             }
 
             HandleMouseDoubleClick(e);
@@ -169,10 +291,18 @@ namespace ApplicationLogic
 
         #endregion
 
-        public void UpdateUI()
+        public void DeleteSelectedCamera()
         {
-            var pos = mEngine.GetCameraPosition();
-            var dir = mEngine.GetCameraDirection();
+            if (SelectedModel != null)
+            {
+                SelectedModel.DeleteSelectedCamera();
+            }
+        }
+
+        public void UpdateStatusBar()
+        {
+            var pos = mEngine.GetMainCameraPosition();
+            var dir = mEngine.GetMainCameraDirection();
             string info = string.Format("Camera Pos:[{0} ; {1}; {2}] | Dir:[{3} ; {4} ; {5}]",pos.x,pos.y,pos.z,dir.x,dir.y,dir.z);
             mApplicationUi.UpdateCameraInformation(info);
         }
