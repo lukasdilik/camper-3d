@@ -47,10 +47,10 @@ namespace ApplicationLogic
                     mEngine.ChangeTerrainClamping();
                     break;
                 case Keys.Delete:
-                    mEngine.DeleteSelectedCamera();
+                    DeleteSelectedCamera();
                     break;
                 case Keys.Enter:
-                    mEngine.SwitchToSelectedCamera();
+                    SwitchToSelectedCamera();
                     break;
                 case Keys.Escape:
                     mEngine.Shutdown();

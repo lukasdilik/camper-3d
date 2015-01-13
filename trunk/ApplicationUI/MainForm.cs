@@ -16,9 +16,8 @@ namespace ApplicationUI
 
             mAppController = new AppController(this);
             mAppController.SetUpRenderingWindow(MainWindow.Handle, MainWindow.Width, MainWindow.Height);
-            //preselect first model
+           
             AvailableModels_combo.SelectedIndex = 1;
-            LoadSelectedModel();
         }
 
         private void MainForm_Disposed(object sender, EventArgs e)
@@ -87,20 +86,14 @@ namespace ApplicationUI
             }
         }
 
-        private void LoadSelectedModel()
-        {
-            var selected = AvailableModels_combo.SelectedIndex;
-            
-            if (selected == -1) return;
-            
-            var selectedItem = AvailableModels_combo.SelectedItem;
-            mAppController.LoadModel(selectedItem.ToString());
-        }
-
         private void Start_btn_Click(object sender, EventArgs e)
         {
-            LoadSelectedModel();
             mAppController.Start();
+        }
+
+        public int GetSelectedModelIndex()
+        {
+            return AvailableModels_combo.SelectedIndex;
         }
 
         public void SendMessage(string msg)
@@ -125,7 +118,6 @@ namespace ApplicationUI
 
         private void AvailableModels_combo_SelectedIndexChanged(object sender, EventArgs e)
         {
-            LoadSelectedModel();
         }
 
         private void MainWindow_MouseClick(object sender, MouseEventArgs e)
@@ -135,7 +127,7 @@ namespace ApplicationUI
 
         private void MainWindow_SizeChanged(object sender, EventArgs e)
         {
-           // mAppController.Resize(MainWindow.Width, MainWindow.Height);
+           mAppController.Resize(MainWindow.Width, MainWindow.Height);
         }
 
 

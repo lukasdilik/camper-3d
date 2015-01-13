@@ -42,6 +42,7 @@ namespace ApplicationUI
             this.AvailableModels_combo = new System.Windows.Forms.ComboBox();
             this.Start_btn = new System.Windows.Forms.Button();
             this.Log_textBox = new System.Windows.Forms.TextBox();
+            this.Camera_listBox = new System.Windows.Forms.ListBox();
             this.statusStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
@@ -120,14 +121,15 @@ namespace ApplicationUI
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.Camera_listBox);
             this.panel1.Controls.Add(this.AvailableModels_combo);
             this.panel1.Controls.Add(this.Start_btn);
             this.panel1.Controls.Add(this.AddFile_btn);
             this.panel1.Controls.Add(this.label1);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panel1.Location = new System.Drawing.Point(1240, 0);
+            this.panel1.Location = new System.Drawing.Point(1239, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(344, 839);
+            this.panel1.Size = new System.Drawing.Size(345, 839);
             this.panel1.TabIndex = 6;
             // 
             // AvailableModels_combo
@@ -157,6 +159,15 @@ namespace ApplicationUI
             this.Log_textBox.Name = "Log_textBox";
             this.Log_textBox.Size = new System.Drawing.Size(1233, 87);
             this.Log_textBox.TabIndex = 7;
+            // 
+            // Camera_listBox
+            // 
+            this.Camera_listBox.FormattingEnabled = true;
+            this.Camera_listBox.ItemHeight = 16;
+            this.Camera_listBox.Location = new System.Drawing.Point(16, 640);
+            this.Camera_listBox.Name = "Camera_listBox";
+            this.Camera_listBox.Size = new System.Drawing.Size(317, 196);
+            this.Camera_listBox.TabIndex = 8;
             // 
             // MainForm
             // 
@@ -199,6 +210,7 @@ namespace ApplicationUI
         private ToolStripStatusLabel StatusLabel;
         private TextBox Log_textBox;
         private ToolStripStatusLabel CameraCoords_label;
+        private ListBox Camera_listBox;
 
     }
 }

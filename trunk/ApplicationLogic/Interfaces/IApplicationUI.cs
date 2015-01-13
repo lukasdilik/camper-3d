@@ -5,6 +5,7 @@ namespace ApplicationLogic.Interfaces
 {
     public interface IApplicationUI
     {
+        int GetSelectedModelIndex();
         void SendMessage(string msg);
         void ShowAvailableModels(List<string> models);
         void UpdateCameraInformation(string info);
