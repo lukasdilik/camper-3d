@@ -96,6 +96,10 @@
       <Project>{1989f6ea-9eab-4ef4-8f67-7d25ae5e7419}</Project>
       <Name>ApplicationLogic</Name>
     </ProjectReference>
+    <ProjectReference Include="..\RenderingEngine\RenderingEngine.csproj">
+      <Project>{7ab3fd7f-0210-4717-9bc4-76b6915f2441}</Project>
+      <Name>RenderingEngine</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0">

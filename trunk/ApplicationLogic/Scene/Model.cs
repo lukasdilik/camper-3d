@@ -72,7 +72,7 @@ namespace ApplicationLogic.Scene
             SelectedSecurityCameraIndex = null;
         }
 
-        public void CreateCamera(int screenX, int screenY)
+        public string CreateCamera(int screenX, int screenY)
         {
             try
             {
@@ -96,16 +96,20 @@ namespace ApplicationLogic.Scene
 
                     SecurityCameras.Add(securityCamera.Name, securityCamera);
                     SelectedSecurityCameraIndex = cameraName;
+                    return securityCamera.Name;
                 }
+                return "";
             }            
             catch (System.Runtime.InteropServices.SEHException e)
             {
                 if(OgreException.IsThrown)
                     LogManager.Singleton.LogMessage(OgreException.LastException.ToString());
+                return "";
             }
             catch (Exception e)
             {
                 LogManager.Singleton.LogMessage(e.ToString());
+                return "";
             }
     
         }

@@ -1,4 +1,5 @@
 ﻿using System.Windows.Forms;
+using RenderingEngine.Engine;
 
 namespace ApplicationLogic
 {
@@ -14,37 +15,37 @@ namespace ApplicationLogic
             switch (key)
             {
                 case Keys.W:
-                    mEngine.CameraMan.GoingForward = true;
+                    Engine.Instance.CameraMan.GoingForward = true;
                     break;
                 case Keys.S:
-                    mEngine.CameraMan.GoingBack = true;
+                    Engine.Instance.CameraMan.GoingBack = true;
                     break;
                 case Keys.A:
-                    mEngine.CameraMan.GoingLeft = true;
+                    Engine.Instance.CameraMan.GoingLeft = true;
                     break;
                 case Keys.D:
-                    mEngine.CameraMan.GoingRight = true;
+                    Engine.Instance.CameraMan.GoingRight = true;
                     break;
                 case Keys.Q:
-                    mEngine.CameraMan.GoingUp = true;
+                    Engine.Instance.CameraMan.GoingUp = true;
                     break;
                 case Keys.E:
-                    mEngine.CameraMan.GoingDown = true;
+                    Engine.Instance.CameraMan.GoingDown = true;
                     break;
                 case Keys.RShiftKey:
-                    mEngine.CameraMan.FastMove = true;
+                    Engine.Instance.CameraMan.FastMove = true;
                     break;
                 case Keys.F1:
-                    mEngine.CyclePolygonMode();
+                    Engine.Instance.CyclePolygonMode();
                     break;
                 case Keys.F2:
-                    mEngine.CycleTextureFilteringMode();
+                    Engine.Instance.CycleTextureFilteringMode();
                     break;
                 case Keys.F3:
-                    mEngine.ReloadAllTextures();
+                    Engine.Instance.ReloadAllTextures();
                     break;
                 case Keys.F5:
-                    mEngine.ChangeTerrainClamping();
+                    Engine.Instance.ChangeTerrainClamping();
                     break;
                 case Keys.Delete:
                     DeleteSelectedCamera();
@@ -53,7 +54,8 @@ namespace ApplicationLogic
                     SwitchToSelectedCamera();
                     break;
                 case Keys.Escape:
-                    mEngine.Shutdown();
+                    Engine.Instance.Shutdown();
+                    mApplicationUi.Close();
                     break;
             }
         }
@@ -63,31 +65,31 @@ namespace ApplicationLogic
             switch (key)
             {
                 case Keys.W:
-                    mEngine.CameraMan.GoingForward = false;
+                    Engine.Instance.CameraMan.GoingForward = false;
                     break;
 
                 case Keys.S:
-                    mEngine.CameraMan.GoingBack = false;
+                    Engine.Instance.CameraMan.GoingBack = false;
                     break;
 
                 case Keys.A:
-                    mEngine.CameraMan.GoingLeft = false;
+                    Engine.Instance.CameraMan.GoingLeft = false;
                     break;
 
                 case Keys.D:
-                    mEngine.CameraMan.GoingRight = false;
+                    Engine.Instance.CameraMan.GoingRight = false;
                     break;
 
                 case Keys.Q:
-                    mEngine.CameraMan.GoingUp = false;
+                    Engine.Instance.CameraMan.GoingUp = false;
                     break;
 
                 case Keys.E:
-                    mEngine.CameraMan.GoingDown = false;
+                    Engine.Instance.CameraMan.GoingDown = false;
                     break;
 
                 case Keys.RShiftKey:
-                    mEngine.CameraMan.FastMove = false;
+                    Engine.Instance.CameraMan.FastMove = false;
                     break;
             }
         }
@@ -98,12 +100,12 @@ namespace ApplicationLogic
 
         protected virtual void HandleMouseDown(MouseEventArgs e)
         {
-            mEngine.CameraMan.Click(e.X,e.Y);
+            Engine.Instance.CameraMan.Click(e.X, e.Y);
         }
 
         protected virtual void HandleMouseMove(MouseEventArgs e)
         {
-            mEngine.CameraMan.MouseMovement(e.X, e.Y);
+            Engine.Instance.CameraMan.MouseMovement(e.X, e.Y);
         }
 
         protected virtual void HandleMouseDoubleClick(MouseEventArgs e)

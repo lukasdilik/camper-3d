@@ -48,14 +48,7 @@ namespace ApplicationLogic.Scene
 
         private void CreateCamera()
         {
-            Camera = new RenderingEngine.Scene.Camera(Name, Properties.Position, Properties.Direction, MeshName)
-            {
-                MogreCamera =
-                {
-                    NearClipDistance = Properties.NearClipDistance,
-                    FarClipDistance = Properties.FarClipDistance
-                }
-            };
+            Camera = new RenderingEngine.Scene.Camera(Name, Properties.Position, Properties.Direction, MeshName);
 
             Camera.Scale(DefaultScaleVector);
             Camera.RotateToDirection(NormalLine.End);
@@ -72,7 +65,7 @@ namespace ApplicationLogic.Scene
             
             var center = aabb.Center;
             
-            var dist = 2*new Vector3(center.z, center.z, center.z);
+            var dist = 4*new Vector3(center.z, center.z, center.z);
             
             var mainCameradir = RenderingEngine.Engine.Engine.Instance.GetMainCameraDirection();
             

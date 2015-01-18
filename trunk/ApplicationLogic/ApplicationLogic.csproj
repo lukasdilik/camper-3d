@@ -33,7 +33,7 @@
   <ItemGroup>
     <Reference Include="Mogre, Version=1.7.3.0, Culture=neutral, PublicKeyToken=96bb577564343f16, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\RenderingEngine\Includes\Mogre.dll</HintPath>
+      <HintPath>X:\OneDrive\Visual Studio 2012\CAMPER\RenderingEngine\Includes\Mogre.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

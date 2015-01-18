@@ -106,14 +106,19 @@ namespace ApplicationUI
             if (models != null) AvailableModels_combo.Items.AddRange(models.ToArray());
         }
 
-        public void UpdateCameraInformation(string info)
+        public void UpdateStatusBarInfo(string info)
         {
             CameraCoords_label.Text = info;
         }
 
-        public void ExceptionOccured(Exception e)
+        public void AddCamera(string cameraName)
         {
-            StatusLabel.Text = e.Message;
+            Camera_listBox.Items.Add(cameraName);
+        }
+
+        public void RemoveCamera(string cameraName)
+        {
+            throw new NotImplementedException();
         }
 
         private void AvailableModels_combo_SelectedIndexChanged(object sender, EventArgs e)
@@ -130,6 +135,15 @@ namespace ApplicationUI
            mAppController.Resize(MainWindow.Width, MainWindow.Height);
         }
 
+        public new void Close()
+        {
+            Application.Exit();
+        }
 
+        public void LogMessage(string msg)
+        {
+            Log_textBox.AppendText(msg);
+            Log_textBox.AppendText("-------------------------------------");
+        }
     }
 }
