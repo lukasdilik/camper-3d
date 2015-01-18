@@ -6,7 +6,5 @@ namespace ApplicationLogic.Scene
     {
         public Vector3 Position;
         public Vector3 Direction;
-        public int NearClipDistance = 5;
-        public int FarClipDistance = 100;
     }
 }

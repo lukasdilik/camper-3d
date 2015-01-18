@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Mogre;
+using RenderingEngine.Interfaces;
 using Math = System.Math;
 
 namespace RenderingEngine.Engine
@@ -24,6 +25,11 @@ namespace RenderingEngine.Engine
         public static Engine Instance
         {
             get { return mInstance ?? (mInstance = new Engine()); }
+        }
+
+        public void SetApplicationInstance(IApplication application)
+        {
+            ApplicationLogic = application;
         }
 
         public override void SetUpRenderWindow(IntPtr handle, int width, int height)
@@ -186,6 +192,11 @@ namespace RenderingEngine.Engine
         {
             base.DestroyScene();
             RaySceneQuery.Dispose();
+        }
+
+        public void SetUpRenderingWindow(IntPtr handle, int width, int height)
+        {
+            mInstance.SetUpRenderingWindow(handle, width, height);
         }
     }
 }

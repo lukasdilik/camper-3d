@@ -1,6 +1,7 @@
 ﻿using System;
 using Mogre;
 using RenderingEngine.Helpers;
+using RenderingEngine.Interfaces;
 
 namespace RenderingEngine.Engine
 {
@@ -10,9 +11,13 @@ namespace RenderingEngine.Engine
     {
         public Camera MainCamera;
         public CameraMan CameraMan;
-
+        
+        protected IApplication ApplicationLogic;
+        
         protected Root Root;
+        
         public SceneManager SceneManager;
+        
         protected WindowParams WindowParams;
         protected RenderWindow RenderWindow;
         protected RenderSystem RenderSystem;
@@ -42,12 +47,24 @@ namespace RenderingEngine.Engine
             }
             catch (System.Runtime.InteropServices.SEHException e)
             {
-                if(OgreException.IsThrown)
+                if (OgreException.IsThrown)
+                {
                     LogManager.Singleton.LogMessage(OgreException.LastException.ToString());
+                    if (ApplicationLogic != null)
+                    {
+                        ApplicationLogic.LogMessage(OgreException.LastException.ToString());    
+                    }
+                    
+                }
+                    
             }
             catch (Exception e)
             {
                 LogManager.Singleton.LogMessage(e.ToString());
+                if (ApplicationLogic != null)
+                {
+                    ApplicationLogic.LogMessage(e.ToString());    
+                }
             }
         }
 

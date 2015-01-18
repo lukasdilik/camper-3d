@@ -5,7 +5,6 @@ namespace RenderingEngine.Scene
 {
     public class Camera
     {
-
         private readonly Vector3 mDirection;
         private SceneNode mNormalNode;
 
@@ -27,7 +26,7 @@ namespace RenderingEngine.Scene
 
             CreateMogreCameraObject();
 
-            Frustum = new CameraFrustum(this);
+            //Frustum = new CameraFrustum(this);
         }
 
         private void CreateMogreCameraObject()
@@ -35,12 +34,6 @@ namespace RenderingEngine.Scene
             MogreCamera = Engine.Engine.Instance.SceneManager.CreateCamera(Name+"_camera");
             MogreCamera.Position = SceneNode.Position;
             MogreCamera.LookAt(mDirection);
-        }
-
-        public void SetClipDistance(int near, int far)
-        {
-            MogreCamera.NearClipDistance = near;
-            MogreCamera.FarClipDistance = far;
         }
 
         public void DrawNormal(Vector3 p0, Vector3 p1, Vector3 color)
@@ -73,7 +66,11 @@ namespace RenderingEngine.Scene
             }
 
             MogreCamera.Position = SceneNode.Position;
-            Frustum.Translate(t);
+            
+            if (Frustum != null)
+            {
+                Frustum.Translate(t);    
+            }
         }
 
         public AxisAlignedBox GetBoundingBox()
@@ -96,7 +93,11 @@ namespace RenderingEngine.Scene
             Quaternion quat = src.GetRotationTo(direction); // Get a quaternion rotation operation 
 
             SceneNode.Rotate(quat);
-            Frustum.Rotate(quat);
+
+            if (Frustum != null)
+            {
+                Frustum.Rotate(quat);    
+            }
         }
 
         public void Delete()
