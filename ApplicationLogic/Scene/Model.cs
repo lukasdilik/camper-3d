@@ -84,7 +84,7 @@ namespace ApplicationLogic.Scene
                 Vector3 startPosition = mouseRay.Origin;
                 Vector3 rayDirection = mouseRay.Direction;
                 Vector3 contactPoint = new Vector3(), normal = new Vector3();
-                PolygonRayCast rayCast = new PolygonRayCast();
+                var rayCast = new PolygonRayCast();
                 var isHit = rayCast.RaycastFromPoint(startPosition, rayDirection, ref contactPoint, ref normal);
                 //mesh normal is directed into polygon
                 normal *= -1;
