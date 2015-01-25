@@ -82,6 +82,13 @@ namespace ApplicationLogic
                         model.Value.Selected = true;
                         SelectedModel = model.Value;
                     }
+                    foreach (var camera in model.Value.SecurityCameras)
+                    {
+                        if (name == camera.Value.Camera.Name)
+                        {
+                            SelectedModel.SelectSecurityCamera(name);
+                        }
+                    }
                 }
             }
         }
@@ -122,8 +129,11 @@ namespace ApplicationLogic
             
             int selectedIndex = mApplicationUi.GetSelectedModelIndex();
             string modelFileName = mAvailableModels[selectedIndex];
+            
             var newModel = LoadModel(modelFileName);
             newModel.Selected = true;
+            SelectedModel = newModel;
+
             newModel.Translate(intersection);
         }
 

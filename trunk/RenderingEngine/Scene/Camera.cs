@@ -1,45 +1,41 @@
 ﻿using Mogre;
-using RenderingEngine.Drawing;
 
 namespace RenderingEngine.Scene
 {
     public class Camera
     {
         private readonly Vector3 mDirection;
-        private SceneNode mNormalNode;
-
+        private const float TranslationRate = 0.1f;
         public string Name { get; private set; }
         public Entity Mesh { get; private set; }
         public SceneNode SceneNode { get; private set; }
         public Mogre.Camera MogreCamera { get; private set; }
         public CameraFrustum Frustum { get; private set; }
+        public NormalLine NormalLine { get; private set; }
 
-
-        public Camera(string name, Vector3 position, Vector3 direction, string meshName)
+        public Camera(string name, Vector3 position, Vector3 normal, string meshName)
         {
             Name = name;
-            mDirection = direction;
+            mDirection = normal;
+           
             Mesh = Engine.Engine.Instance.SceneManager.CreateEntity(name, meshName);
             SceneNode = Engine.Engine.Instance.SceneManager.RootSceneNode.CreateChildSceneNode(name + "_node");
             SceneNode.AttachObject(Mesh);
             SceneNode.Position = position;
 
             CreateMogreCameraObject();
-
-            //Frustum = new CameraFrustum(this);
+            
+            NormalLine = new NormalLine(name+"_line",position,normal,SceneNode);
+            
+            Frustum = new CameraFrustum(this);
         }
 
         private void CreateMogreCameraObject()
         {
             MogreCamera = Engine.Engine.Instance.SceneManager.CreateCamera(Name+"_camera");
             MogreCamera.Position = SceneNode.Position;
-            MogreCamera.LookAt(mDirection);
-        }
-
-        public void DrawNormal(Vector3 p0, Vector3 p1, Vector3 color)
-        {
-            Draw.Instance.Color = color;
-            mNormalNode = Draw.Instance.DrawLine(p0, p1);
+            MogreCamera.LookAt(-mDirection);
+            MogreCamera.NearClipDistance = 8;
         }
 
         public void ShowBoundingBox()
@@ -52,25 +48,59 @@ namespace RenderingEngine.Scene
             SceneNode.ShowBoundingBox = false;
         }
 
+        public void MoveRight()
+        {
+            var dir = Engine.Engine.Instance.MainCamera.Direction;
+            if (dir.z != 0)
+            {
+                Translate(dir.z < 0 ? new Vector3(TranslationRate, 0, 0) : new Vector3(-TranslationRate, 0, 0));
+            }
+            else if (dir.x != 0)
+            {
+                Translate(dir.z < 0 ? new Vector3(0, TranslationRate, 0) : new Vector3(0, TranslationRate,0 ));
+            }
+            
+        }
+
+        public void MoveLeft()
+        {
+            var dir = Engine.Engine.Instance.MainCamera.Direction;
+            if (dir.z != 0)
+            {
+                Translate(dir.z > 0 ? new Vector3(TranslationRate, 0, 0) : new Vector3(-TranslationRate, 0, 0));
+            }
+            else if (dir.x != 0)
+            {
+                Translate(dir.z > 0 ? new Vector3(0, 0, TranslationRate) : new Vector3(0,0, TranslationRate));
+            }
+        }
+
+        public void MoveTop()
+        {
+            Translate(new Vector3(0, TranslationRate, 0));
+        }
+
+        public void MoveDown()
+        {
+            Translate(new Vector3(0, -TranslationRate, 0));
+        }
+
+        public void MoveForward()
+        {
+            Translate(new Vector3(0, 0 ,-TranslationRate));
+        }
+
+        public void MoveBackward()
+        {
+            Translate(new Vector3(0, 0, TranslationRate));
+        }
+
         public void Translate(Vector3 t)
         {
-            if (Engine.Engine.Instance.MainCamera != null)
-            {
-                t = t*Engine.Engine.Instance.MainCamera.Direction;
-            }
-
-            SceneNode.Translate(t);
-            if (mNormalNode != null)
-            {
-                mNormalNode.Translate(t);
-            }
-
+            var dir = Engine.Engine.Instance.MainCamera.Direction;
+            dir = Engine.Engine.Instance.MainCamera.DerivedOrientation*dir;
+            SceneNode.Translate(t, Node.TransformSpace.TS_WORLD);
             MogreCamera.Position = SceneNode.Position;
-            
-            if (Frustum != null)
-            {
-                Frustum.Translate(t);    
-            }
         }
 
         public AxisAlignedBox GetBoundingBox()
@@ -93,11 +123,6 @@ namespace RenderingEngine.Scene
             Quaternion quat = src.GetRotationTo(direction); // Get a quaternion rotation operation 
 
             SceneNode.Rotate(quat);
-
-            if (Frustum != null)
-            {
-                Frustum.Rotate(quat);    
-            }
         }
 
         public void Delete()

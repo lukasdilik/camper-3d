@@ -1,12 +1,14 @@
 ﻿using System.Windows.Forms;
 using Mogre;
+using RenderingEngine.Engine;
+using Camera = RenderingEngine.Scene.Camera;
 
 namespace ApplicationLogic.Scene
 {
     public class SecurityCamera
     {
        
-        public const float TranslationRate = 0.2f;
+        
         public const string MeshName = "cctv1.mesh";
         public static readonly Vector3 DefaultScaleVector = new Vector3(8, 8, 8);
 
@@ -32,27 +34,23 @@ namespace ApplicationLogic.Scene
 
         public string Name { get; private set; }
         public SecurityCameraProperties Properties { get; private set; }
-        public NormalLine NormalLine { get; private set; }
         public RenderingEngine.Scene.Camera Camera { get; private set; }
 
-        public SecurityCamera(string name, Vector3 position, Vector3 direction)
+        public SecurityCamera(string name, Vector3 position, Vector3 normal)
         {
             Name = name;
             
-            Properties = new SecurityCameraProperties {Position = position, Direction = direction};
-
-            NormalLine = new NormalLine {Start = position, End = position + (direction*NormalLine.NormalLength)};
+            Properties = new SecurityCameraProperties {Position = position, Normal = normal};
 
             CreateCamera();
         }
 
         private void CreateCamera()
         {
-            Camera = new RenderingEngine.Scene.Camera(Name, Properties.Position, Properties.Direction, MeshName);
+            Camera = new Camera(Name, Properties.Position, Properties.Normal, MeshName);
 
             Camera.Scale(DefaultScaleVector);
-            Camera.RotateToDirection(NormalLine.End);
-            Camera.DrawNormal(NormalLine.Start,NormalLine.End,NormalLine.LineColor);
+            Camera.RotateToDirection(Properties.Position + Properties.Normal*10);
 
             TranslateCameraOnPolygonFace();
 
@@ -62,19 +60,24 @@ namespace ApplicationLogic.Scene
         private void TranslateCameraOnPolygonFace()
         {
             var aabb = Camera.GetBoundingBox();
-            
+            aabb.Scale(DefaultScaleVector);
             var center = aabb.Center;
             
-            var dist = 4*new Vector3(center.z, center.z, center.z);
+            var dist = 2*new Vector3(center.z, center.z, center.z);
             
-            var mainCameradir = RenderingEngine.Engine.Engine.Instance.GetMainCameraDirection();
+            var mainCameradir = Engine.Instance.GetMainCameraDirection();
             
             var t = dist*mainCameradir;
             t = (mainCameradir.z < 0) ? -t : t;
             t = (mainCameradir.y > 0) ? -t : t;
             t = (mainCameradir.x < 0) ? -t : t;
-            
-            Camera.Translate(t);
+
+            if (Engine.Instance.MainCamera != null)
+            {
+                t = t * Engine.Instance.MainCamera.Direction;
+            }
+
+            Camera.SceneNode.Translate(t);
         }
 
         public void HandleKey(Keys key)
@@ -82,22 +85,22 @@ namespace ApplicationLogic.Scene
             switch (key)
             {
                 case Keys.Up:
-                    Camera.Translate(new Vector3(0, -TranslationRate, 0));
+                    Camera.MoveTop();
                     break;
                 case Keys.Left:
-                    Camera.Translate(new Vector3(-TranslationRate, 0, 0));
+                    Camera.MoveLeft();
                     break;
                 case Keys.Down:
-                    Camera.Translate(new Vector3(0, TranslationRate, 0));
+                    Camera.MoveDown();
                     break;
                 case Keys.Right:
-                    Camera.Translate(new Vector3(TranslationRate, 0, 0));
+                    Camera.MoveRight();
                     break;
                 case Keys.Add:
-                    Camera.Translate(new Vector3(0, 0, -TranslationRate));
+                    Camera.MoveForward();
                     break;
                 case Keys.Subtract:
-                    Camera.Translate(new Vector3(0, 0, TranslationRate));
+                    Camera.MoveBackward();
                     break;
             }
         }

@@ -1,80 +1,90 @@
-﻿using System.Collections.Generic;
-using Mogre;
+﻿using Mogre;
 
 namespace RenderingEngine.Scene
 {
     public class CameraFrustum
     {
-        private readonly uint[] mIndices = { 
-                                               1, 2, 5, 
-                                               2, 5, 6,
-                                               5, 6, 7,
-                                               6, 7, 2,
-                                               7, 2, 3,
-                                               2, 3, 1,
-                                               3, 1, 0,
-                                               1, 0, 5,
-                                               0, 5, 4,
-                                               5, 4, 7,
-                                               4, 7, 0,
-                                               7, 0, 3
-                                             };
-
-        private List<Vector3> mCorners = new List<Vector3>();
+        public const float FarDistance = 50f;
+        public const float NearDistance = 1f;
         private readonly Camera mParentCamera;
         public string Name { private set; get; }
-        public ManualObject ManualObject { private set; get; }
-        public SceneNode SceneNode{ private set; get; }
+        public ManualObject FrustumManualObject { private set; get; }
+        public SceneNode FrustumSceneNode { private set; get; }
+        public Vector3 Position { private set; get; }
+        public Vector3 FarTopLeft { private set; get; }
+        public Vector3 FarTopRight { private set; get; }
+        public Vector3 FarBottomLeft { private set; get; }
+        public Vector3 FarBottomRight { private set; get; }
 
         public CameraFrustum(Camera parentCamera)
         {
             mParentCamera = parentCamera;
+            Position = mParentCamera.MogreCamera.Position;
+
             Name = parentCamera.Name + "Frustum";
 
-            ManualObject = Engine.Engine.Instance.SceneManager.CreateManualObject(Name);
-            SceneNode = Engine.Engine.Instance.SceneManager.RootSceneNode.CreateChildSceneNode(Name + "_node");
-            
             CreateMaterial();
-            DrawFrustum();
-
-            SceneNode.AttachObject(ManualObject);
+            CalculateFarPoints();
+            CreateManualObject();
+            
+            FrustumSceneNode = Engine.Engine.Instance.SceneManager.RootSceneNode.CreateChildSceneNode(Name + "_node");
+            FrustumSceneNode.AttachObject(FrustumManualObject);
         }
 
-        private unsafe void DrawFrustum()
+        private void CalculateFarPoints()
         {
-            mCorners = GetWorldSpaceCorners(mParentCamera.MogreCamera.WorldSpaceCorners);
-            ManualObject.Begin("frustum_material", RenderOperation.OperationTypes.OT_TRIANGLE_STRIP);
-                ManualObject.Colour(0,0,1,0.5f);
+            Vector3 camUp = mParentCamera.MogreCamera.Up;
+            Vector3 camRight = mParentCamera.MogreCamera.Right;
+            Vector3 farCenter = Position - mParentCamera.MogreCamera.Direction * FarDistance;
 
-                ManualObject.Position(mCorners[0]);
-                ManualObject.Position(mCorners[1]);
-                ManualObject.Position(mCorners[2]);
-                ManualObject.Position(mCorners[3]);
+            float farHeight = (float) (2 * System.Math.Tan(mParentCamera.MogreCamera.FOVy.ValueRadians / 2) * FarDistance);
+            float farWidth = farHeight * mParentCamera.MogreCamera.AspectRatio;
 
-                ManualObject.Position(mCorners[4]);
-                ManualObject.Position(mCorners[5]);
-                ManualObject.Position(mCorners[6]);
-                ManualObject.Position(mCorners[7]);
-
-                foreach (var index in mIndices){ ManualObject.Index(index); }
-
-            ManualObject.End();
+            FarTopLeft = farCenter + camUp * (farHeight * 0.5f) - camRight * (farWidth * 0.5f);
+            FarTopRight = farCenter + camUp * (farHeight * 0.5f) + camRight * (farWidth * 0.5f);
+            FarBottomLeft = farCenter - camUp * (farHeight * 0.5f) - camRight * (farWidth * 0.5f);
+            FarBottomRight = farCenter - camUp * (farHeight * 0.5f) + camRight * (farWidth * 0.5f);
         }
 
-        private unsafe List<Vector3> GetWorldSpaceCorners(Vector3* corners)
+        private void CreateManualObject()
         {
-            var worldSpaceCorners = new List<Vector3>();
-            for (int i = 0; i < 8; i++)
+            FrustumManualObject = new ManualObject(Name)
             {
-                worldSpaceCorners.Add(corners[i]);
-            }
-            return worldSpaceCorners;
+                CastShadows = false,
+                RenderQueueGroup = (byte) RenderQueueGroupID.RENDER_QUEUE_OVERLAY - 1
+            };
+
+            FrustumManualObject.Begin("frustum_material", RenderOperation.OperationTypes.OT_LINE_LIST);
+            FrustumManualObject.Position(Position);
+            FrustumManualObject.Position(FarTopRight);
+            //FrustumManualObject.Position(FarLeftTop);
+            FrustumManualObject.End();
+
+            FrustumManualObject.Begin("frustum_material", RenderOperation.OperationTypes.OT_LINE_LIST);
+            FrustumManualObject.Position(Position);
+            FrustumManualObject.Position(FarBottomLeft);
+           // FrustumManualObject.Position(FarRightBottom);
+            FrustumManualObject.End();
+
+            FrustumManualObject.Begin("frustum_material", RenderOperation.OperationTypes.OT_LINE_LIST);
+            FrustumManualObject.Position(Position);
+            FrustumManualObject.Position(FarBottomRight);
+           // FrustumManualObject.Position(FarRightTop);
+            FrustumManualObject.End();
+
+            FrustumManualObject.Begin("frustum_material", RenderOperation.OperationTypes.OT_LINE_LIST);
+            FrustumManualObject.Position(Position);
+            FrustumManualObject.Position(FarTopLeft);
+           // FrustumManualObject.Position(FarLeftBottom);
+            FrustumManualObject.End();
         }
+
+
 
         private void CreateMaterial()
         {
             const string resourceGroupName = "default";
-            if (ResourceGroupManager.Singleton.ResourceGroupExists(resourceGroupName) == false)
+            if (!ResourceGroupManager.Singleton.ResourceGroupExists(resourceGroupName))
             {
                 ResourceGroupManager.Singleton.CreateResourceGroup(resourceGroupName);
             }
@@ -86,16 +96,6 @@ namespace RenderingEngine.Scene
             moMaterial.GetTechnique(0).GetPass(0).SetAmbient(0, 0, 1);
             moMaterial.GetTechnique(0).GetPass(0).SetSelfIllumination(0, 0, 1);
             moMaterial.Dispose(); 
-        }
-
-        public void Translate(Vector3 tranaslate)
-        {
-            SceneNode.Translate(tranaslate);
-        }
-
-        public void Rotate(Quaternion quat)
-        {
-            SceneNode.Rotate(quat);
         }
     }
 }

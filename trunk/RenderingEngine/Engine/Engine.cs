@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Mogre;
 using RenderingEngine.Interfaces;
+using Log = Ogre.Log;
 using Math = System.Math;
 
 namespace RenderingEngine.Engine
@@ -175,16 +176,24 @@ namespace RenderingEngine.Engine
 
             // Get the results, set the camera height
             if (!itr.MoveNext()) return;
-            var terrainHeight = itr.Current.worldFragment.singleIntersection.y;
-            
-            if (mIsClampedToTerrain)
+
+            try
             {
-                MainCamera.SetPosition(camPos.x, terrainHeight + 10.0f, camPos.z);
-            }
-            else
-            {
-                if ((terrainHeight + MaxHeight) > camPos.y)
+                var terrainHeight = itr.Current.worldFragment.singleIntersection.y;
+
+                if (mIsClampedToTerrain)
+                {
                     MainCamera.SetPosition(camPos.x, terrainHeight + 10.0f, camPos.z);
+                }
+                else
+                {
+                    if ((terrainHeight + MaxHeight) > camPos.y)
+                        MainCamera.SetPosition(camPos.x, terrainHeight + 10.0f, camPos.z);
+                }
+            }
+            catch (Exception e)
+            {
+                ApplicationLogic.LogMessage(e.ToString());  
             }
         }
 

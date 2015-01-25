@@ -62,7 +62,6 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Drawing\Draw.cs" />
     <Compile Include="Helpers\PolygonRayCast.cs" />
     <Compile Include="Interfaces\IApplication.cs" />
     <Compile Include="Scene\Model.cs" />
@@ -74,6 +73,7 @@
     <Compile Include="Helpers\WindowParams.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scene\CameraFrustum.cs" />
+    <Compile Include="Scene\NormalLine.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
