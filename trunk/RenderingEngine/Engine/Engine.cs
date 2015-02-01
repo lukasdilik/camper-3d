@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Mogre;
 using RenderingEngine.Interfaces;
-using Log = Ogre.Log;
 using Math = System.Math;
 
 namespace RenderingEngine.Engine
@@ -193,7 +192,7 @@ namespace RenderingEngine.Engine
             }
             catch (Exception e)
             {
-                ApplicationLogic.LogMessage(e.ToString());  
+                //ApplicationLogic.LogMessage(e.ToString());  
             }
         }
 

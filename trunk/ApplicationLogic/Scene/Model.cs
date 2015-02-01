@@ -16,7 +16,7 @@ namespace ApplicationLogic.Scene
         public string FilePath { get; private set; }
         public RenderingEngine.Scene.Model RenderModel { get; private set; }
         public Dictionary<string, SecurityCamera> SecurityCameras { get; private set; }
-        public string SelectedSecurityCameraIndex { get; private set; }
+        public SecurityCamera SelectedSecurityCamera { get; private set; }
 
         public bool Selected
         {
@@ -38,12 +38,10 @@ namespace ApplicationLogic.Scene
 
         public Model(string name, string filePath)
         {
-            
-
             Name = name;
             FilePath = filePath;
             SecurityCameras = new Dictionary<string, SecurityCamera>();
-            SelectedSecurityCameraIndex = null;
+            SelectedSecurityCamera = null;
 
             RenderModel = new RenderingEngine.Scene.Model(name,filePath);
         }
@@ -57,8 +55,9 @@ namespace ApplicationLogic.Scene
         {
             if (SecurityCameras.ContainsKey(name))
             {
-                SecurityCameras[name].Selected = true;
-                SelectedSecurityCameraIndex = name;
+                DeselectAllSecurityCameras();
+                SelectedSecurityCamera = SecurityCameras[name];
+                SelectedSecurityCamera.Selected = true;
             }
         }
 
@@ -69,7 +68,7 @@ namespace ApplicationLogic.Scene
                 camera.Value.Selected = false;
                 Selected = true;
             }
-            SelectedSecurityCameraIndex = null;
+            SelectedSecurityCamera = null;
         }
 
         public string CreateCamera(int screenX, int screenY)
@@ -91,11 +90,14 @@ namespace ApplicationLogic.Scene
 
                 if (isHit)
                 {
-                    string cameraName = "SecurityCamera" + SecurityCameras.Count;
-                    var securityCamera = new SecurityCamera(cameraName, contactPoint, normal);
+                    
+                    var securityCamera = new SecurityCamera(SecurityCameras.Count,contactPoint, normal);
 
                     SecurityCameras.Add(securityCamera.Name, securityCamera);
-                    SelectedSecurityCameraIndex = cameraName;
+
+                    securityCamera.Selected = true;
+                    SelectedSecurityCamera = securityCamera;
+                    
                     return securityCamera.Name;
                 }
                 return "";
@@ -114,25 +116,16 @@ namespace ApplicationLogic.Scene
     
         }
 
-        public SecurityCamera GetSelectedSecurityCamera()
-        {
-            if (SelectedSecurityCameraIndex != null && SecurityCameras.ContainsKey(SelectedSecurityCameraIndex))
-            {
-                return SecurityCameras[SelectedSecurityCameraIndex];
-            }
-            return null;
-        }
-
         public void DeleteSelectedCamera()
         {
-            if (SelectedSecurityCameraIndex != null)
+            if (SelectedSecurityCamera != null)
             {
-                var toDeleteKey = SelectedSecurityCameraIndex;
+                var toDeleteKey = SelectedSecurityCamera.Name;
                 if (SecurityCameras.ContainsKey(toDeleteKey))
                 {
                     SecurityCameras[toDeleteKey].Delete();
                     SecurityCameras.Remove(toDeleteKey);
-                    SelectedSecurityCameraIndex = null;
+                    SelectedSecurityCamera = null;
                 }
             }
 
@@ -140,41 +133,30 @@ namespace ApplicationLogic.Scene
 
         public void CameraControl(Keys key)
         {
-            if (SelectedSecurityCameraIndex != null)
+            if (SelectedSecurityCamera != null)
             {
-                if (SecurityCameras.ContainsKey(SelectedSecurityCameraIndex))
-                {
-                    SecurityCameras[SelectedSecurityCameraIndex].HandleKey(key);
-                }
+                SelectedSecurityCamera.HandleKey(key);
             }
         }
 
         public bool IsSecurityCameraSelected()
         {
-            return SelectedSecurityCameraIndex != null;
+            return SelectedSecurityCamera != null;
         }
 
         public void CameraMouseClick(MouseEventArgs e)
         {
-            if (SelectedSecurityCameraIndex != null)
+            if (SelectedSecurityCamera != null)
             {
-                if (SecurityCameras.ContainsKey(SelectedSecurityCameraIndex))
-                {
-                    SecurityCameras[SelectedSecurityCameraIndex].MouseClick(e);    
-                }
-                
+                SelectedSecurityCamera.MouseClick(e);
             }
         }
 
         public void CameraMouseMove(MouseEventArgs e)
         {
-            if (SelectedSecurityCameraIndex != null)
+            if (SelectedSecurityCamera != null)
             {
-                if (SecurityCameras.ContainsKey(SelectedSecurityCameraIndex))
-                {
-                    SecurityCameras[SelectedSecurityCameraIndex].MouseMove(e);
-                }
-
+                SelectedSecurityCamera.MouseMove(e);
             }
         }
     }

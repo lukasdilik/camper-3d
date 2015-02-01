@@ -24,7 +24,7 @@ namespace ApplicationUI
         {
             if (mAppController != null)
             {
-                mAppController.Dispose();
+                mAppController.Shutdown();
             }
                 
         }
@@ -114,11 +114,17 @@ namespace ApplicationUI
         public void AddCamera(string cameraName)
         {
             Camera_listBox.Items.Add(cameraName);
+            Camera_listBox.SelectedItem = cameraName;
         }
 
         public void RemoveCamera(string cameraName)
         {
             throw new NotImplementedException();
+        }
+
+        public void CameraSelected(string item)
+        {
+            Camera_listBox.SelectedIndex = Camera_listBox.FindString(item);
         }
 
         private void AvailableModels_combo_SelectedIndexChanged(object sender, EventArgs e)
@@ -135,15 +141,27 @@ namespace ApplicationUI
            mAppController.Resize(MainWindow.Width, MainWindow.Height);
         }
 
-        public new void Close()
-        {
-            Application.Exit();
-        }
-
         public void LogMessage(string msg)
         {
-            Log_textBox.AppendText(msg);
-            Log_textBox.AppendText("-------------------------------------");
+            if (ActiveForm == null || ActiveForm.Disposing) return;
+
+            try
+            {
+                Log_textBox.AppendText(msg);
+                Log_textBox.AppendText("-------------------------------------");
+
+            }
+            catch (Exception e)
+            {
+                Log_textBox.AppendText(e.ToString());
+                Log_textBox.AppendText("-------------------------------------");
+            }
+
+        }
+
+        private void Camera_listBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            mAppController.SelectCamera((string) Camera_listBox.Items[Camera_listBox.SelectedIndex]);
         }
     }
 }

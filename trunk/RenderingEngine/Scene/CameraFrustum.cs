@@ -11,6 +11,7 @@ namespace RenderingEngine.Scene
         public ManualObject FrustumManualObject { private set; get; }
         public SceneNode FrustumSceneNode { private set; get; }
         public Vector3 Position { private set; get; }
+        public Vector3 FarCenter { private set; get; }
         public Vector3 FarTopLeft { private set; get; }
         public Vector3 FarTopRight { private set; get; }
         public Vector3 FarBottomLeft { private set; get; }
@@ -19,31 +20,30 @@ namespace RenderingEngine.Scene
         public CameraFrustum(Camera parentCamera)
         {
             mParentCamera = parentCamera;
-            Position = mParentCamera.MogreCamera.Position;
+            Position = mParentCamera.SceneNode.Position;
 
             Name = parentCamera.Name + "Frustum";
 
-            CreateMaterial();
-            CalculateFarPoints();
+            CalculateFarPointsWorld();
             CreateManualObject();
-            
-            FrustumSceneNode = Engine.Engine.Instance.SceneManager.RootSceneNode.CreateChildSceneNode(Name + "_node");
+
+            FrustumSceneNode = parentCamera.SceneNode.CreateChildSceneNode(Name + "_node");
             FrustumSceneNode.AttachObject(FrustumManualObject);
         }
 
-        private void CalculateFarPoints()
+        private void CalculateFarPointsWorld()
         {
             Vector3 camUp = mParentCamera.MogreCamera.Up;
             Vector3 camRight = mParentCamera.MogreCamera.Right;
-            Vector3 farCenter = Position - mParentCamera.MogreCamera.Direction * FarDistance;
+            FarCenter = Position + mParentCamera.MogreCamera.Direction*FarDistance;
 
-            float farHeight = (float) (2 * System.Math.Tan(mParentCamera.MogreCamera.FOVy.ValueRadians / 2) * FarDistance);
-            float farWidth = farHeight * mParentCamera.MogreCamera.AspectRatio;
+            float farHeight = (float) (2*System.Math.Tan(mParentCamera.MogreCamera.FOVy.ValueRadians/2)*FarDistance);
+            float farWidth = farHeight*mParentCamera.MogreCamera.AspectRatio;
 
-            FarTopLeft = farCenter + camUp * (farHeight * 0.5f) - camRight * (farWidth * 0.5f);
-            FarTopRight = farCenter + camUp * (farHeight * 0.5f) + camRight * (farWidth * 0.5f);
-            FarBottomLeft = farCenter - camUp * (farHeight * 0.5f) - camRight * (farWidth * 0.5f);
-            FarBottomRight = farCenter - camUp * (farHeight * 0.5f) + camRight * (farWidth * 0.5f);
+            FarTopLeft = FarCenter + camUp*(farHeight*0.5f) - camRight*(farWidth*0.5f);
+            FarTopRight = FarCenter + camUp*(farHeight*0.5f) + camRight*(farWidth*0.5f);
+            FarBottomLeft = FarCenter - camUp*(farHeight*0.5f) - camRight*(farWidth*0.5f);
+            FarBottomRight = FarCenter - camUp*(farHeight*0.5f) + camRight*(farWidth*0.5f);
         }
 
         private void CreateManualObject()
@@ -53,49 +53,49 @@ namespace RenderingEngine.Scene
                 CastShadows = false,
                 RenderQueueGroup = (byte) RenderQueueGroupID.RENDER_QUEUE_OVERLAY - 1
             };
+           
+            TranformPointToLocalSpace();
 
-            FrustumManualObject.Begin("frustum_material", RenderOperation.OperationTypes.OT_LINE_LIST);
+            var materialName = ColorMaterialManager.Instance.GetNextSolidColorMaterialName();
+
+            FrustumManualObject.Begin(materialName, RenderOperation.OperationTypes.OT_TRIANGLE_LIST);
             FrustumManualObject.Position(Position);
             FrustumManualObject.Position(FarTopRight);
-            //FrustumManualObject.Position(FarLeftTop);
+            FrustumManualObject.Position(FarTopLeft);
+            FrustumManualObject.Triangle(2, 1, 0);
             FrustumManualObject.End();
 
-            FrustumManualObject.Begin("frustum_material", RenderOperation.OperationTypes.OT_LINE_LIST);
+            FrustumManualObject.Begin(materialName, RenderOperation.OperationTypes.OT_TRIANGLE_LIST);
             FrustumManualObject.Position(Position);
             FrustumManualObject.Position(FarBottomLeft);
-           // FrustumManualObject.Position(FarRightBottom);
+            FrustumManualObject.Position(FarBottomRight);
+            FrustumManualObject.Triangle(2, 1, 0);
             FrustumManualObject.End();
 
-            FrustumManualObject.Begin("frustum_material", RenderOperation.OperationTypes.OT_LINE_LIST);
+            FrustumManualObject.Begin(materialName, RenderOperation.OperationTypes.OT_TRIANGLE_LIST);
             FrustumManualObject.Position(Position);
             FrustumManualObject.Position(FarBottomRight);
-           // FrustumManualObject.Position(FarRightTop);
+            FrustumManualObject.Position(FarTopRight);
+            FrustumManualObject.Triangle(2, 1, 0);
             FrustumManualObject.End();
 
-            FrustumManualObject.Begin("frustum_material", RenderOperation.OperationTypes.OT_LINE_LIST);
+            FrustumManualObject.Begin(materialName, RenderOperation.OperationTypes.OT_TRIANGLE_LIST);
             FrustumManualObject.Position(Position);
             FrustumManualObject.Position(FarTopLeft);
-           // FrustumManualObject.Position(FarLeftBottom);
+            FrustumManualObject.Position(FarBottomLeft);
+            FrustumManualObject.Triangle(2, 1, 0);
             FrustumManualObject.End();
+
         }
 
-
-
-        private void CreateMaterial()
+        private void TranformPointToLocalSpace()
         {
-            const string resourceGroupName = "default";
-            if (!ResourceGroupManager.Singleton.ResourceGroupExists(resourceGroupName))
-            {
-                ResourceGroupManager.Singleton.CreateResourceGroup(resourceGroupName);
-            }
-            MaterialPtr moMaterial = MaterialManager.Singleton.Create("frustum_material", resourceGroupName);
-            moMaterial.ReceiveShadows = false;
-            moMaterial.GetTechnique(0).SetSceneBlending(SceneBlendType.SBT_TRANSPARENT_ALPHA);
-            moMaterial.GetTechnique(0).SetLightingEnabled(true);
-            moMaterial.GetTechnique(0).GetPass(0).SetDiffuse(0, 0, 1, 0.5f);
-            moMaterial.GetTechnique(0).GetPass(0).SetAmbient(0, 0, 1);
-            moMaterial.GetTechnique(0).GetPass(0).SetSelfIllumination(0, 0, 1);
-            moMaterial.Dispose(); 
+            Position = mParentCamera.SceneNode.ConvertWorldToLocalPosition(Position);
+            FarCenter = mParentCamera.SceneNode.ConvertWorldToLocalPosition(FarCenter); 
+            FarTopLeft = mParentCamera.SceneNode.ConvertWorldToLocalPosition(FarTopLeft); 
+            FarTopRight = mParentCamera.SceneNode.ConvertWorldToLocalPosition(FarTopRight); 
+            FarBottomLeft = mParentCamera.SceneNode.ConvertWorldToLocalPosition(FarBottomLeft); 
+            FarBottomRight = mParentCamera.SceneNode.ConvertWorldToLocalPosition(FarBottomRight); 
         }
     }
 }

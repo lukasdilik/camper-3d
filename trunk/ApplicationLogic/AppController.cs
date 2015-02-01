@@ -1,17 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 using ApplicationLogic.Interfaces;
 using ApplicationLogic.Scene;
 using Mogre;
+using RenderingEngine;
 using RenderingEngine.Engine;
 using RenderingEngine.Interfaces;
 
 
 namespace ApplicationLogic
 {
-    public partial class AppController : IDisposable, IKeyboardInput, IMouseInput,IApplication
+    public partial class AppController : IKeyboardInput, IMouseInput,IApplication
     {
         private const string StoredModelsPath = "./Resources/models/scene";
 
@@ -71,24 +73,23 @@ namespace ApplicationLogic
         public void SelectModel(int screenX, int screenY)
         {
             DeselectAllModels();
-            MovableObject movableObject = Engine.Instance.SelectObject(screenX, screenY);
-            if (movableObject != null)
+            var movableObject = Engine.Instance.SelectObject(screenX, screenY);
+            
+            if (movableObject == null) return;
+            
+            var name = movableObject.Name;
+            
+            foreach (var model in Models)
             {
-                var name = movableObject.Name;
-                foreach (var model in Models)
+                if (name == model.Value.Name)
                 {
-                    if (name == model.Value.Name)
-                    {
-                        model.Value.Selected = true;
-                        SelectedModel = model.Value;
-                    }
-                    foreach (var camera in model.Value.SecurityCameras)
-                    {
-                        if (name == camera.Value.Camera.Name)
-                        {
-                            SelectedModel.SelectSecurityCamera(name);
-                        }
-                    }
+                    model.Value.Selected = true;
+                    SelectedModel = model.Value;
+                }
+                foreach (var camera in model.Value.SecurityCameras.Where(camera => name == camera.Value.Camera.Name))
+                {
+                    SelectedModel.SelectSecurityCamera(name);
+                    mApplicationUi.CameraSelected(camera.Value.Name);
                 }
             }
         }
@@ -97,19 +98,17 @@ namespace ApplicationLogic
         {
             if (SelectedModel != null)
             {
-                var selectedCamera = SelectedModel.GetSelectedSecurityCamera();
+                var selectedCamera = SelectedModel.SelectedSecurityCamera;
                 if (selectedCamera != null)
                 {
                     if (mIsMainCameraActivated)
                     {
                         Engine.Instance.SetCameraViewport(selectedCamera.Camera.MogreCamera);
-                        //selectedCamera.Camera.Frustum.SceneNode.FlipVisibility();
                         mIsMainCameraActivated = false;
                     }
                     else
                     {
                         Engine.Instance.ResetViewportToMainCamera();
-                        //selectedCamera.Camera.Frustum.SceneNode.FlipVisibility();
                         mIsMainCameraActivated = true;
                     }
                 }
@@ -137,16 +136,6 @@ namespace ApplicationLogic
             newModel.Translate(intersection);
         }
 
-        protected void AlignCamera()
-        {
-//            if (Models.Count > 0)
-//            {
-//                var nodePos = Models[mModelName + "0"].SceneNode.Position;
-//                var pos = new Vector3(nodePos.x, nodePos.y + 50, nodePos.z + 200);
-//                MainCamera.Position = pos;
-//            }
-        }
-
         public void Start() 
         {
             mIsStarted = true;
@@ -158,7 +147,7 @@ namespace ApplicationLogic
             Engine.Instance.Resize(width, height);
         }
 
-        public void Dispose()
+        public void Shutdown()
         {
             Engine.Instance.Dispose();
         }
@@ -180,6 +169,18 @@ namespace ApplicationLogic
                 if(!String.IsNullOrEmpty(newCameraName))
                     mApplicationUi.AddCamera(newCameraName);
                 
+            }
+        }
+
+        public void SelectCamera(string key)
+        {
+            foreach (var model in Models)
+            {
+                if (model.Value.SecurityCameras.ContainsKey(key))
+                {
+                    model.Value.SelectSecurityCamera(key);
+                    mApplicationUi.CameraSelected(model.Value.SecurityCameras[key].Name);
+                }
             }
         }
 

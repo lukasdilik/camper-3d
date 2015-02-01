@@ -1,9 +1,10 @@
-﻿using System.Windows.Forms;
+﻿using System;
+using System.Windows.Forms;
 using RenderingEngine.Engine;
 
 namespace ApplicationLogic
 {
-    public partial class AppController 
+    public partial class AppController : IDisposable
     {
         protected virtual void HandleKeyPress(char keyChar)
         {
@@ -111,6 +112,11 @@ namespace ApplicationLogic
         protected virtual void HandleMouseDoubleClick(MouseEventArgs e)
         {
 
+        }
+
+        public void Dispose()
+        {
+            
         }
     }
 }

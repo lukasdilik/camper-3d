@@ -39,10 +39,10 @@ namespace ApplicationUI
             this.AddFile_btn = new System.Windows.Forms.Button();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.Camera_listBox = new System.Windows.Forms.ListBox();
             this.AvailableModels_combo = new System.Windows.Forms.ComboBox();
             this.Start_btn = new System.Windows.Forms.Button();
             this.Log_textBox = new System.Windows.Forms.TextBox();
-            this.Camera_listBox = new System.Windows.Forms.ListBox();
             this.statusStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
@@ -132,6 +132,16 @@ namespace ApplicationUI
             this.panel1.Size = new System.Drawing.Size(345, 839);
             this.panel1.TabIndex = 6;
             // 
+            // Camera_listBox
+            // 
+            this.Camera_listBox.FormattingEnabled = true;
+            this.Camera_listBox.ItemHeight = 16;
+            this.Camera_listBox.Location = new System.Drawing.Point(16, 640);
+            this.Camera_listBox.Name = "Camera_listBox";
+            this.Camera_listBox.Size = new System.Drawing.Size(317, 196);
+            this.Camera_listBox.TabIndex = 8;
+            this.Camera_listBox.SelectedIndexChanged += new System.EventHandler(this.Camera_listBox_SelectedIndexChanged);
+            // 
             // AvailableModels_combo
             // 
             this.AvailableModels_combo.FormattingEnabled = true;
@@ -159,15 +169,6 @@ namespace ApplicationUI
             this.Log_textBox.Name = "Log_textBox";
             this.Log_textBox.Size = new System.Drawing.Size(1233, 87);
             this.Log_textBox.TabIndex = 7;
-            // 
-            // Camera_listBox
-            // 
-            this.Camera_listBox.FormattingEnabled = true;
-            this.Camera_listBox.ItemHeight = 16;
-            this.Camera_listBox.Location = new System.Drawing.Point(16, 640);
-            this.Camera_listBox.Name = "Camera_listBox";
-            this.Camera_listBox.Size = new System.Drawing.Size(317, 196);
-            this.Camera_listBox.TabIndex = 8;
             // 
             // MainForm
             // 
