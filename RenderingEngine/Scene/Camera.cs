@@ -5,17 +5,19 @@ namespace RenderingEngine.Scene
     public class Camera
     {
         private readonly Vector3 mDirection;
+        public static readonly Vector3 DefaultScaleVector = new Vector3(8, 8, 8);
         private const float TranslationRate = 0.1f;
         public string Name { get; private set; }
         public Entity Mesh { get; private set; }
         public SceneNode SceneNode { get; private set; }
         public Mogre.Camera MogreCamera { get; private set; }
         public CameraFrustum Frustum { get; private set; }
-        public NormalLine NormalLine { get; private set; }
+        public Line NormalLine { get; private set; }
 
         public Camera(string name, Vector3 position, Vector3 normal, string meshName)
         {
             Name = name;
+            normal.Normalise();
             mDirection = normal;
            
             Mesh = Engine.Engine.Instance.SceneManager.CreateEntity(name, meshName);
@@ -23,18 +25,24 @@ namespace RenderingEngine.Scene
             SceneNode.AttachObject(Mesh);
             SceneNode.Position = position;
 
+            Scale(DefaultScaleVector);
+
+            TranslateCameraOnPolygonFace();
+            
+            RotateToDirection(position + normal * 10);
+
             CreateMogreCameraObject();
             
-            NormalLine = new NormalLine(name+"_line",position,normal,SceneNode);
-            
             Frustum = new CameraFrustum(this);
+
+            NormalLine = new Line(name + "_line",new Vector3(), Frustum.FarCenter, SceneNode);
         }
 
         private void CreateMogreCameraObject()
         {
             MogreCamera = Engine.Engine.Instance.SceneManager.CreateCamera(Name+"_camera");
             MogreCamera.Position = SceneNode.Position;
-            MogreCamera.LookAt(-mDirection);
+            MogreCamera.LookAt(SceneNode.Position + mDirection*100);
             MogreCamera.NearClipDistance = 8;
         }
 
@@ -95,12 +103,32 @@ namespace RenderingEngine.Scene
             Translate(new Vector3(0, 0, TranslationRate));
         }
 
+        private void TranslateCameraOnPolygonFace()
+        {
+            var aabb = GetBoundingBox();
+            aabb.Scale(DefaultScaleVector);
+            var center = aabb.Center;
+
+            var dist = 2 * new Vector3(center.z, center.z, center.z);
+
+            var mainCameradir = Engine.Engine.Instance.GetMainCameraDirection();
+
+            var t = dist * mainCameradir;
+            t = (mainCameradir.z < 0) ? -t : t;
+            t = (mainCameradir.y > 0) ? -t : t;
+            t = (mainCameradir.x < 0) ? -t : t;
+
+            if (Engine.Engine.Instance.MainCamera != null)
+            {
+                t = t * Engine.Engine.Instance.MainCamera.Direction;
+            }
+
+            SceneNode.Translate(t);
+        }
+
         public void Translate(Vector3 t)
         {
-            var dir = Engine.Engine.Instance.MainCamera.Direction;
-            dir = Engine.Engine.Instance.MainCamera.DerivedOrientation*dir;
             SceneNode.Translate(t, Node.TransformSpace.TS_WORLD);
-            MogreCamera.Position = SceneNode.Position;
         }
 
         public AxisAlignedBox GetBoundingBox()
@@ -115,7 +143,7 @@ namespace RenderingEngine.Scene
             aabb.Scale(scaleVector);
         }
 
-        public void RotateToDirection(Vector3 destination)
+        private void RotateToDirection(Vector3 destination)
         {
             Vector3 direction = destination - SceneNode.Position; // B-A = A->B (see vector questions above)
             Vector3 src = SceneNode.Position * Vector3.UNIT_Z; //facing direction of this mesh is +Z
@@ -133,13 +161,13 @@ namespace RenderingEngine.Scene
 
         public void Pitch(Radian angleInRad)
         {
-            MogreCamera.Pitch(angleInRad);
+            MogreCamera.Pitch(-angleInRad);
             SceneNode.Pitch(angleInRad);
 
         }
         public void Yaw(Radian angleInRad)
         {
-            MogreCamera.Yaw(angleInRad);
+            MogreCamera.Yaw(-angleInRad);
             SceneNode.Yaw(angleInRad);
         }
     }

@@ -42,8 +42,6 @@ namespace RenderingEngine.Engine
                     return;
 
                 Root.StartRendering();
-
-                DestroyScene();
             }
             catch (System.Runtime.InteropServices.SEHException e)
             {
@@ -90,6 +88,8 @@ namespace RenderingEngine.Engine
             CreateScene();
 
             CreateFrameListeners();
+
+            ColorMaterialManager.Instance.Init();
 
             DebugOverlay = new DebugOverlay(RenderWindow) {AdditionalInfo = "Bilinear"};
 
