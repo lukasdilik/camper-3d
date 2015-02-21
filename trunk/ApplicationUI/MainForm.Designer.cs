@@ -30,26 +30,48 @@ namespace ApplicationUI
         /// </summary>
         private void InitializeComponent()
         {
-            this.MainWindow = new System.Windows.Forms.Panel();
-            this.label1 = new System.Windows.Forms.Label();
+            this.MainWindow = new ApplicationUI.SelectablePanel();
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.startToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.AvailableModels_label = new System.Windows.Forms.Label();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.StatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.CameraCoords_label = new System.Windows.Forms.ToolStripStatusLabel();
             this.AddFile_btn = new System.Windows.Forms.Button();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
-            this.panel1 = new System.Windows.Forms.Panel();
+            this.LeftPanel = new ApplicationUI.SelectablePanel();
+            this.tableLayoutPanel1 = new ApplicationUI.SelectableTableLayoutPanel();
+            this.Rotation_textBox = new System.Windows.Forms.TextBox();
+            this.Resolution_textBox = new System.Windows.Forms.TextBox();
+            this.FOVy_textBox = new System.Windows.Forms.TextBox();
+            this.AspectRatio_textBox = new System.Windows.Forms.TextBox();
+            this.Direction_textBox = new System.Windows.Forms.TextBox();
+            this.Position_textBox = new System.Windows.Forms.TextBox();
+            this.Name_label = new System.Windows.Forms.Label();
+            this.Position_label = new System.Windows.Forms.Label();
+            this.Direction_label = new System.Windows.Forms.Label();
+            this.AspectRatio_label = new System.Windows.Forms.Label();
+            this.FOVy_label = new System.Windows.Forms.Label();
+            this.Resolution_label = new System.Windows.Forms.Label();
+            this.Rotation_label = new System.Windows.Forms.Label();
+            this.Name_textBox = new System.Windows.Forms.TextBox();
+            this.Update_btn = new System.Windows.Forms.Button();
             this.Camera_listBox = new System.Windows.Forms.ListBox();
             this.AvailableModels_combo = new System.Windows.Forms.ComboBox();
-            this.Start_btn = new System.Windows.Forms.Button();
             this.Log_textBox = new System.Windows.Forms.TextBox();
+            this.MainWindow.SuspendLayout();
+            this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
-            this.panel1.SuspendLayout();
+            this.LeftPanel.SuspendLayout();
+            this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // MainWindow
             // 
             this.MainWindow.BackColor = System.Drawing.Color.White;
+            this.MainWindow.Controls.Add(this.menuStrip1);
             this.MainWindow.Location = new System.Drawing.Point(0, 0);
             this.MainWindow.Margin = new System.Windows.Forms.Padding(4);
             this.MainWindow.Name = "MainWindow";
@@ -62,15 +84,40 @@ namespace ApplicationUI
             this.MainWindow.MouseMove += new System.Windows.Forms.MouseEventHandler(this.MainWindow_MouseMove);
             this.MainWindow.MouseUp += new System.Windows.Forms.MouseEventHandler(this.MainWindow_MouseUp);
             // 
-            // label1
+            // menuStrip1
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(13, 10);
-            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(118, 17);
-            this.label1.TabIndex = 1;
-            this.label1.Text = "Available models:";
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripMenuItem1});
+            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Size = new System.Drawing.Size(1233, 24);
+            this.menuStrip1.TabIndex = 0;
+            this.menuStrip1.Text = "menuStrip1";
+            // 
+            // toolStripMenuItem1
+            // 
+            this.toolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.startToolStripMenuItem});
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(80, 20);
+            this.toolStripMenuItem1.Text = "Application";
+            // 
+            // startToolStripMenuItem
+            // 
+            this.startToolStripMenuItem.Name = "startToolStripMenuItem";
+            this.startToolStripMenuItem.Size = new System.Drawing.Size(98, 22);
+            this.startToolStripMenuItem.Text = "Start";
+            this.startToolStripMenuItem.Click += new System.EventHandler(this.startToolStripMenuItem_Click);
+            // 
+            // AvailableModels_label
+            // 
+            this.AvailableModels_label.AutoSize = true;
+            this.AvailableModels_label.Location = new System.Drawing.Point(13, 10);
+            this.AvailableModels_label.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.AvailableModels_label.Name = "AvailableModels_label";
+            this.AvailableModels_label.Size = new System.Drawing.Size(118, 17);
+            this.AvailableModels_label.TabIndex = 1;
+            this.AvailableModels_label.Text = "Available models:";
             // 
             // statusStrip1
             // 
@@ -119,24 +166,210 @@ namespace ApplicationUI
             this.openFileDialog1.FileName = "openFileDialog1";
             this.openFileDialog1.Filter = "\"OGRE mesh|*.mesh";
             // 
-            // panel1
+            // LeftPanel
             // 
-            this.panel1.Controls.Add(this.Camera_listBox);
-            this.panel1.Controls.Add(this.AvailableModels_combo);
-            this.panel1.Controls.Add(this.Start_btn);
-            this.panel1.Controls.Add(this.AddFile_btn);
-            this.panel1.Controls.Add(this.label1);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panel1.Location = new System.Drawing.Point(1239, 0);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(345, 839);
-            this.panel1.TabIndex = 6;
+            this.LeftPanel.Controls.Add(this.tableLayoutPanel1);
+            this.LeftPanel.Controls.Add(this.Camera_listBox);
+            this.LeftPanel.Controls.Add(this.AvailableModels_combo);
+            this.LeftPanel.Controls.Add(this.AddFile_btn);
+            this.LeftPanel.Controls.Add(this.AvailableModels_label);
+            this.LeftPanel.Dock = System.Windows.Forms.DockStyle.Right;
+            this.LeftPanel.Location = new System.Drawing.Point(1239, 0);
+            this.LeftPanel.Name = "LeftPanel";
+            this.LeftPanel.Size = new System.Drawing.Size(345, 839);
+            this.LeftPanel.TabIndex = 6;
+            // 
+            // tableLayoutPanel1
+            // 
+            this.tableLayoutPanel1.ColumnCount = 2;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 30F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 70F));
+            this.tableLayoutPanel1.Controls.Add(this.Rotation_textBox, 1, 6);
+            this.tableLayoutPanel1.Controls.Add(this.Resolution_textBox, 1, 5);
+            this.tableLayoutPanel1.Controls.Add(this.FOVy_textBox, 1, 4);
+            this.tableLayoutPanel1.Controls.Add(this.AspectRatio_textBox, 1, 3);
+            this.tableLayoutPanel1.Controls.Add(this.Direction_textBox, 1, 2);
+            this.tableLayoutPanel1.Controls.Add(this.Position_textBox, 1, 1);
+            this.tableLayoutPanel1.Controls.Add(this.Name_label, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.Position_label, 0, 1);
+            this.tableLayoutPanel1.Controls.Add(this.Direction_label, 0, 2);
+            this.tableLayoutPanel1.Controls.Add(this.AspectRatio_label, 0, 3);
+            this.tableLayoutPanel1.Controls.Add(this.FOVy_label, 0, 4);
+            this.tableLayoutPanel1.Controls.Add(this.Resolution_label, 0, 5);
+            this.tableLayoutPanel1.Controls.Add(this.Rotation_label, 0, 6);
+            this.tableLayoutPanel1.Controls.Add(this.Name_textBox, 1, 0);
+            this.tableLayoutPanel1.Controls.Add(this.Update_btn, 1, 7);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(16, 366);
+            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+            this.tableLayoutPanel1.RowCount = 8;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(317, 268);
+            this.tableLayoutPanel1.TabIndex = 9;
+            // 
+            // Rotation_textBox
+            // 
+            this.Rotation_textBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.Rotation_textBox.Location = new System.Drawing.Point(95, 208);
+            this.Rotation_textBox.Margin = new System.Windows.Forms.Padding(0, 10, 5, 0);
+            this.Rotation_textBox.Name = "Rotation_textBox";
+            this.Rotation_textBox.Size = new System.Drawing.Size(217, 23);
+            this.Rotation_textBox.TabIndex = 13;
+            // 
+            // Resolution_textBox
+            // 
+            this.Resolution_textBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.Resolution_textBox.Location = new System.Drawing.Point(95, 175);
+            this.Resolution_textBox.Margin = new System.Windows.Forms.Padding(0, 10, 5, 0);
+            this.Resolution_textBox.Name = "Resolution_textBox";
+            this.Resolution_textBox.Size = new System.Drawing.Size(217, 23);
+            this.Resolution_textBox.TabIndex = 12;
+            // 
+            // FOVy_textBox
+            // 
+            this.FOVy_textBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.FOVy_textBox.Location = new System.Drawing.Point(95, 142);
+            this.FOVy_textBox.Margin = new System.Windows.Forms.Padding(0, 10, 5, 0);
+            this.FOVy_textBox.Name = "FOVy_textBox";
+            this.FOVy_textBox.Size = new System.Drawing.Size(217, 23);
+            this.FOVy_textBox.TabIndex = 11;
+            // 
+            // AspectRatio_textBox
+            // 
+            this.AspectRatio_textBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.AspectRatio_textBox.Location = new System.Drawing.Point(95, 109);
+            this.AspectRatio_textBox.Margin = new System.Windows.Forms.Padding(0, 10, 5, 0);
+            this.AspectRatio_textBox.Name = "AspectRatio_textBox";
+            this.AspectRatio_textBox.Size = new System.Drawing.Size(217, 23);
+            this.AspectRatio_textBox.TabIndex = 10;
+            // 
+            // Direction_textBox
+            // 
+            this.Direction_textBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.Direction_textBox.Location = new System.Drawing.Point(95, 76);
+            this.Direction_textBox.Margin = new System.Windows.Forms.Padding(0, 10, 5, 0);
+            this.Direction_textBox.Name = "Direction_textBox";
+            this.Direction_textBox.Size = new System.Drawing.Size(217, 23);
+            this.Direction_textBox.TabIndex = 9;
+            // 
+            // Position_textBox
+            // 
+            this.Position_textBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.Position_textBox.Location = new System.Drawing.Point(95, 43);
+            this.Position_textBox.Margin = new System.Windows.Forms.Padding(0, 10, 5, 0);
+            this.Position_textBox.Name = "Position_textBox";
+            this.Position_textBox.Size = new System.Drawing.Size(217, 23);
+            this.Position_textBox.TabIndex = 8;
+            // 
+            // Name_label
+            // 
+            this.Name_label.AutoSize = true;
+            this.Name_label.Dock = System.Windows.Forms.DockStyle.Left;
+            this.Name_label.Location = new System.Drawing.Point(5, 10);
+            this.Name_label.Margin = new System.Windows.Forms.Padding(5, 10, 0, 0);
+            this.Name_label.Name = "Name_label";
+            this.Name_label.Size = new System.Drawing.Size(45, 23);
+            this.Name_label.TabIndex = 0;
+            this.Name_label.Text = "Name";
+            // 
+            // Position_label
+            // 
+            this.Position_label.AutoSize = true;
+            this.Position_label.Dock = System.Windows.Forms.DockStyle.Left;
+            this.Position_label.Location = new System.Drawing.Point(5, 43);
+            this.Position_label.Margin = new System.Windows.Forms.Padding(5, 10, 0, 0);
+            this.Position_label.Name = "Position_label";
+            this.Position_label.Size = new System.Drawing.Size(58, 23);
+            this.Position_label.TabIndex = 1;
+            this.Position_label.Text = "Position";
+            // 
+            // Direction_label
+            // 
+            this.Direction_label.AutoSize = true;
+            this.Direction_label.Dock = System.Windows.Forms.DockStyle.Left;
+            this.Direction_label.Location = new System.Drawing.Point(5, 76);
+            this.Direction_label.Margin = new System.Windows.Forms.Padding(5, 10, 0, 0);
+            this.Direction_label.Name = "Direction_label";
+            this.Direction_label.Size = new System.Drawing.Size(64, 23);
+            this.Direction_label.TabIndex = 2;
+            this.Direction_label.Text = "Direction";
+            // 
+            // AspectRatio_label
+            // 
+            this.AspectRatio_label.AutoSize = true;
+            this.AspectRatio_label.Dock = System.Windows.Forms.DockStyle.Left;
+            this.AspectRatio_label.Location = new System.Drawing.Point(5, 109);
+            this.AspectRatio_label.Margin = new System.Windows.Forms.Padding(5, 10, 0, 0);
+            this.AspectRatio_label.Name = "AspectRatio_label";
+            this.AspectRatio_label.Size = new System.Drawing.Size(88, 23);
+            this.AspectRatio_label.TabIndex = 3;
+            this.AspectRatio_label.Text = "Aspect Ratio";
+            // 
+            // FOVy_label
+            // 
+            this.FOVy_label.AutoSize = true;
+            this.FOVy_label.Dock = System.Windows.Forms.DockStyle.Left;
+            this.FOVy_label.Location = new System.Drawing.Point(5, 142);
+            this.FOVy_label.Margin = new System.Windows.Forms.Padding(5, 10, 0, 0);
+            this.FOVy_label.Name = "FOVy_label";
+            this.FOVy_label.Size = new System.Drawing.Size(43, 23);
+            this.FOVy_label.TabIndex = 4;
+            this.FOVy_label.Text = "FOVy";
+            // 
+            // Resolution_label
+            // 
+            this.Resolution_label.AutoSize = true;
+            this.Resolution_label.Dock = System.Windows.Forms.DockStyle.Left;
+            this.Resolution_label.Location = new System.Drawing.Point(5, 175);
+            this.Resolution_label.Margin = new System.Windows.Forms.Padding(5, 10, 0, 0);
+            this.Resolution_label.Name = "Resolution_label";
+            this.Resolution_label.Size = new System.Drawing.Size(75, 23);
+            this.Resolution_label.TabIndex = 5;
+            this.Resolution_label.Text = "Resolution";
+            // 
+            // Rotation_label
+            // 
+            this.Rotation_label.AutoSize = true;
+            this.Rotation_label.Dock = System.Windows.Forms.DockStyle.Left;
+            this.Rotation_label.Location = new System.Drawing.Point(5, 208);
+            this.Rotation_label.Margin = new System.Windows.Forms.Padding(5, 10, 0, 0);
+            this.Rotation_label.Name = "Rotation_label";
+            this.Rotation_label.Size = new System.Drawing.Size(61, 23);
+            this.Rotation_label.TabIndex = 6;
+            this.Rotation_label.Text = "Rotation";
+            // 
+            // Name_textBox
+            // 
+            this.Name_textBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.Name_textBox.Location = new System.Drawing.Point(95, 10);
+            this.Name_textBox.Margin = new System.Windows.Forms.Padding(0, 10, 5, 0);
+            this.Name_textBox.Name = "Name_textBox";
+            this.Name_textBox.Size = new System.Drawing.Size(217, 23);
+            this.Name_textBox.TabIndex = 7;
+            // 
+            // Update_btn
+            // 
+            this.Update_btn.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.Update_btn.Location = new System.Drawing.Point(98, 234);
+            this.Update_btn.Name = "Update_btn";
+            this.Update_btn.Size = new System.Drawing.Size(216, 31);
+            this.Update_btn.TabIndex = 14;
+            this.Update_btn.Text = "Update";
+            this.Update_btn.UseVisualStyleBackColor = true;
+            this.Update_btn.Click += new System.EventHandler(this.Update_btn_Click);
             // 
             // Camera_listBox
             // 
             this.Camera_listBox.FormattingEnabled = true;
             this.Camera_listBox.ItemHeight = 16;
             this.Camera_listBox.Location = new System.Drawing.Point(16, 640);
+            this.Camera_listBox.Margin = new System.Windows.Forms.Padding(5, 10, 3, 3);
             this.Camera_listBox.Name = "Camera_listBox";
             this.Camera_listBox.Size = new System.Drawing.Size(317, 196);
             this.Camera_listBox.TabIndex = 8;
@@ -150,17 +383,6 @@ namespace ApplicationUI
             this.AvailableModels_combo.Size = new System.Drawing.Size(248, 24);
             this.AvailableModels_combo.TabIndex = 7;
             this.AvailableModels_combo.SelectedIndexChanged += new System.EventHandler(this.AvailableModels_combo_SelectedIndexChanged);
-            // 
-            // Start_btn
-            // 
-            this.Start_btn.AutoSize = true;
-            this.Start_btn.Location = new System.Drawing.Point(16, 81);
-            this.Start_btn.Name = "Start_btn";
-            this.Start_btn.Size = new System.Drawing.Size(131, 27);
-            this.Start_btn.TabIndex = 6;
-            this.Start_btn.Text = "Start";
-            this.Start_btn.UseVisualStyleBackColor = true;
-            this.Start_btn.Click += new System.EventHandler(this.Start_btn_Click);
             // 
             // Log_textBox
             // 
@@ -176,20 +398,27 @@ namespace ApplicationUI
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1584, 861);
             this.Controls.Add(this.Log_textBox);
-            this.Controls.Add(this.panel1);
+            this.Controls.Add(this.LeftPanel);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.MainWindow);
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.KeyPreview = true;
+            this.MainMenuStrip = this.menuStrip1;
             this.Margin = new System.Windows.Forms.Padding(4);
             this.MinimumSize = new System.Drawing.Size(1024, 768);
             this.Name = "MainForm";
             this.Text = "CAMPER";
             this.Disposed += new System.EventHandler(this.MainForm_Disposed);
+            this.MainWindow.ResumeLayout(false);
+            this.MainWindow.PerformLayout();
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
-            this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
+            this.LeftPanel.ResumeLayout(false);
+            this.LeftPanel.PerformLayout();
+            this.tableLayoutPanel1.ResumeLayout(false);
+            this.tableLayoutPanel1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -200,18 +429,36 @@ namespace ApplicationUI
         #endregion
 
         private System.Windows.Forms.Panel MainWindow;
-        private Label label1;
+        private Label AvailableModels_label;
         private StatusStrip statusStrip1;
         private ToolStripStatusLabel toolStripStatusLabel1;
         private Button AddFile_btn;
         private OpenFileDialog openFileDialog1;
-        private Panel panel1;
-        private Button Start_btn;
+        private Panel LeftPanel;
         private ComboBox AvailableModels_combo;
         private ToolStripStatusLabel StatusLabel;
         private TextBox Log_textBox;
         private ToolStripStatusLabel CameraCoords_label;
         private ListBox Camera_listBox;
+        private TableLayoutPanel tableLayoutPanel1;
+        private Label Name_label;
+        private Label Position_label;
+        private Label Direction_label;
+        private Label AspectRatio_label;
+        private Label FOVy_label;
+        private Label Resolution_label;
+        private Label Rotation_label;
+        private TextBox Rotation_textBox;
+        private TextBox Resolution_textBox;
+        private TextBox FOVy_textBox;
+        private TextBox AspectRatio_textBox;
+        private TextBox Direction_textBox;
+        private TextBox Position_textBox;
+        private TextBox Name_textBox;
+        private Button Update_btn;
+        private MenuStrip menuStrip1;
+        private ToolStripMenuItem toolStripMenuItem1;
+        private ToolStripMenuItem startToolStripMenuItem;
 
     }
 }

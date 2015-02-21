@@ -71,7 +71,7 @@ namespace ApplicationLogic.Scene
             SelectedSecurityCamera = null;
         }
 
-        public string CreateCamera(int screenX, int screenY)
+        public Boolean CreateCamera(int screenX, int screenY)
         {
             try
             {
@@ -93,34 +93,41 @@ namespace ApplicationLogic.Scene
                     
                     var securityCamera = new SecurityCamera(SecurityCameras.Count,contactPoint, normal);
 
-                    SecurityCameras.Add(securityCamera.Name, securityCamera);
+                    SecurityCameras.Add(securityCamera.InternalName, securityCamera);
 
                     securityCamera.Selected = true;
                     SelectedSecurityCamera = securityCamera;
                     
-                    return securityCamera.Name;
+                    return true;
                 }
-                return "";
             }            
             catch (System.Runtime.InteropServices.SEHException e)
             {
                 if(OgreException.IsThrown)
                     LogManager.Singleton.LogMessage(OgreException.LastException.ToString());
-                return "";
+                return false;
             }
             catch (Exception e)
             {
                 LogManager.Singleton.LogMessage(e.ToString());
-                return "";
+                return false;
             }
-    
+            return false;
+        }
+
+        public void UpdateSelectedCameraProperties(SecurityCameraProperties properties)
+        {
+            if (IsSecurityCameraSelected())
+            {
+                SelectedSecurityCamera.UpdateCameraProperties(properties);
+            }
         }
 
         public void DeleteSelectedCamera()
         {
             if (SelectedSecurityCamera != null)
             {
-                var toDeleteKey = SelectedSecurityCamera.Name;
+                var toDeleteKey = SelectedSecurityCamera.Properties.Name;
                 if (SecurityCameras.ContainsKey(toDeleteKey))
                 {
                     SecurityCameras[toDeleteKey].Delete();

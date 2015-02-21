@@ -1,15 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Windows.Forms;
 using ApplicationLogic;
 using ApplicationLogic.Interfaces;
+using ApplicationLogic.Scene;
+using Mogre;
 
 namespace ApplicationUI
 {
     public partial class MainForm : IApplicationUI
     {
+        private readonly string ValueDelimiter = ";";
         private readonly AppController mAppController;
-
+        private SecurityCameraProperties ActualCameraProperties;
         public MainForm()
         {
             InitializeComponent();
@@ -33,7 +37,7 @@ namespace ApplicationUI
 
         protected override void OnKeyDown(KeyEventArgs e)
         {
- 	         mAppController.KeyDown(e.KeyCode);
+ 	        mAppController.KeyDown(e.KeyCode);
         }
 
         protected override void OnKeyUp(KeyEventArgs e)
@@ -111,10 +115,11 @@ namespace ApplicationUI
             CameraCoords_label.Text = info;
         }
 
-        public void AddCamera(string cameraName)
+        public void AddCamera(SecurityCameraProperties cameraProperties)
         {
-            Camera_listBox.Items.Add(cameraName);
-            Camera_listBox.SelectedItem = cameraName;
+            Camera_listBox.Items.Add(cameraProperties.Name);
+            Camera_listBox.SelectedItem = cameraProperties.Name;
+            FillCameraProperties(cameraProperties);
         }
 
         public void RemoveCamera(string cameraName)
@@ -122,13 +127,32 @@ namespace ApplicationUI
             throw new NotImplementedException();
         }
 
-        public void CameraSelected(string item)
+        public void CameraSelected(SecurityCameraProperties cameraProperties)
         {
-            Camera_listBox.SelectedIndex = Camera_listBox.FindString(item);
+            Camera_listBox.SelectedIndex = Camera_listBox.FindString(cameraProperties.Name);
+            UpdateCameraProperties(cameraProperties);
+        }
+
+        public void UpdateCameraProperties(SecurityCameraProperties cameraProperties)
+        {
+            FillCameraProperties(cameraProperties);
         }
 
         private void AvailableModels_combo_SelectedIndexChanged(object sender, EventArgs e)
         {
+        }
+
+        private void FillCameraProperties(SecurityCameraProperties properties)
+        {
+            ActualCameraProperties = properties;
+            Name_textBox.Text = properties.Name;
+            Position_textBox.Text = String.Format("{0};{1};{2}", properties.Position.x, properties.Position.y, properties.Position.z);
+            Direction_textBox.Text = String.Format("{0};{1};{2}", properties.Direction.x, properties.Direction.y, properties.Direction.z);
+            AspectRatio_textBox.Text = properties.AspectRatio.ToString();
+            FOVy_textBox.Text = properties.FOVy.ValueDegrees.ToString();
+            Resolution_textBox.Text = String.Format("{0};{1}", properties.Resolution.x, properties.Resolution.y);
+            Rotation_textBox.Text = properties.Rotation.ToString();
+
         }
 
         private void MainWindow_MouseClick(object sender, MouseEventArgs e)
@@ -162,6 +186,104 @@ namespace ApplicationUI
         private void Camera_listBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             mAppController.SelectCamera((string) Camera_listBox.Items[Camera_listBox.SelectedIndex]);
+        }
+
+        private void Update_btn_Click(object sender, EventArgs e)
+        {
+            var newProperties = new SecurityCameraProperties();
+            SetNewName(ref newProperties);
+            SetNewPosition(ref newProperties);
+            SetNewDirection(ref newProperties);
+            SetNewAspectRatio(ref newProperties);
+            SetNewFOVy(ref newProperties);
+            mAppController.UpdateCameraProperties(newProperties);
+        }
+
+        private void SetNewName(ref SecurityCameraProperties newProperties)
+        {
+            newProperties.Name = !string.IsNullOrEmpty(Name_textBox.Text) ? Name_textBox.Text : ActualCameraProperties.Name;
+            if (string.IsNullOrEmpty(Name_textBox.Text))
+            {
+                Log_textBox.AppendText("Name cannot be empty");
+            }
+        }
+
+        private void SetNewPosition(ref SecurityCameraProperties newProperties)
+        {
+            try
+            {
+                newProperties.Position = VectorFromString(Position_textBox.Text);
+            }
+            catch (Exception e)
+            {
+                newProperties.Position = ActualCameraProperties.Position;
+                Log_textBox.AppendText("Position data invalid: " + e);
+            }
+        }
+
+        private void SetNewDirection(ref SecurityCameraProperties newProperties)
+        {
+            try
+            {
+                newProperties.Direction = VectorFromString(Direction_textBox.Text);
+            }
+            catch (Exception e)
+            {
+                newProperties.Direction = ActualCameraProperties.Direction;
+                Log_textBox.AppendText("Direction data invalid: " + e);
+            }
+        }
+
+        private void SetNewAspectRatio(ref SecurityCameraProperties newProperties)
+        {
+            try
+            {
+                var aspRatioStr = AspectRatio_textBox.Text.Replace(',', '.');
+                newProperties.AspectRatio = float.Parse(aspRatioStr, CultureInfo.InvariantCulture);
+            }
+            catch (Exception e)
+            {
+                newProperties.AspectRatio = ActualCameraProperties.AspectRatio;
+                Log_textBox.AppendText("AspectRatio data invalid: "+e);
+            }
+        }
+
+        private void SetNewFOVy(ref SecurityCameraProperties newProperties)
+        {
+            try
+            {
+                var degStr = FOVy_textBox.Text.Replace(',', '.');
+                var deg = new Degree(float.Parse(degStr, CultureInfo.InvariantCulture));
+                if (deg < 0 || deg > 180) throw new Exception("Value must be in range 0:180 degree");
+                newProperties.FOVy = deg;
+            }
+            catch (Exception e)
+            {
+                newProperties.FOVy = ActualCameraProperties.FOVy;
+                Log_textBox.AppendText("FieldOfView data invalid: " + e);
+            }
+        }
+
+        private Vector3 VectorFromString(string value)
+        {
+            try
+            {
+                value = value.Replace(',','.');
+                var temp = value.Split(ValueDelimiter.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                var x = temp[0];
+                var y = temp[1];
+                var z = temp[2];
+                return new Vector3(float.Parse(x, CultureInfo.InvariantCulture), float.Parse(y, CultureInfo.InvariantCulture), float.Parse(z, CultureInfo.InvariantCulture));
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
+        private void startToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            mAppController.Start();
         }
     }
 }

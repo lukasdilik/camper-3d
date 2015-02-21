@@ -22,6 +22,12 @@ namespace RenderingEngine.Scene
             CreateLineManualObject();
         }
 
+        public void Destroy()
+        {
+            mParentNode.RemoveAndDestroyChild(mSceneNode.Name);
+            Engine.Engine.Instance.SceneManager.DestroyManualObject(Name);
+        }
+
         private void CreateLineManualObject()
         {
             ManualObject lineManualObject = Engine.Engine.Instance.SceneManager.CreateManualObject(Name);
