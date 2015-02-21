@@ -27,24 +27,35 @@ namespace ApplicationLogic.Scene
             }
         }
 
-        public string Name { get; private set; }
         public int Index { get; private set; }
+        public string InternalName { get; private set; }
         public SecurityCameraProperties Properties { get; private set; }
         public Camera Camera { get; private set; }
 
         public SecurityCamera(int index, Vector3 position, Vector3 normal)
         {
             Index = index;
-            Name = "SecurityCamera" + index;
-            
-            Properties = new SecurityCameraProperties {Position = position, Normal = normal};
+            var internalName = "SecurityCamera" + index;
+            InternalName = internalName;
+            Properties = new SecurityCameraProperties {Name = internalName, Position = position, Direction = normal};
 
             CreateCameraInScene();
+            Properties.Position = Camera.SceneNode.Position;
+        }
+
+        public void UpdateCameraProperties(SecurityCameraProperties newProperties)
+        {
+            Properties = newProperties;
+
+            Camera.UpdateProperties(newProperties.Position,newProperties.Direction, newProperties.FOVy, newProperties.AspectRatio);
         }
 
         private void CreateCameraInScene()
         {
-            Camera = new Camera(Name, Properties.Position, Properties.Normal, MeshName);
+            Camera = new Camera(Properties.Name, Properties.Position, Properties.Direction, MeshName)
+            {
+                MogreCamera = {AspectRatio = Properties.AspectRatio, FOVy = Properties.FOVy}
+            };
         }
 
         public void HandleKey(Keys key)
@@ -53,21 +64,27 @@ namespace ApplicationLogic.Scene
             {
                 case Keys.Up:
                     Camera.MoveTop();
+                    Properties.Position = Camera.SceneNode.Position;
                     break;
                 case Keys.Left:
                     Camera.MoveLeft();
+                    Properties.Position = Camera.SceneNode.Position;
                     break;
                 case Keys.Down:
                     Camera.MoveDown();
+                    Properties.Position = Camera.SceneNode.Position;
                     break;
                 case Keys.Right:
                     Camera.MoveRight();
+                    Properties.Position = Camera.SceneNode.Position;
                     break;
                 case Keys.Add:
                     Camera.MoveForward();
+                    Properties.Position = Camera.SceneNode.Position;
                     break;
                 case Keys.Subtract:
                     Camera.MoveBackward();
+                    Properties.Position = Camera.SceneNode.Position;
                     break;
             }
         }
@@ -95,6 +112,8 @@ namespace ApplicationLogic.Scene
             var dir = new Vector2(Math.Sign(dx), Math.Sign(dy));
 
             CameraRotation(dir);
+            Properties.Position = Camera.SceneNode.Position;
+            Properties.Direction = Camera.MogreCamera.Direction;
 
             mOldX = e.X;
             mOldY = e.Y;

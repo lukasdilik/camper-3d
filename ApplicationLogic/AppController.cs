@@ -89,7 +89,7 @@ namespace ApplicationLogic
                 foreach (var camera in model.Value.SecurityCameras.Where(camera => name == camera.Value.Camera.Name))
                 {
                     SelectedModel.SelectSecurityCamera(name);
-                    mApplicationUi.CameraSelected(camera.Value.Name);
+                    mApplicationUi.CameraSelected(camera.Value.Properties);
                 }
             }
         }
@@ -165,9 +165,12 @@ namespace ApplicationLogic
         {
             if (SelectedModel != null)
             {
-                string newCameraName = SelectedModel.CreateCamera(screenX, screenY);
-                if(!String.IsNullOrEmpty(newCameraName))
-                    mApplicationUi.AddCamera(newCameraName);
+                var success = SelectedModel.CreateCamera(screenX, screenY);
+                if (success)
+                {
+                    mApplicationUi.AddCamera(SelectedModel.SelectedSecurityCamera.Properties);
+                }
+                    
                 
             }
         }
@@ -179,7 +182,7 @@ namespace ApplicationLogic
                 if (model.Value.SecurityCameras.ContainsKey(key))
                 {
                     model.Value.SelectSecurityCamera(key);
-                    mApplicationUi.CameraSelected(model.Value.SecurityCameras[key].Name);
+                    mApplicationUi.CameraSelected(model.Value.SecurityCameras[key].Properties);
                 }
             }
         }
@@ -229,6 +232,14 @@ namespace ApplicationLogic
 
             HandleKeyDown(key);
             UpdateStatusBar();
+        }
+
+        private void RefreshSelectedCameraProperties()
+        {
+            if (SelectedModel != null && SelectedModel.SelectedSecurityCamera != null)
+            {
+                mApplicationUi.UpdateCameraProperties(SelectedModel.SelectedSecurityCamera.Properties);
+            }
         }
 
         public void KeyUp(Keys key)
@@ -314,8 +325,21 @@ namespace ApplicationLogic
             }
         }
 
+        public void UpdateCameraProperties(SecurityCameraProperties properties)
+        {
+            if (mIsStarted)
+            {
+                if (SelectedModel != null)
+                {
+                    SelectedModel.UpdateSelectedCameraProperties(properties);
+                    mApplicationUi.UpdateCameraProperties(properties);
+                }
+            }
+        }
+
         public void UpdateStatusBar()
         {
+            RefreshSelectedCameraProperties();
             var pos = Engine.Instance.GetMainCameraPosition();
             var dir = Engine.Instance.GetMainCameraDirection();
             var selectedModelName = (SelectedModel != null) ? SelectedModel.Name : "N/A";

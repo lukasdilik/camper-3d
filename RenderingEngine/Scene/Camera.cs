@@ -1,4 +1,5 @@
 ﻿using Mogre;
+using Math = System.Math;
 
 namespace RenderingEngine.Scene
 {
@@ -14,11 +15,15 @@ namespace RenderingEngine.Scene
         public CameraFrustum Frustum { get; private set; }
         public Line NormalLine { get; private set; }
 
-        public Camera(string name, Vector3 position, Vector3 normal, string meshName)
+        public Camera(string name, Vector3 position, Vector3 direction, string meshName)
         {
+            if (SceneNode != null)
+            {
+                Engine.Engine.Instance.SceneManager.RootSceneNode.RemoveChild(name + "_node");
+            }
             Name = name;
-            normal.Normalise();
-            mDirection = normal;
+            direction.Normalise();
+            mDirection = direction;
            
             Mesh = Engine.Engine.Instance.SceneManager.CreateEntity(name, meshName);
             SceneNode = Engine.Engine.Instance.SceneManager.RootSceneNode.CreateChildSceneNode(name + "_node");
@@ -29,7 +34,7 @@ namespace RenderingEngine.Scene
 
             TranslateCameraOnPolygonFace();
             
-            RotateToDirection(position + normal * 10);
+            RotateToDirection(position + direction * 10);
 
             CreateMogreCameraObject();
             
@@ -43,7 +48,28 @@ namespace RenderingEngine.Scene
             MogreCamera = Engine.Engine.Instance.SceneManager.CreateCamera(Name+"_camera");
             MogreCamera.Position = SceneNode.Position;
             MogreCamera.LookAt(SceneNode.Position + mDirection*100);
+
             MogreCamera.NearClipDistance = 8;
+        }
+
+        public void UpdateProperties(Vector3 position, Vector3 direction, Degree FOVy, float aspectRatio)
+        {
+            SceneNode.Position = position;
+            direction.Normalise();
+            MogreCamera.Position = position;
+            MogreCamera.Direction = direction;
+            MogreCamera.LookAt(SceneNode.Position + mDirection * 100);
+            MogreCamera.NearClipDistance = 8;
+
+            if (Math.Abs(MogreCamera.AspectRatio - aspectRatio) > 0.001 || MogreCamera.FOVy != FOVy.ValueRadians)
+            {
+                MogreCamera.AspectRatio = aspectRatio;
+                MogreCamera.FOVy = FOVy.ValueRadians;
+                Frustum.RecalculatePoints();
+            }
+
+            NormalLine.Destroy();
+            NormalLine = new Line(Name + "_line", new Vector3(), Frustum.FarCenter, SceneNode);
         }
 
         public void ShowBoundingBox()
@@ -54,6 +80,11 @@ namespace RenderingEngine.Scene
         public void HideBoundingBox()
         {
             SceneNode.ShowBoundingBox = false;
+        }
+
+        public void UpdateCameraFrustum()
+        {
+            Frustum.RecalculatePoints();
         }
 
         public void MoveRight()

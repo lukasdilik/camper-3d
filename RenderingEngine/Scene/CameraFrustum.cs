@@ -33,6 +33,8 @@ namespace RenderingEngine.Scene
 
         private void CalculateFarPointsWorld()
         {
+            Position = mParentCamera.SceneNode.Position;
+
             Vector3 camUp = mParentCamera.MogreCamera.Up;
             Vector3 camRight = mParentCamera.MogreCamera.Right;
             FarCenter = Position + mParentCamera.MogreCamera.Direction*FarDistance;
@@ -44,6 +46,19 @@ namespace RenderingEngine.Scene
             FarTopRight = FarCenter + camUp*(farHeight*0.5f) + camRight*(farWidth*0.5f);
             FarBottomLeft = FarCenter - camUp*(farHeight*0.5f) - camRight*(farWidth*0.5f);
             FarBottomRight = FarCenter - camUp*(farHeight*0.5f) + camRight*(farWidth*0.5f);
+        }
+
+
+        public void RecalculatePoints()
+        {
+            mParentCamera.SceneNode.RemoveAndDestroyChild(Name + "_node");
+            
+            CalculateFarPointsWorld();
+            CreateManualObject();
+
+            FrustumSceneNode = mParentCamera.SceneNode.CreateChildSceneNode(Name + "_node");
+            FrustumSceneNode.AttachObject(FrustumManualObject);
+
         }
 
         private void CreateManualObject()
