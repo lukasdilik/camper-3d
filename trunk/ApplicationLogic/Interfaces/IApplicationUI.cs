@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Drawing;
 using ApplicationLogic.Scene;
 
 namespace ApplicationLogic.Interfaces
@@ -14,6 +14,8 @@ namespace ApplicationLogic.Interfaces
         void RemoveCamera(string cameraName);
         void CameraSelected(SecurityCameraProperties cameraProperties);
         void UpdateCameraProperties(SecurityCameraProperties cameraProperties);
+        Size GetCameraPreviewDimension();
+        void UpdateCameraView(string cameraName, Bitmap bmp);
         void Close();
         void LogMessage(string msg);
     }

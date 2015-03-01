@@ -15,6 +15,10 @@ namespace ApplicationLogic.Scene
             get { return mSelected; }
             set
             {
+                if (RenderTexture != null)
+                {
+                    RenderTexture.IsAutoUpdated = value;
+                }
                 if (value)
                 {
                     Camera.ShowBoundingBox();
@@ -27,20 +31,31 @@ namespace ApplicationLogic.Scene
             }
         }
 
-        public int Index { get; private set; }
         public string InternalName { get; private set; }
         public SecurityCameraProperties Properties { get; private set; }
         public Camera Camera { get; private set; }
-
-        public SecurityCamera(int index, Vector3 position, Vector3 normal)
+        public RenderTexture RenderTexture { get; private set; }
+        public TexturePtr RenderTexturePtr;
+        public SecurityCamera(string internalName, Vector3 position, Vector3 normal)
         {
-            Index = index;
-            var internalName = "SecurityCamera" + index;
+       
             InternalName = internalName;
             Properties = new SecurityCameraProperties {Name = internalName, Position = position, Direction = normal};
 
             CreateCameraInScene();
             Properties.Position = Camera.SceneNode.Position;
+        }
+
+        public void InitRTT(TexturePtr texturePtr)
+        {
+            RenderTexturePtr = texturePtr;
+            RenderTexture = texturePtr.GetBuffer().GetRenderTarget();
+
+            RenderTexture.AddViewport(Camera.MogreCamera);
+            RenderTexture.GetViewport(0).SetClearEveryFrame(true);
+            RenderTexture.GetViewport(0).BackgroundColour = ColourValue.Black;
+            RenderTexture.GetViewport(0).OverlaysEnabled = false;
+            RenderTexture.IsAutoUpdated = true;
         }
 
         public void UpdateCameraProperties(SecurityCameraProperties newProperties)

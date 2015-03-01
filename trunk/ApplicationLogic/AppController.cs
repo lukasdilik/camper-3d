@@ -1,20 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using ApplicationLogic.Interfaces;
 using ApplicationLogic.Scene;
 using Mogre;
-using RenderingEngine;
 using RenderingEngine.Engine;
 using RenderingEngine.Interfaces;
+using PixelFormat = Mogre.PixelFormat;
+using Rectangle = System.Drawing.Rectangle;
 
 
 namespace ApplicationLogic
 {
     public partial class AppController : IKeyboardInput, IMouseInput,IApplication
     {
+        public static string DefaultMaterialGroupName = ResourceGroupManager.DEFAULT_RESOURCE_GROUP_NAME;
+
         private const string StoredModelsPath = "./Resources/models/scene";
 
         private int mModelCounter;
@@ -22,6 +28,8 @@ namespace ApplicationLogic
         private bool mIsMainCameraActivated = true;
         private readonly List<string> mAvailableModels;
         private readonly IApplicationUI mApplicationUi;
+        private Size mCameraViewDimension;
+
         public Dictionary<string, Model> Models { get; private set; }
         public Model SelectedModel { get; private set; }
 
@@ -32,6 +40,7 @@ namespace ApplicationLogic
             Engine.Instance.SetApplicationInstance(this);
             mApplicationUi = appUi;
             GetAvailableModels();
+            mCameraViewDimension = mApplicationUi.GetCameraPreviewDimension();
         }
 
         private void GetAvailableModels()
@@ -127,13 +136,15 @@ namespace ApplicationLogic
             DeselectAllModels();
             
             int selectedIndex = mApplicationUi.GetSelectedModelIndex();
-            string modelFileName = mAvailableModels[selectedIndex];
-            
-            var newModel = LoadModel(modelFileName);
-            newModel.Selected = true;
-            SelectedModel = newModel;
+            if (selectedIndex > 0)
+            {
+                string modelFileName = mAvailableModels[selectedIndex];
+                var newModel = LoadModel(modelFileName);
+                newModel.Selected = true;
+                SelectedModel = newModel;
 
-            newModel.Translate(intersection);
+                newModel.Translate(intersection);
+            }
         }
 
         public void Start() 
@@ -168,11 +179,61 @@ namespace ApplicationLogic
                 var success = SelectedModel.CreateCamera(screenX, screenY);
                 if (success)
                 {
-                    mApplicationUi.AddCamera(SelectedModel.SelectedSecurityCamera.Properties);
+                    if (SelectedModel.SelectedSecurityCamera != null)
+                    {
+
+                        InitRTTOnSelectedCamera(SelectedModel.SelectedSecurityCamera);
+                        mApplicationUi.AddCamera(SelectedModel.SelectedSecurityCamera.Properties);
+                    }
                 }
-                    
-                
             }
+        }
+
+        private void InitRTTOnSelectedCamera(SecurityCamera selectedSecurityCamera)
+        {
+            selectedSecurityCamera.InitRTT(CreateTexturePtr(SelectedModel.SelectedSecurityCamera.InternalName));
+            selectedSecurityCamera.RenderTexture.PreRenderTargetUpdate += RenderTexture_PreRenderTargetUpdate;
+            selectedSecurityCamera.RenderTexture.PostRenderTargetUpdate += RenderTextureOnPostRenderTargetUpdate;
+        }
+
+        private void RenderTexture_PreRenderTargetUpdate(RenderTargetEvent_NativePtr evt)
+        {
+        }
+
+        private void RenderTextureOnPostRenderTargetUpdate(RenderTargetEvent_NativePtr evt)
+        {
+            if (SelectedModel.SelectedSecurityCamera != null)
+            {
+                var bmp = MogreTexturePtrToBitmap(SelectedModel.SelectedSecurityCamera.RenderTexturePtr);
+                mApplicationUi.UpdateCameraView(SelectedModel.SelectedSecurityCamera.Properties.Name, bmp);    
+            }
+        }
+
+        public unsafe static Bitmap MogreTexturePtrToBitmap(TexturePtr texturePtr)
+        {
+            var bitmap = new Bitmap((int) texturePtr.Width, (int) texturePtr.Height);
+            var rgbValues = new byte[texturePtr.Width * 4 * texturePtr.Height];
+            fixed (byte* ptr = &rgbValues[0])
+            {
+                var pixelBox = new PixelBox(texturePtr.Width, texturePtr.Height, 1, Mogre.PixelFormat.PF_A8R8G8B8,
+                                     (IntPtr)ptr);
+
+                texturePtr.GetBuffer().BlitToMemory(pixelBox);
+            }
+            var bitmapData = bitmap.LockBits(new Rectangle(0, 0, (int)texturePtr.Width, (int)texturePtr.Height), ImageLockMode.WriteOnly, bitmap.PixelFormat);
+            Marshal.Copy(rgbValues, 0, bitmapData.Scan0, rgbValues.Length);
+            bitmap.UnlockBits(bitmapData);
+
+            return bitmap;
+        }
+
+        private TexturePtr CreateTexturePtr(string cameraName)
+        {
+            var textureName = "Texture" + cameraName;
+            var width = (uint)mCameraViewDimension.Width;
+            var height = (uint)mCameraViewDimension.Height;
+            return TextureManager.Singleton.CreateManual(textureName, AppController.DefaultMaterialGroupName,
+                TextureType.TEX_TYPE_2D, width, height, 0, PixelFormat.PF_B8G8R8, (int)TextureUsage.TU_RENDERTARGET);
         }
 
         public void SelectCamera(string key)
@@ -321,7 +382,9 @@ namespace ApplicationLogic
         {
             if (SelectedModel != null)
             {
+                var name = SelectedModel.SelectedSecurityCamera.InternalName;
                 SelectedModel.DeleteSelectedCamera();
+                mApplicationUi.RemoveCamera(name);
             }
         }
 
@@ -336,6 +399,8 @@ namespace ApplicationLogic
                 }
             }
         }
+
+
 
         public void UpdateStatusBar()
         {

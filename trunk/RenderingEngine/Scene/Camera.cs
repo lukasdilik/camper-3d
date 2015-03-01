@@ -54,13 +54,16 @@ namespace RenderingEngine.Scene
 
         public void UpdateProperties(Vector3 position, Vector3 direction, Degree FOVy, float aspectRatio)
         {
-            SceneNode.Position = position;
             direction.Normalise();
+            
             MogreCamera.Position = position;
             MogreCamera.Direction = direction;
-            MogreCamera.LookAt(SceneNode.Position + mDirection * 100);
-            MogreCamera.NearClipDistance = 8;
-
+            MogreCamera.LookAt(position + direction * 100);
+            
+            RotateToDirection(position + direction * 10);
+            
+            SceneNode.Position = position;
+            
             if (Math.Abs(MogreCamera.AspectRatio - aspectRatio) > 0.001 || MogreCamera.FOVy != FOVy.ValueRadians)
             {
                 MogreCamera.AspectRatio = aspectRatio;
@@ -186,8 +189,13 @@ namespace RenderingEngine.Scene
 
         public void Delete()
         {
+            Engine.Engine.Instance.SceneManager.DestroyCamera(MogreCamera);
+            Frustum.Destroy();
+            NormalLine.Destroy();
             SceneNode.ShowBoundingBox = false;
             SceneNode.RemoveAndDestroyAllChildren();
+            Engine.Engine.Instance.SceneManager.DestroyEntity(Mesh);
+            Engine.Engine.Instance.SceneManager.DestroySceneNode(SceneNode);
         }
 
         public void Pitch(Radian angleInRad)
@@ -199,7 +207,7 @@ namespace RenderingEngine.Scene
         public void Yaw(Radian angleInRad)
         {
             MogreCamera.Yaw(-angleInRad);
-            SceneNode.Yaw(angleInRad);
+            SceneNode.Yaw(-angleInRad);
         }
     }
 }
