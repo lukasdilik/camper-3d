@@ -11,7 +11,7 @@ namespace ApplicationLogic.Scene
         private readonly RenderingEngine.Engine.Engine mEngine = RenderingEngine.Engine.Engine.Instance;
 
         private bool mSelected;
-
+        private int mCameraCounter;
         public string Name { get; private set; }
         public string FilePath { get; private set; }
         public RenderingEngine.Scene.Model RenderModel { get; private set; }
@@ -90,9 +90,9 @@ namespace ApplicationLogic.Scene
 
                 if (isHit)
                 {
-                    
-                    var securityCamera = new SecurityCamera(SecurityCameras.Count,contactPoint, normal);
-
+                    var internalName = "SecurityCamera" + mCameraCounter;
+                    var securityCamera = new SecurityCamera(internalName,contactPoint, normal);
+                    mCameraCounter++;
                     SecurityCameras.Add(securityCamera.InternalName, securityCamera);
 
                     securityCamera.Selected = true;

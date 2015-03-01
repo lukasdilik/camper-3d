@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms;
+﻿using System.Security.AccessControl;
+using System.Windows.Forms;
 
 namespace ApplicationUI
 {
@@ -30,10 +31,11 @@ namespace ApplicationUI
         /// </summary>
         private void InitializeComponent()
         {
-            this.MainWindow = new ApplicationUI.SelectablePanel();
+            this.MainWindow = new System.Windows.Forms.Panel();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.startToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.quitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AvailableModels_label = new System.Windows.Forms.Label();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
@@ -41,8 +43,8 @@ namespace ApplicationUI
             this.CameraCoords_label = new System.Windows.Forms.ToolStripStatusLabel();
             this.AddFile_btn = new System.Windows.Forms.Button();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
-            this.LeftPanel = new ApplicationUI.SelectablePanel();
-            this.tableLayoutPanel1 = new ApplicationUI.SelectableTableLayoutPanel();
+            this.LeftPanel = new System.Windows.Forms.Panel();
+            this.CameraProperties_panel = new System.Windows.Forms.TableLayoutPanel();
             this.Rotation_textBox = new System.Windows.Forms.TextBox();
             this.Resolution_textBox = new System.Windows.Forms.TextBox();
             this.FOVy_textBox = new System.Windows.Forms.TextBox();
@@ -58,14 +60,18 @@ namespace ApplicationUI
             this.Rotation_label = new System.Windows.Forms.Label();
             this.Name_textBox = new System.Windows.Forms.TextBox();
             this.Update_btn = new System.Windows.Forms.Button();
+            this.Delete_btn = new System.Windows.Forms.Button();
             this.Camera_listBox = new System.Windows.Forms.ListBox();
             this.AvailableModels_combo = new System.Windows.Forms.ComboBox();
             this.Log_textBox = new System.Windows.Forms.TextBox();
+            this.CameraView_pictureBox = new System.Windows.Forms.PictureBox();
+            this.CameraView_label = new System.Windows.Forms.Label();
             this.MainWindow.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.LeftPanel.SuspendLayout();
-            this.tableLayoutPanel1.SuspendLayout();
+            this.CameraProperties_panel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.CameraView_pictureBox)).BeginInit();
             this.SuspendLayout();
             // 
             // MainWindow
@@ -80,6 +86,7 @@ namespace ApplicationUI
             this.MainWindow.MouseClick += new System.Windows.Forms.MouseEventHandler(this.MainWindow_MouseClick);
             this.MainWindow.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.MainWindow_MouseDoubleClick);
             this.MainWindow.MouseDown += new System.Windows.Forms.MouseEventHandler(this.MainWindow_MouseDown);
+            this.MainWindow.MouseEnter += new System.EventHandler(this.MainWindow_MouseEnter);
             this.MainWindow.MouseLeave += new System.EventHandler(this.MainWindow_MouseLeave);
             this.MainWindow.MouseMove += new System.Windows.Forms.MouseEventHandler(this.MainWindow_MouseMove);
             this.MainWindow.MouseUp += new System.Windows.Forms.MouseEventHandler(this.MainWindow_MouseUp);
@@ -97,7 +104,8 @@ namespace ApplicationUI
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.startToolStripMenuItem});
+            this.startToolStripMenuItem,
+            this.quitToolStripMenuItem});
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
             this.toolStripMenuItem1.Size = new System.Drawing.Size(80, 20);
             this.toolStripMenuItem1.Text = "Application";
@@ -108,6 +116,13 @@ namespace ApplicationUI
             this.startToolStripMenuItem.Size = new System.Drawing.Size(98, 22);
             this.startToolStripMenuItem.Text = "Start";
             this.startToolStripMenuItem.Click += new System.EventHandler(this.startToolStripMenuItem_Click);
+            // 
+            // quitToolStripMenuItem
+            // 
+            this.quitToolStripMenuItem.Name = "quitToolStripMenuItem";
+            this.quitToolStripMenuItem.Size = new System.Drawing.Size(98, 22);
+            this.quitToolStripMenuItem.Text = "Quit";
+            this.quitToolStripMenuItem.Click += new System.EventHandler(this.quitToolStripMenuItem_Click);
             // 
             // AvailableModels_label
             // 
@@ -168,7 +183,9 @@ namespace ApplicationUI
             // 
             // LeftPanel
             // 
-            this.LeftPanel.Controls.Add(this.tableLayoutPanel1);
+            this.LeftPanel.Controls.Add(this.CameraView_label);
+            this.LeftPanel.Controls.Add(this.CameraView_pictureBox);
+            this.LeftPanel.Controls.Add(this.CameraProperties_panel);
             this.LeftPanel.Controls.Add(this.Camera_listBox);
             this.LeftPanel.Controls.Add(this.AvailableModels_combo);
             this.LeftPanel.Controls.Add(this.AddFile_btn);
@@ -178,40 +195,42 @@ namespace ApplicationUI
             this.LeftPanel.Name = "LeftPanel";
             this.LeftPanel.Size = new System.Drawing.Size(345, 839);
             this.LeftPanel.TabIndex = 6;
+            this.LeftPanel.MouseEnter += new System.EventHandler(this.LeftPanel_MouseEnter);
             // 
-            // tableLayoutPanel1
+            // CameraProperties_panel
             // 
-            this.tableLayoutPanel1.ColumnCount = 2;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 30F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 70F));
-            this.tableLayoutPanel1.Controls.Add(this.Rotation_textBox, 1, 6);
-            this.tableLayoutPanel1.Controls.Add(this.Resolution_textBox, 1, 5);
-            this.tableLayoutPanel1.Controls.Add(this.FOVy_textBox, 1, 4);
-            this.tableLayoutPanel1.Controls.Add(this.AspectRatio_textBox, 1, 3);
-            this.tableLayoutPanel1.Controls.Add(this.Direction_textBox, 1, 2);
-            this.tableLayoutPanel1.Controls.Add(this.Position_textBox, 1, 1);
-            this.tableLayoutPanel1.Controls.Add(this.Name_label, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.Position_label, 0, 1);
-            this.tableLayoutPanel1.Controls.Add(this.Direction_label, 0, 2);
-            this.tableLayoutPanel1.Controls.Add(this.AspectRatio_label, 0, 3);
-            this.tableLayoutPanel1.Controls.Add(this.FOVy_label, 0, 4);
-            this.tableLayoutPanel1.Controls.Add(this.Resolution_label, 0, 5);
-            this.tableLayoutPanel1.Controls.Add(this.Rotation_label, 0, 6);
-            this.tableLayoutPanel1.Controls.Add(this.Name_textBox, 1, 0);
-            this.tableLayoutPanel1.Controls.Add(this.Update_btn, 1, 7);
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(16, 366);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 8;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(317, 268);
-            this.tableLayoutPanel1.TabIndex = 9;
+            this.CameraProperties_panel.ColumnCount = 2;
+            this.CameraProperties_panel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 30F));
+            this.CameraProperties_panel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 70F));
+            this.CameraProperties_panel.Controls.Add(this.Rotation_textBox, 1, 6);
+            this.CameraProperties_panel.Controls.Add(this.Resolution_textBox, 1, 5);
+            this.CameraProperties_panel.Controls.Add(this.FOVy_textBox, 1, 4);
+            this.CameraProperties_panel.Controls.Add(this.AspectRatio_textBox, 1, 3);
+            this.CameraProperties_panel.Controls.Add(this.Direction_textBox, 1, 2);
+            this.CameraProperties_panel.Controls.Add(this.Position_textBox, 1, 1);
+            this.CameraProperties_panel.Controls.Add(this.Name_label, 0, 0);
+            this.CameraProperties_panel.Controls.Add(this.Position_label, 0, 1);
+            this.CameraProperties_panel.Controls.Add(this.Direction_label, 0, 2);
+            this.CameraProperties_panel.Controls.Add(this.AspectRatio_label, 0, 3);
+            this.CameraProperties_panel.Controls.Add(this.FOVy_label, 0, 4);
+            this.CameraProperties_panel.Controls.Add(this.Resolution_label, 0, 5);
+            this.CameraProperties_panel.Controls.Add(this.Rotation_label, 0, 6);
+            this.CameraProperties_panel.Controls.Add(this.Name_textBox, 1, 0);
+            this.CameraProperties_panel.Controls.Add(this.Update_btn, 0, 7);
+            this.CameraProperties_panel.Controls.Add(this.Delete_btn, 1, 7);
+            this.CameraProperties_panel.Location = new System.Drawing.Point(16, 73);
+            this.CameraProperties_panel.Name = "CameraProperties_panel";
+            this.CameraProperties_panel.RowCount = 8;
+            this.CameraProperties_panel.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.CameraProperties_panel.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.CameraProperties_panel.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.CameraProperties_panel.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.CameraProperties_panel.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.CameraProperties_panel.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.CameraProperties_panel.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.CameraProperties_panel.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.CameraProperties_panel.Size = new System.Drawing.Size(317, 270);
+            this.CameraProperties_panel.TabIndex = 9;
             // 
             // Rotation_textBox
             // 
@@ -355,23 +374,34 @@ namespace ApplicationUI
             // 
             // Update_btn
             // 
-            this.Update_btn.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.Update_btn.Location = new System.Drawing.Point(98, 234);
+            this.Update_btn.Dock = System.Windows.Forms.DockStyle.Left;
+            this.Update_btn.Location = new System.Drawing.Point(3, 234);
             this.Update_btn.Name = "Update_btn";
-            this.Update_btn.Size = new System.Drawing.Size(216, 31);
+            this.Update_btn.Size = new System.Drawing.Size(75, 37);
             this.Update_btn.TabIndex = 14;
-            this.Update_btn.Text = "Update";
+            this.Update_btn.Text = "Apply";
             this.Update_btn.UseVisualStyleBackColor = true;
             this.Update_btn.Click += new System.EventHandler(this.Update_btn_Click);
+            // 
+            // Delete_btn
+            // 
+            this.Delete_btn.Dock = System.Windows.Forms.DockStyle.Right;
+            this.Delete_btn.Location = new System.Drawing.Point(239, 234);
+            this.Delete_btn.Name = "Delete_btn";
+            this.Delete_btn.Size = new System.Drawing.Size(75, 37);
+            this.Delete_btn.TabIndex = 15;
+            this.Delete_btn.Text = "Delete";
+            this.Delete_btn.UseVisualStyleBackColor = true;
+            this.Delete_btn.Click += new System.EventHandler(this.Delete_btn_Click);
             // 
             // Camera_listBox
             // 
             this.Camera_listBox.FormattingEnabled = true;
             this.Camera_listBox.ItemHeight = 16;
-            this.Camera_listBox.Location = new System.Drawing.Point(16, 640);
+            this.Camera_listBox.Location = new System.Drawing.Point(16, 656);
             this.Camera_listBox.Margin = new System.Windows.Forms.Padding(5, 10, 3, 3);
             this.Camera_listBox.Name = "Camera_listBox";
-            this.Camera_listBox.Size = new System.Drawing.Size(317, 196);
+            this.Camera_listBox.Size = new System.Drawing.Size(320, 180);
             this.Camera_listBox.TabIndex = 8;
             this.Camera_listBox.SelectedIndexChanged += new System.EventHandler(this.Camera_listBox_SelectedIndexChanged);
             // 
@@ -382,15 +412,33 @@ namespace ApplicationUI
             this.AvailableModels_combo.Name = "AvailableModels_combo";
             this.AvailableModels_combo.Size = new System.Drawing.Size(248, 24);
             this.AvailableModels_combo.TabIndex = 7;
-            this.AvailableModels_combo.SelectedIndexChanged += new System.EventHandler(this.AvailableModels_combo_SelectedIndexChanged);
             // 
             // Log_textBox
             // 
             this.Log_textBox.Location = new System.Drawing.Point(0, 749);
             this.Log_textBox.Multiline = true;
             this.Log_textBox.Name = "Log_textBox";
+            this.Log_textBox.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.Log_textBox.Size = new System.Drawing.Size(1233, 87);
             this.Log_textBox.TabIndex = 7;
+            // 
+            // CameraView_pictureBox
+            // 
+            this.CameraView_pictureBox.BackColor = System.Drawing.Color.White;
+            this.CameraView_pictureBox.Location = new System.Drawing.Point(16, 394);
+            this.CameraView_pictureBox.Name = "CameraView_pictureBox";
+            this.CameraView_pictureBox.Size = new System.Drawing.Size(320, 240);
+            this.CameraView_pictureBox.TabIndex = 10;
+            this.CameraView_pictureBox.TabStop = false;
+            // 
+            // CameraView_label
+            // 
+            this.CameraView_label.AutoSize = true;
+            this.CameraView_label.Location = new System.Drawing.Point(21, 362);
+            this.CameraView_label.Name = "CameraView_label";
+            this.CameraView_label.Size = new System.Drawing.Size(138, 17);
+            this.CameraView_label.TabIndex = 11;
+            this.CameraView_label.Text = "No Camera Selected";
             // 
             // MainForm
             // 
@@ -417,8 +465,9 @@ namespace ApplicationUI
             this.statusStrip1.PerformLayout();
             this.LeftPanel.ResumeLayout(false);
             this.LeftPanel.PerformLayout();
-            this.tableLayoutPanel1.ResumeLayout(false);
-            this.tableLayoutPanel1.PerformLayout();
+            this.CameraProperties_panel.ResumeLayout(false);
+            this.CameraProperties_panel.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.CameraView_pictureBox)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -440,7 +489,7 @@ namespace ApplicationUI
         private TextBox Log_textBox;
         private ToolStripStatusLabel CameraCoords_label;
         private ListBox Camera_listBox;
-        private TableLayoutPanel tableLayoutPanel1;
+        private TableLayoutPanel CameraProperties_panel;
         private Label Name_label;
         private Label Position_label;
         private Label Direction_label;
@@ -459,6 +508,10 @@ namespace ApplicationUI
         private MenuStrip menuStrip1;
         private ToolStripMenuItem toolStripMenuItem1;
         private ToolStripMenuItem startToolStripMenuItem;
+        private ToolStripMenuItem quitToolStripMenuItem;
+        private Button Delete_btn;
+        private Label CameraView_label;
+        private PictureBox CameraView_pictureBox;
 
     }
 }

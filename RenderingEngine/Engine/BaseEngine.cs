@@ -17,7 +17,7 @@ namespace RenderingEngine.Engine
         protected Root Root;
         
         public SceneManager SceneManager;
-        
+
         protected WindowParams WindowParams;
         protected RenderWindow RenderWindow;
         protected RenderSystem RenderSystem;

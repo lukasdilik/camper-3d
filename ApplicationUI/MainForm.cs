@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Globalization;
 using System.Windows.Forms;
 using ApplicationLogic;
@@ -14,13 +15,14 @@ namespace ApplicationUI
         private readonly string ValueDelimiter = ";";
         private readonly AppController mAppController;
         private SecurityCameraProperties ActualCameraProperties;
+        private bool isMainWindowActive = true;
         public MainForm()
         {
             InitializeComponent();
-
+            Focus();
             mAppController = new AppController(this);
             mAppController.SetUpRenderingWindow(MainWindow.Handle, MainWindow.Width, MainWindow.Height);
-           
+            CameraProperties_panel.Hide();
             AvailableModels_combo.SelectedIndex = 1;
         }
 
@@ -37,17 +39,20 @@ namespace ApplicationUI
 
         protected override void OnKeyDown(KeyEventArgs e)
         {
- 	        mAppController.KeyDown(e.KeyCode);
+            if(isMainWindowActive)
+     	        mAppController.KeyDown(e.KeyCode);
         }
 
         protected override void OnKeyUp(KeyEventArgs e)
         {
-            mAppController.KeyUp(e.KeyCode);
+            if (isMainWindowActive)
+                mAppController.KeyUp(e.KeyCode);
         }
 
         protected override void OnKeyPress(KeyPressEventArgs e)
         {
-            mAppController.KeyPress(e.KeyChar);
+            if (isMainWindowActive)
+                mAppController.KeyPress(e.KeyChar);
         }
 
         #endregion
@@ -56,28 +61,31 @@ namespace ApplicationUI
 
         private void MainWindow_MouseLeave(object sender, EventArgs e)
         {
-            //TODO
         }
 
         private void MainWindow_MouseDown(object sender, MouseEventArgs e)
         {
-            mAppController.MouseDown(e);
+            if (isMainWindowActive)
+                mAppController.MouseDown(e);
         }
 
         private void MainWindow_MouseMove(object sender, MouseEventArgs e)
         {
             if(e.Button == MouseButtons.Left)
-                mAppController.MouseMove(e);
+                if (isMainWindowActive)
+                    mAppController.MouseMove(e);
         }
 
         private void MainWindow_MouseUp(object sender, MouseEventArgs e)
         {
-            mAppController.MouseUp(e);
+            if (isMainWindowActive)
+                mAppController.MouseUp(e);
         }
 
         private void MainWindow_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            mAppController.MouseDoubleClick(e);
+            if (isMainWindowActive)
+                mAppController.MouseDoubleClick(e);
         }
 
         #endregion
@@ -88,11 +96,6 @@ namespace ApplicationUI
             if (result == DialogResult.OK)
             {
             }
-        }
-
-        private void Start_btn_Click(object sender, EventArgs e)
-        {
-            mAppController.Start();
         }
 
         public int GetSelectedModelIndex()
@@ -124,7 +127,7 @@ namespace ApplicationUI
 
         public void RemoveCamera(string cameraName)
         {
-            throw new NotImplementedException();
+            Camera_listBox.Items.Remove(cameraName);
         }
 
         public void CameraSelected(SecurityCameraProperties cameraProperties)
@@ -138,19 +141,27 @@ namespace ApplicationUI
             FillCameraProperties(cameraProperties);
         }
 
-        private void AvailableModels_combo_SelectedIndexChanged(object sender, EventArgs e)
+        public Size GetCameraPreviewDimension()
         {
+            return new Size(CameraView_pictureBox.Width,CameraView_pictureBox.Height);
+        }
+
+        public void UpdateCameraView(string cameraName, Bitmap bmp)
+        {
+            CameraView_label.Text = cameraName;
+            CameraView_pictureBox.Image = bmp;
+            CameraView_pictureBox.Invalidate();
         }
 
         private void FillCameraProperties(SecurityCameraProperties properties)
         {
             ActualCameraProperties = properties;
             Name_textBox.Text = properties.Name;
-            Position_textBox.Text = String.Format("{0};{1};{2}", properties.Position.x, properties.Position.y, properties.Position.z);
-            Direction_textBox.Text = String.Format("{0};{1};{2}", properties.Direction.x, properties.Direction.y, properties.Direction.z);
+            Position_textBox.Text = String.Format("{0:f2};{1:f2};{2:f2}", properties.Position.x, properties.Position.y, properties.Position.z);
+            Direction_textBox.Text = String.Format("{0:f2};{1:f2};{2:f2}", properties.Direction.x, properties.Direction.y, properties.Direction.z);
             AspectRatio_textBox.Text = properties.AspectRatio.ToString();
             FOVy_textBox.Text = properties.FOVy.ValueDegrees.ToString();
-            Resolution_textBox.Text = String.Format("{0};{1}", properties.Resolution.x, properties.Resolution.y);
+            Resolution_textBox.Text = String.Format("{0:f2};{1:f2}", properties.Resolution.x, properties.Resolution.y);
             Rotation_textBox.Text = properties.Rotation.ToString();
 
         }
@@ -185,7 +196,18 @@ namespace ApplicationUI
 
         private void Camera_listBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            mAppController.SelectCamera((string) Camera_listBox.Items[Camera_listBox.SelectedIndex]);
+            if (Camera_listBox.SelectedIndex > -1)
+            {
+                if (Camera_listBox.Items.Count > 0)
+                {
+                    CameraProperties_panel.Show();
+                }
+                else
+                {
+                    CameraProperties_panel.Hide();
+                }
+                mAppController.SelectCamera((string) Camera_listBox.Items[Camera_listBox.SelectedIndex]);
+            }
         }
 
         private void Update_btn_Click(object sender, EventArgs e)
@@ -284,6 +306,26 @@ namespace ApplicationUI
         private void startToolStripMenuItem_Click(object sender, EventArgs e)
         {
             mAppController.Start();
+        }
+
+        private void LeftPanel_MouseEnter(object sender, EventArgs e)
+        {
+            isMainWindowActive = false;
+        }
+
+        private void MainWindow_MouseEnter(object sender, EventArgs e)
+        {
+            isMainWindowActive = true;
+        }
+
+        private void quitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
+
+        private void Delete_btn_Click(object sender, EventArgs e)
+        {
+            mAppController.DeleteSelectedCamera();
         }
     }
 }

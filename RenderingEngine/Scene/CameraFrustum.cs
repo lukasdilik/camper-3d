@@ -7,6 +7,7 @@ namespace RenderingEngine.Scene
         public const float FarDistance = 50f;
         public const float NearDistance = 1f;
         private readonly Camera mParentCamera;
+        private string mMaterialName;
         public string Name { private set; get; }
         public ManualObject FrustumManualObject { private set; get; }
         public SceneNode FrustumSceneNode { private set; get; }
@@ -19,6 +20,7 @@ namespace RenderingEngine.Scene
 
         public CameraFrustum(Camera parentCamera)
         {
+            mMaterialName = ColorMaterialManager.Instance.GetNextSolidColorMaterialName();
             mParentCamera = parentCamera;
             Position = mParentCamera.SceneNode.Position;
 
@@ -61,6 +63,11 @@ namespace RenderingEngine.Scene
 
         }
 
+        public void Destroy()
+        {
+            Engine.Engine.Instance.SceneManager.DestroyManualObject(FrustumManualObject);
+        }
+
         private void CreateManualObject()
         {
             FrustumManualObject = new ManualObject(Name)
@@ -71,30 +78,28 @@ namespace RenderingEngine.Scene
            
             TranformPointToLocalSpace();
 
-            var materialName = ColorMaterialManager.Instance.GetNextSolidColorMaterialName();
-
-            FrustumManualObject.Begin(materialName, RenderOperation.OperationTypes.OT_TRIANGLE_LIST);
+            FrustumManualObject.Begin(mMaterialName, RenderOperation.OperationTypes.OT_TRIANGLE_LIST);
             FrustumManualObject.Position(Position);
             FrustumManualObject.Position(FarTopRight);
             FrustumManualObject.Position(FarTopLeft);
             FrustumManualObject.Triangle(2, 1, 0);
             FrustumManualObject.End();
 
-            FrustumManualObject.Begin(materialName, RenderOperation.OperationTypes.OT_TRIANGLE_LIST);
+            FrustumManualObject.Begin(mMaterialName, RenderOperation.OperationTypes.OT_TRIANGLE_LIST);
             FrustumManualObject.Position(Position);
             FrustumManualObject.Position(FarBottomLeft);
             FrustumManualObject.Position(FarBottomRight);
             FrustumManualObject.Triangle(2, 1, 0);
             FrustumManualObject.End();
 
-            FrustumManualObject.Begin(materialName, RenderOperation.OperationTypes.OT_TRIANGLE_LIST);
+            FrustumManualObject.Begin(mMaterialName, RenderOperation.OperationTypes.OT_TRIANGLE_LIST);
             FrustumManualObject.Position(Position);
             FrustumManualObject.Position(FarBottomRight);
             FrustumManualObject.Position(FarTopRight);
             FrustumManualObject.Triangle(2, 1, 0);
             FrustumManualObject.End();
 
-            FrustumManualObject.Begin(materialName, RenderOperation.OperationTypes.OT_TRIANGLE_LIST);
+            FrustumManualObject.Begin(mMaterialName, RenderOperation.OperationTypes.OT_TRIANGLE_LIST);
             FrustumManualObject.Position(Position);
             FrustumManualObject.Position(FarTopLeft);
             FrustumManualObject.Position(FarBottomLeft);
