@@ -491,6 +491,7 @@
     <Content Include="Resources\materials\textures\waveNM.png" />
     <Content Include="Resources\materials\textures\waves2.dds" />
     <Content Include="Resources\materials\textures\WeirdEye.png" />
+    <Content Include="Resources\materials\textures\white-tiles-texture-seamless-design-inspiration-2.png" />
     <Content Include="Resources\materials\textures\WoodPallet.png" />
     <Content Include="Resources\overlays\BasicOgreGuiTemplates.inc" />
   </ItemGroup>

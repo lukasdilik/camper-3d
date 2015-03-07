@@ -44,6 +44,10 @@ namespace ApplicationUI
             this.AddFile_btn = new System.Windows.Forms.Button();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.LeftPanel = new System.Windows.Forms.Panel();
+            this.label1 = new System.Windows.Forms.Label();
+            this.SecurityCameras_comboBox = new System.Windows.Forms.ComboBox();
+            this.preview_label = new System.Windows.Forms.Label();
+            this.CameraView_pictureBox = new System.Windows.Forms.PictureBox();
             this.CameraProperties_panel = new System.Windows.Forms.TableLayoutPanel();
             this.Rotation_textBox = new System.Windows.Forms.TextBox();
             this.Resolution_textBox = new System.Windows.Forms.TextBox();
@@ -61,17 +65,14 @@ namespace ApplicationUI
             this.Name_textBox = new System.Windows.Forms.TextBox();
             this.Update_btn = new System.Windows.Forms.Button();
             this.Delete_btn = new System.Windows.Forms.Button();
-            this.Camera_listBox = new System.Windows.Forms.ListBox();
             this.AvailableModels_combo = new System.Windows.Forms.ComboBox();
             this.Log_textBox = new System.Windows.Forms.TextBox();
-            this.CameraView_pictureBox = new System.Windows.Forms.PictureBox();
-            this.CameraView_label = new System.Windows.Forms.Label();
             this.MainWindow.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.LeftPanel.SuspendLayout();
-            this.CameraProperties_panel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.CameraView_pictureBox)).BeginInit();
+            this.CameraProperties_panel.SuspendLayout();
             this.SuspendLayout();
             // 
             // MainWindow
@@ -183,10 +184,11 @@ namespace ApplicationUI
             // 
             // LeftPanel
             // 
-            this.LeftPanel.Controls.Add(this.CameraView_label);
+            this.LeftPanel.Controls.Add(this.label1);
+            this.LeftPanel.Controls.Add(this.SecurityCameras_comboBox);
+            this.LeftPanel.Controls.Add(this.preview_label);
             this.LeftPanel.Controls.Add(this.CameraView_pictureBox);
             this.LeftPanel.Controls.Add(this.CameraProperties_panel);
-            this.LeftPanel.Controls.Add(this.Camera_listBox);
             this.LeftPanel.Controls.Add(this.AvailableModels_combo);
             this.LeftPanel.Controls.Add(this.AddFile_btn);
             this.LeftPanel.Controls.Add(this.AvailableModels_label);
@@ -196,6 +198,44 @@ namespace ApplicationUI
             this.LeftPanel.Size = new System.Drawing.Size(345, 839);
             this.LeftPanel.TabIndex = 6;
             this.LeftPanel.MouseEnter += new System.EventHandler(this.LeftPanel_MouseEnter);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(16, 236);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(118, 17);
+            this.label1.TabIndex = 13;
+            this.label1.Text = "Selected camera:";
+            // 
+            // SecurityCameras_comboBox
+            // 
+            this.SecurityCameras_comboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.SecurityCameras_comboBox.FormattingEnabled = true;
+            this.SecurityCameras_comboBox.Location = new System.Drawing.Point(16, 256);
+            this.SecurityCameras_comboBox.Name = "SecurityCameras_comboBox";
+            this.SecurityCameras_comboBox.Size = new System.Drawing.Size(314, 24);
+            this.SecurityCameras_comboBox.TabIndex = 12;
+            this.SecurityCameras_comboBox.SelectedIndexChanged += new System.EventHandler(this.SecurityCameras_comboBox_SelectedIndexChanged);
+            // 
+            // preview_label
+            // 
+            this.preview_label.AutoSize = true;
+            this.preview_label.Location = new System.Drawing.Point(18, 561);
+            this.preview_label.Name = "preview_label";
+            this.preview_label.Size = new System.Drawing.Size(61, 17);
+            this.preview_label.TabIndex = 11;
+            this.preview_label.Text = "Preview:";
+            // 
+            // CameraView_pictureBox
+            // 
+            this.CameraView_pictureBox.BackColor = System.Drawing.Color.White;
+            this.CameraView_pictureBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.CameraView_pictureBox.Location = new System.Drawing.Point(16, 581);
+            this.CameraView_pictureBox.Name = "CameraView_pictureBox";
+            this.CameraView_pictureBox.Size = new System.Drawing.Size(320, 240);
+            this.CameraView_pictureBox.TabIndex = 10;
+            this.CameraView_pictureBox.TabStop = false;
             // 
             // CameraProperties_panel
             // 
@@ -218,7 +258,7 @@ namespace ApplicationUI
             this.CameraProperties_panel.Controls.Add(this.Name_textBox, 1, 0);
             this.CameraProperties_panel.Controls.Add(this.Update_btn, 0, 7);
             this.CameraProperties_panel.Controls.Add(this.Delete_btn, 1, 7);
-            this.CameraProperties_panel.Location = new System.Drawing.Point(16, 73);
+            this.CameraProperties_panel.Location = new System.Drawing.Point(16, 286);
             this.CameraProperties_panel.Name = "CameraProperties_panel";
             this.CameraProperties_panel.RowCount = 8;
             this.CameraProperties_panel.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -394,17 +434,6 @@ namespace ApplicationUI
             this.Delete_btn.UseVisualStyleBackColor = true;
             this.Delete_btn.Click += new System.EventHandler(this.Delete_btn_Click);
             // 
-            // Camera_listBox
-            // 
-            this.Camera_listBox.FormattingEnabled = true;
-            this.Camera_listBox.ItemHeight = 16;
-            this.Camera_listBox.Location = new System.Drawing.Point(16, 656);
-            this.Camera_listBox.Margin = new System.Windows.Forms.Padding(5, 10, 3, 3);
-            this.Camera_listBox.Name = "Camera_listBox";
-            this.Camera_listBox.Size = new System.Drawing.Size(320, 180);
-            this.Camera_listBox.TabIndex = 8;
-            this.Camera_listBox.SelectedIndexChanged += new System.EventHandler(this.Camera_listBox_SelectedIndexChanged);
-            // 
             // AvailableModels_combo
             // 
             this.AvailableModels_combo.FormattingEnabled = true;
@@ -422,24 +451,6 @@ namespace ApplicationUI
             this.Log_textBox.Size = new System.Drawing.Size(1233, 87);
             this.Log_textBox.TabIndex = 7;
             // 
-            // CameraView_pictureBox
-            // 
-            this.CameraView_pictureBox.BackColor = System.Drawing.Color.White;
-            this.CameraView_pictureBox.Location = new System.Drawing.Point(16, 394);
-            this.CameraView_pictureBox.Name = "CameraView_pictureBox";
-            this.CameraView_pictureBox.Size = new System.Drawing.Size(320, 240);
-            this.CameraView_pictureBox.TabIndex = 10;
-            this.CameraView_pictureBox.TabStop = false;
-            // 
-            // CameraView_label
-            // 
-            this.CameraView_label.AutoSize = true;
-            this.CameraView_label.Location = new System.Drawing.Point(21, 362);
-            this.CameraView_label.Name = "CameraView_label";
-            this.CameraView_label.Size = new System.Drawing.Size(138, 17);
-            this.CameraView_label.TabIndex = 11;
-            this.CameraView_label.Text = "No Camera Selected";
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -456,6 +467,7 @@ namespace ApplicationUI
             this.MinimumSize = new System.Drawing.Size(1024, 768);
             this.Name = "MainForm";
             this.Text = "CAMPER";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.Disposed += new System.EventHandler(this.MainForm_Disposed);
             this.MainWindow.ResumeLayout(false);
             this.MainWindow.PerformLayout();
@@ -465,9 +477,9 @@ namespace ApplicationUI
             this.statusStrip1.PerformLayout();
             this.LeftPanel.ResumeLayout(false);
             this.LeftPanel.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.CameraView_pictureBox)).EndInit();
             this.CameraProperties_panel.ResumeLayout(false);
             this.CameraProperties_panel.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.CameraView_pictureBox)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -488,7 +500,6 @@ namespace ApplicationUI
         private ToolStripStatusLabel StatusLabel;
         private TextBox Log_textBox;
         private ToolStripStatusLabel CameraCoords_label;
-        private ListBox Camera_listBox;
         private TableLayoutPanel CameraProperties_panel;
         private Label Name_label;
         private Label Position_label;
@@ -510,8 +521,10 @@ namespace ApplicationUI
         private ToolStripMenuItem startToolStripMenuItem;
         private ToolStripMenuItem quitToolStripMenuItem;
         private Button Delete_btn;
-        private Label CameraView_label;
         private PictureBox CameraView_pictureBox;
+        private Label label1;
+        private ComboBox SecurityCameras_comboBox;
+        private Label preview_label;
 
     }
 }
