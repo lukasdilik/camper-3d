@@ -42,13 +42,22 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.XML" />
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppController.Input.cs" />
+    <Compile Include="ApplicationLogicResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ApplicationLogicResources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Interfaces\IApplicationUI.cs" />
     <Compile Include="AppController.cs" />
     <Compile Include="Interfaces\IKeyboardInput.cs" />
     <Compile Include="Interfaces\IMouseInput.cs" />
+    <Compile Include="ModelData.cs" />
+    <Compile Include="ModelLibrary.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scene\Model.cs" />
     <Compile Include="Scene\SecurityCamera.cs" />
@@ -59,6 +68,12 @@
       <Project>{7ab3fd7f-0210-4717-9bc4-76b6915f2441}</Project>
       <Name>RenderingEngine</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="ApplicationLogicResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ApplicationLogicResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

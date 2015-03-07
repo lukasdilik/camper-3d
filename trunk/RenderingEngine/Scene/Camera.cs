@@ -163,6 +163,7 @@ namespace RenderingEngine.Scene
         public void Translate(Vector3 t)
         {
             SceneNode.Translate(t, Node.TransformSpace.TS_WORLD);
+            MogreCamera.Position = SceneNode.Position;
         }
 
         public AxisAlignedBox GetBoundingBox()

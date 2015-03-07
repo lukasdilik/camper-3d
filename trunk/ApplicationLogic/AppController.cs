@@ -21,37 +21,36 @@ namespace ApplicationLogic
     {
         public static string DefaultMaterialGroupName = ResourceGroupManager.DEFAULT_RESOURCE_GROUP_NAME;
 
-        private const string StoredModelsPath = "./Resources/models/scene";
-
         private int mModelCounter;
         private bool mIsStarted;
         private bool mIsMainCameraActivated = true;
-        private readonly List<string> mAvailableModels;
         private readonly IApplicationUI mApplicationUi;
         private Size mCameraViewDimension;
 
-        public Dictionary<string, Model> Models { get; private set; }
+        public Dictionary<string, Model> LoadedModels { get; private set; }
         public Model SelectedModel { get; private set; }
-
+        public ModelLibrary ModelLibrary { get; private set; }
         public AppController(IApplicationUI appUi)
         {
-            Models = new Dictionary<string, Model>();
-            mAvailableModels = new List<string>();
+            LoadedModels = new Dictionary<string, Model>();
             Engine.Instance.SetApplicationInstance(this);
             mApplicationUi = appUi;
-            GetAvailableModels();
             mCameraViewDimension = mApplicationUi.GetCameraPreviewDimension();
+
+            if (File.Exists(@ApplicationLogicResources.LibraryFilename))
+            {
+                DeserializeLibrary(ApplicationLogicResources.LibraryFilename);
+            }
+            else
+            {
+                ModelLibrary = new ModelLibrary();
+            }
+            GetAvailableModels();
         }
 
         private void GetAvailableModels()
         {
-            var models = Directory.GetFiles(@StoredModelsPath, "*.mesh");
-            foreach (var model in models)
-            {
-                var modelName = Path.GetFileName(model);
-                mAvailableModels.Add(modelName);
-            }
-            mApplicationUi.ShowAvailableModels(mAvailableModels);
+            mApplicationUi.ShowAvailableModels(ModelLibrary.GetAvailableModelsName());
         }
 
         public void SetUpRenderingWindow(IntPtr handle, int width, int height)
@@ -59,19 +58,11 @@ namespace ApplicationLogic
             Engine.Instance.SetUpRenderWindow(handle, width, height);
         }
 
-        private Model LoadModel(string fileName)
+        private Model LoadModel(string modelName, string filePath)
         {
-            if (!File.Exists(Path.Combine(StoredModelsPath,fileName)))
-            {
-                var e = new FileNotFoundException("Model file name not found on path: "+fileName);
-                mApplicationUi.LogMessage(e.ToString());
-                throw e;
-            }
-
-            var modelName = fileName.Split(".".ToCharArray(), StringSplitOptions.RemoveEmptyEntries)[0];
-            modelName += mModelCounter; 
-            var newModel = new Model(modelName,fileName);
-            Models.Add(modelName, newModel);
+            modelName += mModelCounter;
+            var newModel = new Model(modelName, filePath);
+            LoadedModels.Add(modelName, newModel);
 
             mModelCounter++;
 
@@ -88,7 +79,7 @@ namespace ApplicationLogic
             
             var name = movableObject.Name;
             
-            foreach (var model in Models)
+            foreach (var model in LoadedModels)
             {
                 if (name == model.Value.Name)
                 {
@@ -135,16 +126,17 @@ namespace ApplicationLogic
 
             DeselectAllModels();
             
-            int selectedIndex = mApplicationUi.GetSelectedModelIndex();
-            if (selectedIndex > 0)
-            {
-                string modelFileName = mAvailableModels[selectedIndex];
-                var newModel = LoadModel(modelFileName);
-                newModel.Selected = true;
-                SelectedModel = newModel;
+            string selectedModelName = mApplicationUi.GetSelectedModelName();
+            if (String.IsNullOrEmpty(selectedModelName)) return;
+            
+            var modelData = ModelLibrary.GetModel(selectedModelName);
+            var newModel = LoadModel(modelData.Name,modelData.Path);
+            
+            newModel.Selected = true;
+            
+            SelectedModel = newModel;
 
-                newModel.Translate(intersection);
-            }
+            newModel.Translate(intersection);
         }
 
         public void Start() 
@@ -165,7 +157,7 @@ namespace ApplicationLogic
 
         private void DeselectAllModels()
         {
-            foreach (var model in Models)
+            foreach (var model in LoadedModels)
             {
                 model.Value.Selected = false;
                 model.Value.DeselectAllSecurityCameras();
@@ -238,7 +230,7 @@ namespace ApplicationLogic
 
         public void SelectCamera(string key)
         {
-            foreach (var model in Models)
+            foreach (var model in LoadedModels)
             {
                 if (model.Value.SecurityCameras.ContainsKey(key))
                 {
@@ -412,9 +404,32 @@ namespace ApplicationLogic
             mApplicationUi.UpdateStatusBarInfo(info);
         }
 
+        private void SerializeLibrary(string fileName)
+        {
+            var writer = new System.Xml.Serialization.XmlSerializer(typeof(ModelLibrary));
+            var file = new StreamWriter(@fileName);
+            writer.Serialize(file, ModelLibrary);
+            LogMessage("Model library serialized to file: " + fileName);
+            file.Close();
+        }
+
+        private void DeserializeLibrary(string fileName)
+        {
+            if (!File.Exists(fileName)) return;
+            var reader = new System.Xml.Serialization.XmlSerializer(typeof(ModelLibrary));
+            var file = new StreamReader(@fileName);
+            ModelLibrary = (ModelLibrary)reader.Deserialize(file);
+            LogMessage("Model library loaded from file: " + fileName);
+        }
+
         public void LogMessage(string msg)
         {
             mApplicationUi.LogMessage(msg);
+        }
+
+        public void Destroy()
+        {
+            SerializeLibrary(@ApplicationLogicResources.LibraryFilename);
         }
     }
 }

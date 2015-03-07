@@ -6,7 +6,7 @@ namespace ApplicationLogic.Scene
 {
     public class SecurityCamera
     {
-        public const string MeshName = "cctv1.mesh";
+        public string MeshName = ApplicationLogicResources.SecurityCameraMeshName;
         private bool mSelected;
         private int mOldX, mOldY;
 

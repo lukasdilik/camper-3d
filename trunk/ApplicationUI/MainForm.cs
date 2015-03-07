@@ -12,10 +12,10 @@ namespace ApplicationUI
 {
     public partial class MainForm : IApplicationUI
     {
-        private readonly string ValueDelimiter = ";";
         private readonly AppController mAppController;
         private SecurityCameraProperties ActualCameraProperties;
         private bool isMainWindowActive = true;
+
         public MainForm()
         {
             InitializeComponent();
@@ -23,7 +23,12 @@ namespace ApplicationUI
             mAppController = new AppController(this);
             mAppController.SetUpRenderingWindow(MainWindow.Handle, MainWindow.Width, MainWindow.Height);
             CameraProperties_panel.Hide();
-            AvailableModels_combo.SelectedIndex = 1;
+            SecurityCameras_comboBox.Hide();
+
+            if (AvailableModels_combo.Items.Count > 1)
+            {
+                AvailableModels_combo.SelectedIndex = 1;    
+            }
         }
 
         private void MainForm_Disposed(object sender, EventArgs e)
@@ -98,9 +103,9 @@ namespace ApplicationUI
             }
         }
 
-        public int GetSelectedModelIndex()
+        public String GetSelectedModelName()
         {
-            return AvailableModels_combo.SelectedIndex;
+            return (string) AvailableModels_combo.SelectedItem;
         }
 
         public void SendMessage(string msg)
@@ -120,19 +125,19 @@ namespace ApplicationUI
 
         public void AddCamera(SecurityCameraProperties cameraProperties)
         {
-            Camera_listBox.Items.Add(cameraProperties.Name);
-            Camera_listBox.SelectedItem = cameraProperties.Name;
+            SecurityCameras_comboBox.Items.Add(cameraProperties.Name);
+            SecurityCameras_comboBox.SelectedItem = cameraProperties.Name;
             FillCameraProperties(cameraProperties);
         }
 
         public void RemoveCamera(string cameraName)
         {
-            Camera_listBox.Items.Remove(cameraName);
+            SecurityCameras_comboBox.Items.Remove(cameraName);
         }
 
         public void CameraSelected(SecurityCameraProperties cameraProperties)
         {
-            Camera_listBox.SelectedIndex = Camera_listBox.FindString(cameraProperties.Name);
+            SecurityCameras_comboBox.SelectedIndex = SecurityCameras_comboBox.FindString(cameraProperties.Name);
             UpdateCameraProperties(cameraProperties);
         }
 
@@ -148,7 +153,6 @@ namespace ApplicationUI
 
         public void UpdateCameraView(string cameraName, Bitmap bmp)
         {
-            CameraView_label.Text = cameraName;
             CameraView_pictureBox.Image = bmp;
             CameraView_pictureBox.Invalidate();
         }
@@ -171,11 +175,6 @@ namespace ApplicationUI
             Activate();
         }
 
-        private void MainWindow_SizeChanged(object sender, EventArgs e)
-        {
-           mAppController.Resize(MainWindow.Width, MainWindow.Height);
-        }
-
         public void LogMessage(string msg)
         {
             if (ActiveForm == null || ActiveForm.Disposing) return;
@@ -192,22 +191,6 @@ namespace ApplicationUI
                 Log_textBox.AppendText("-------------------------------------");
             }
 
-        }
-
-        private void Camera_listBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (Camera_listBox.SelectedIndex > -1)
-            {
-                if (Camera_listBox.Items.Count > 0)
-                {
-                    CameraProperties_panel.Show();
-                }
-                else
-                {
-                    CameraProperties_panel.Hide();
-                }
-                mAppController.SelectCamera((string) Camera_listBox.Items[Camera_listBox.SelectedIndex]);
-            }
         }
 
         private void Update_btn_Click(object sender, EventArgs e)
@@ -291,7 +274,7 @@ namespace ApplicationUI
             try
             {
                 value = value.Replace(',','.');
-                var temp = value.Split(ValueDelimiter.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                var temp = value.Split(ApplicationUIResources.ValueDelimiter.ToCharArray(),StringSplitOptions.RemoveEmptyEntries);
                 var x = temp[0];
                 var y = temp[1];
                 var z = temp[2];
@@ -326,6 +309,29 @@ namespace ApplicationUI
         private void Delete_btn_Click(object sender, EventArgs e)
         {
             mAppController.DeleteSelectedCamera();
+        }
+
+        private void SecurityCameras_comboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (SecurityCameras_comboBox.SelectedIndex > -1)
+            {
+                if (SecurityCameras_comboBox.Items.Count > 0)
+                {
+                    CameraProperties_panel.Show();
+                    SecurityCameras_comboBox.Show();
+                }
+                else
+                {
+                    SecurityCameras_comboBox.Hide();
+                    CameraProperties_panel.Hide();
+                }
+                mAppController.SelectCamera((string)SecurityCameras_comboBox.Items[SecurityCameras_comboBox.SelectedIndex]);
+            }
+        }
+
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            mAppController.Destroy();
         }
     }
 }
