@@ -48,7 +48,7 @@ namespace ApplicationLogic
             GetAvailableModels();
         }
 
-        private void GetAvailableModels()
+        public void GetAvailableModels()
         {
             mApplicationUi.ShowAvailableModels(ModelLibrary.GetAvailableModelsName());
         }
@@ -392,8 +392,6 @@ namespace ApplicationLogic
             }
         }
 
-
-
         public void UpdateStatusBar()
         {
             RefreshSelectedCameraProperties();
@@ -419,6 +417,7 @@ namespace ApplicationLogic
             var reader = new System.Xml.Serialization.XmlSerializer(typeof(ModelLibrary));
             var file = new StreamReader(@fileName);
             ModelLibrary = (ModelLibrary)reader.Deserialize(file);
+            file.Close();
             LogMessage("Model library loaded from file: " + fileName);
         }
 
