@@ -6,60 +6,95 @@ using System.Linq;
 namespace ApplicationLogic
 {
     [Serializable]
-    public class ModelLibrary
+    public class ModelLibrary 
     {
         public readonly string StoredModelsPath = ApplicationLogicResources.StoredModelsPath;
         public readonly string StoredMaterialsPath = ApplicationLogicResources.StoredMaterialPath;
         public readonly string StoredTexturesPath = ApplicationLogicResources.StoredTexturesPath;
 
-        public readonly List<string> AllowedTexturesExtensions = new List<string> { "jpg", "png" }; 
+        public List<string> AllowedTexturesExtensions = new List<string> { ".jpg", ".png" };
 
-        private readonly Dictionary<string, ModelData> AvailableModels;
+        public List<ModelData> AvailableModels;
         public ModelLibrary()
         {
-            AvailableModels = new Dictionary<string, ModelData>();
+            AvailableModels = new List<ModelData>();
         }
 
         public void ImportModel(string modelFolderPath)
         {
-            var files = Directory.GetFiles(modelFolderPath);
-            ModelData newModel = null;
-            var materials = new List<string>();
-            var textures = new List<string>();
-            foreach (var file in files)
-            {
-                var ext = Path.GetExtension(file);
+            var modelFiles = Directory.GetFiles(modelFolderPath,"*.mesh");
+            var materialFiles = Directory.GetFiles(modelFolderPath,"*.material");
+            var textureFiles = Directory.GetFiles(modelFolderPath);
+           
+            ModelData newModel;
 
-                if (ext == "mesh")
-                {
-                    newModel = new ModelData(Path.GetFileName(file), Path.GetFullPath(file));
-                    File.Copy(Path.GetFullPath(file), @StoredModelsPath,true);
-                }
-                if (ext == "material")
-                {
-                    var path = Path.GetFullPath(file);
-                    materials.Add(path);
-                    File.Copy(path, @StoredMaterialsPath, true);
-                }
-                if (AllowedTexturesExtensions.Contains(ext))
-                {
-                    var path = Path.GetFullPath(file); 
-                    textures.Add(path);
-                    File.Copy(path, @StoredTexturesPath, true);
-                }
+            if (modelFiles.Length == 0)
+            {
+                throw new Exception("No .mesh file found in folder: " + modelFolderPath);
+            }
+
+            if (modelFiles.Length > 1)
+            {
+                throw new Exception("More than one .mesh file in folder: " + modelFolderPath);
             }
             
-            if (newModel == null) return;
-            materials.ForEach(x => newModel.AddMaterial(x));
-            textures.ForEach(x => newModel.AddTexture(x));
-            AvailableModels.Add(newModel.Name,newModel);
+            var modelFileName = Path.GetFileName(modelFiles[0]);
+           
+            if (string.IsNullOrEmpty(modelFileName))
+            {
+                throw new NullReferenceException("Model file name is NULL");
+            }
+
+            newModel = new ModelData(modelFileName, Path.Combine(@StoredModelsPath, modelFileName));
+            File.Copy(Path.GetFullPath(modelFiles[0]), Path.Combine(@StoredModelsPath, modelFileName), true);
+
+            if (materialFiles.Length < 1)
+            {
+                throw new Exception("No .material file found in folder: " + modelFolderPath);
+                
+            }
+
+            foreach (var material in materialFiles)
+            {
+                var materialPath = Path.GetFullPath(material);
+                if (string.IsNullOrEmpty(material))
+                {
+                    throw new NullReferenceException("Material file name is NULL");
+                }
+                
+                File.Copy(materialPath, Path.Combine(@StoredMaterialsPath, Path.GetFileName(material)), true);
+               
+                newModel.AddMaterial( Path.Combine(@StoredMaterialsPath, Path.GetFileName(material)));
+            }
+
+            foreach (var texture in textureFiles)
+            {
+                var texturePath = Path.GetFullPath(texture);
+                if (string.IsNullOrEmpty(Path.GetFileName(texture)))
+                {
+                    throw new NullReferenceException("Texture file name is NULL");
+                }
+                if (!AllowedTexturesExtensions.Contains(Path.GetExtension(texturePath))) continue;
+
+                File.Copy(texturePath, Path.Combine(@StoredTexturesPath, Path.GetFileName(texture)), true);
+                
+                newModel.AddTexture(Path.Combine(@StoredTexturesPath, Path.GetFileName(texture)));
+            }
+            
+            
+
+            if (AvailableModels.Contains(newModel))
+            {
+                throw new Exception("Model with name: " + newModel+ " is already in the library");  
+            }
+            AvailableModels.Add(newModel);    
         }
 
         public void RemoveModel(string modelName)
         {
-            if (AvailableModels.ContainsKey(modelName))
+            if (AvailableModels.Find(x => x.Name == modelName) != null)
             {
-                ModelData toRemove = AvailableModels[modelName];
+                ModelData toRemove = AvailableModels.Find(x => x.Name == modelName);
                 File.Delete(toRemove.Path);
                 foreach (var material in toRemove.Materials)
                 {
@@ -69,21 +104,23 @@ namespace ApplicationLogic
                 {
                     File.Delete(texture);
                 }
-                AvailableModels.Remove(modelName);
+                AvailableModels.Remove(toRemove);
             }
         }
 
         public List<string> GetAvailableModelsName()
         {
-            var modelNames = AvailableModels.Select(availableModel => availableModel.Key).ToList();
+            var modelNames = AvailableModels.Select(availableModel => availableModel.Name).ToList();
             return modelNames;
         }
 
         public ModelData GetModel(string name)
         {
-            if(AvailableModels.ContainsKey(name))
+            if (String.IsNullOrEmpty(name)) return null;
+
+            if (AvailableModels.Find(x => x.Name == name) == null)
                 throw new KeyNotFoundException(name + "NOT found");
-            return AvailableModels[name];
+            return AvailableModels.Find(x => x.Name == name);
         }
     }
 }

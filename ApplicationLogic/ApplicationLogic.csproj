@@ -62,6 +62,7 @@
     <Compile Include="Scene\Model.cs" />
     <Compile Include="Scene\SecurityCamera.cs" />
     <Compile Include="Scene\SecurityCameraProperties.cs" />
+    <Compile Include="SerializableDictionary.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\RenderingEngine\RenderingEngine.csproj">

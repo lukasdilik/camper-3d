@@ -36,6 +36,7 @@ namespace ApplicationUI
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.startToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.quitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.AvailableModels_label = new System.Windows.Forms.Label();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
@@ -67,6 +68,7 @@ namespace ApplicationUI
             this.Delete_btn = new System.Windows.Forms.Button();
             this.AvailableModels_combo = new System.Windows.Forms.ComboBox();
             this.Log_textBox = new System.Windows.Forms.TextBox();
+            this.showLibraryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.MainWindow.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -95,7 +97,9 @@ namespace ApplicationUI
             // menuStrip1
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripMenuItem1});
+            this.toolStripMenuItem1,
+            this.showLibraryToolStripMenuItem,
+            this.toolStripMenuItem2});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(1233, 24);
@@ -114,16 +118,21 @@ namespace ApplicationUI
             // startToolStripMenuItem
             // 
             this.startToolStripMenuItem.Name = "startToolStripMenuItem";
-            this.startToolStripMenuItem.Size = new System.Drawing.Size(98, 22);
+            this.startToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.startToolStripMenuItem.Text = "Start";
             this.startToolStripMenuItem.Click += new System.EventHandler(this.startToolStripMenuItem_Click);
             // 
             // quitToolStripMenuItem
             // 
             this.quitToolStripMenuItem.Name = "quitToolStripMenuItem";
-            this.quitToolStripMenuItem.Size = new System.Drawing.Size(98, 22);
+            this.quitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.quitToolStripMenuItem.Text = "Quit";
             this.quitToolStripMenuItem.Click += new System.EventHandler(this.quitToolStripMenuItem_Click);
+            // 
+            // toolStripMenuItem2
+            // 
+            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(12, 20);
             // 
             // AvailableModels_label
             // 
@@ -451,6 +460,13 @@ namespace ApplicationUI
             this.Log_textBox.Size = new System.Drawing.Size(1233, 87);
             this.Log_textBox.TabIndex = 7;
             // 
+            // showLibraryToolStripMenuItem
+            // 
+            this.showLibraryToolStripMenuItem.Name = "showLibraryToolStripMenuItem";
+            this.showLibraryToolStripMenuItem.Size = new System.Drawing.Size(84, 20);
+            this.showLibraryToolStripMenuItem.Text = "Show library";
+            this.showLibraryToolStripMenuItem.Click += new System.EventHandler(this.showLibraryToolStripMenuItem_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -525,6 +541,8 @@ namespace ApplicationUI
         private Label label1;
         private ComboBox SecurityCameras_comboBox;
         private Label preview_label;
+        private ToolStripMenuItem toolStripMenuItem2;
+        private ToolStripMenuItem showLibraryToolStripMenuItem;
 
     }
 }

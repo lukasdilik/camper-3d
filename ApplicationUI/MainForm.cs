@@ -15,19 +15,26 @@ namespace ApplicationUI
         private readonly AppController mAppController;
         private SecurityCameraProperties ActualCameraProperties;
         private bool isMainWindowActive = true;
+        private LibraryForm mLibraryForm;
 
         public MainForm()
         {
             InitializeComponent();
+   
             Focus();
             mAppController = new AppController(this);
             mAppController.SetUpRenderingWindow(MainWindow.Handle, MainWindow.Width, MainWindow.Height);
+
+            mLibraryForm = new LibraryForm(mAppController);
+            mLibraryForm.Hide();
+            mLibraryForm.FormClosed += LibraryFormOnFormClosed;
+
             CameraProperties_panel.Hide();
             SecurityCameras_comboBox.Hide();
 
-            if (AvailableModels_combo.Items.Count > 1)
+            if (AvailableModels_combo.Items.Count > 0)
             {
-                AvailableModels_combo.SelectedIndex = 1;    
+                AvailableModels_combo.SelectedIndex = 0;    
             }
         }
 
@@ -332,6 +339,16 @@ namespace ApplicationUI
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             mAppController.Destroy();
+        }
+
+        private void showLibraryToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            mLibraryForm.Show();
+        }
+
+        private void LibraryFormOnFormClosed(object sender, FormClosedEventArgs formClosedEventArgs)
+        {
+            mAppController.GetAvailableModels();
         }
     }
 }

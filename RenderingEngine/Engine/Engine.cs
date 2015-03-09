@@ -47,7 +47,7 @@ namespace RenderingEngine.Engine
             
             SetSkyBox();
             
-            SceneManager.SetWorldGeometry("terrain.cfg");
+            SceneManager.SetWorldGeometry("./Resources/terrain.cfg");
 
             RaySceneQuery = SceneManager.CreateRayQuery(new Ray());
         }

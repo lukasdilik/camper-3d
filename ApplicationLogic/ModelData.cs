@@ -1,13 +1,24 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace ApplicationLogic
 {
-    public class ModelData
+    [Serializable]
+    public class ModelData 
     {
-        public string Name { get; private set; }
-        public string Path { get; private set; }
-        public List<string> Materials { get; private set; }
-        public List<string> Textures { get; private set; }
+        public string Name { get; set; }
+        public string Path { get; set; }
+        public List<string> Materials { get; set; }
+        public List<string> Textures { get; set; }
+
+        public ModelData()
+        {
+            Name = "";
+            Path = "";
+            Materials = new List<string>();
+            Textures = new List<string>();
+        }
 
         public ModelData(string name, string path)
         {
