@@ -264,7 +264,8 @@ namespace RenderingEngine.Engine
 
         public void Shutdown()
         {
-            Root.Shutdown();
+            if(Root != null)
+                Root.Shutdown();
         }
 
         protected virtual void CreateScene()

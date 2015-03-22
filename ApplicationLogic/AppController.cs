@@ -21,6 +21,10 @@ namespace ApplicationLogic
     {
         public static string DefaultMaterialGroupName = ResourceGroupManager.DEFAULT_RESOURCE_GROUP_NAME;
 
+        public enum Mode { CAMERA_MODE, LIGHT_MODE, MODEL_MODE };
+
+        public Mode ActiveMode = Mode.CAMERA_MODE;
+
         private int mModelCounter;
         private bool mIsStarted;
         private bool mIsMainCameraActivated = true;
@@ -58,15 +62,15 @@ namespace ApplicationLogic
             Engine.Instance.SetUpRenderWindow(handle, width, height);
         }
 
-        private Model LoadModel(string modelName, string filePath)
+        private Model LoadModel(string modelName)
         {
-            modelName += mModelCounter;
-            var newModel = new Model(modelName, filePath);
-            LoadedModels.Add(modelName, newModel);
+            string modelInstanceName = Path.GetFileNameWithoutExtension(modelName) + mModelCounter;
+            var newModel = new Model(modelInstanceName, modelName);
+            LoadedModels.Add(modelInstanceName, newModel);
 
             mModelCounter++;
 
-            mApplicationUi.SendMessage("Model "+modelName+" successfully loaded");
+            mApplicationUi.SendMessage("Model " + modelInstanceName + " successfully loaded");
             return newModel;
         }
 
@@ -81,11 +85,65 @@ namespace ApplicationLogic
             
             foreach (var model in LoadedModels)
             {
-                if (name == model.Value.Name)
+                if (name == model.Value.ModelProperties.Name)
                 {
-                    model.Value.Selected = true;
-                    SelectedModel = model.Value;
+                    SelectModel(model.Value.ModelProperties.Name);    
                 }
+            }
+        }
+
+        public void SelectModel(string name)
+        {
+            if (name == null) return;
+            if(LoadedModels.ContainsKey(name))
+            {
+                DeselectAllModels();
+                var selectedModel = LoadedModels[name];
+                selectedModel.Selected = true;
+                SelectedModel = selectedModel;
+                mApplicationUi.ModelSelected(selectedModel.ModelProperties);
+            }
+        }
+
+        public void SetNewPositionToSelectedModel(Vector3 newPosition)
+        {
+            if (SelectedModel != null)
+            {
+                var oldPosition = SelectedModel.RenderModel.SceneNode.Position;
+                SelectedModel.Translate(newPosition - oldPosition);
+                mApplicationUi.ModelSelected(SelectedModel.ModelProperties);
+            }
+        }
+
+        public void ScaleSelectedModel(float factor)
+        {
+            if (SelectedModel != null)
+            {
+                SelectedModel.Scale(factor);
+                mApplicationUi.ModelSelected(SelectedModel.ModelProperties);
+            }
+        }
+
+        public void RotateSelectedModel(Degree degree)
+        {
+            if (SelectedModel != null)
+            {
+                SelectedModel.RotateY(degree);
+                mApplicationUi.ModelSelected(SelectedModel.ModelProperties);
+            }
+        }
+
+        public void SelectSecurityCamera(int screenX, int screenY)
+        {
+            DeselectAllCameras();
+            var movableObject = Engine.Instance.SelectObject(screenX, screenY);
+
+            if (movableObject == null) return;
+
+            var name = movableObject.Name;
+
+            foreach (var model in LoadedModels)
+            {
                 foreach (var camera in model.Value.SecurityCameras.Where(camera => name == camera.Value.Camera.Name))
                 {
                     SelectedModel.SelectSecurityCamera(name);
@@ -130,13 +188,15 @@ namespace ApplicationLogic
             if (String.IsNullOrEmpty(selectedModelName)) return;
             
             var modelData = ModelLibrary.GetModel(selectedModelName);
-            var newModel = LoadModel(modelData.Name,modelData.Path);
+            var newModel = LoadModel(modelData.Name);
             
             newModel.Selected = true;
             
             SelectedModel = newModel;
 
+            intersection.y += 1;
             newModel.Translate(intersection);
+            mApplicationUi.ModelAdded(newModel.ModelProperties);
         }
 
         public void Start() 
@@ -160,6 +220,13 @@ namespace ApplicationLogic
             foreach (var model in LoadedModels)
             {
                 model.Value.Selected = false;
+            }
+        }
+
+        private void DeselectAllCameras()
+        {
+            foreach (var model in LoadedModels)
+            {
                 model.Value.DeselectAllSecurityCameras();
             }
         }
@@ -175,11 +242,13 @@ namespace ApplicationLogic
                     {
 
                         InitRTTOnSelectedCamera(SelectedModel.SelectedSecurityCamera);
-                        mApplicationUi.AddCamera(SelectedModel.SelectedSecurityCamera.Properties);
+                        mApplicationUi.CameraAdded(SelectedModel.SelectedSecurityCamera.Properties);
                     }
                 }
             }
         }
+
+        #region RenderToTexture
 
         private void InitRTTOnSelectedCamera(SecurityCamera selectedSecurityCamera)
         {
@@ -228,6 +297,8 @@ namespace ApplicationLogic
                 TextureType.TEX_TYPE_2D, width, height, 0, PixelFormat.PF_B8G8R8, (int)TextureUsage.TU_RENDERTARGET);
         }
 
+#endregion
+
         public void SelectCamera(string key)
         {
             foreach (var model in LoadedModels)
@@ -270,7 +341,6 @@ namespace ApplicationLogic
         public void KeyPress(char key)
         {
             if (!mIsStarted) return;
-
             HandleKeyPress(key);
         }
 
@@ -317,26 +387,52 @@ namespace ApplicationLogic
         {
             if (!mIsStarted) return;
 
-            if (e.Button == MouseButtons.Left)
+            switch (e.Button)
             {
-                SelectModel(e.X, e.Y);
+                case MouseButtons.Left:
+                    MouseLeftClick(e);
+                    break;
+                case MouseButtons.Right:
+                    MouseRightClick(e);
+                    break;
             }
-
-            if (e.Button == MouseButtons.Right)
-            {
-                CreateSecurityCamera(e.X, e.Y);
-            }
-
-            if (IsSecurityCameraSelected())
-            {
-                CameraMouseClick(e);
-            }
-            else
-            {
-                HandleMouseDown(e);        
-            }
-
+            HandleMouseDown(e);
             UpdateStatusBar();
+        }
+
+        private void MouseLeftClick(MouseEventArgs e)
+        {
+            DeselectAllModels();
+            switch (ActiveMode)
+            {
+                case Mode.CAMERA_MODE:
+                    SelectSecurityCamera(e.X, e.Y);
+                    if (IsSecurityCameraSelected())
+                    {
+                        CameraMouseClick(e);
+                    }
+                    break;
+                case Mode.LIGHT_MODE:
+                    break;
+                case Mode.MODEL_MODE:
+                    SelectModel(e.X, e.Y);
+                    break;
+            }
+        }
+
+        private void MouseRightClick(MouseEventArgs e)
+        {
+            switch (ActiveMode)
+            {
+                case Mode.CAMERA_MODE:
+                    CreateSecurityCamera(e.X, e.Y);
+                    break;
+                case Mode.LIGHT_MODE:
+                    break;
+                case Mode.MODEL_MODE:
+                    AddModel(e.X, e.Y);
+                    break;
+            }
         }
 
         public void MouseMove(MouseEventArgs e)
@@ -358,16 +454,31 @@ namespace ApplicationLogic
         public void MouseDoubleClick(MouseEventArgs e)
         {
             if (!mIsStarted) return;
-
-            if (e.Button == MouseButtons.Left)
-            {
-                AddModel(e.X,e.Y);
-            }
-
             HandleMouseDoubleClick(e);
         }
 
 
+        #endregion
+
+        #region ModeSetter
+
+        public void SetCameraMode()
+        {
+            ActiveMode = Mode.CAMERA_MODE;
+            UpdateStatusBar();
+        }
+
+        public void SetLightMode()
+        {
+            ActiveMode = Mode.LIGHT_MODE;
+            UpdateStatusBar();
+        }
+
+        public void SetModelMode()
+        {
+            ActiveMode = Mode.MODEL_MODE;
+            UpdateStatusBar();
+        }
         #endregion
 
         public void DeleteSelectedCamera()
@@ -376,7 +487,19 @@ namespace ApplicationLogic
             {
                 var name = SelectedModel.SelectedSecurityCamera.InternalName;
                 SelectedModel.DeleteSelectedCamera();
-                mApplicationUi.RemoveCamera(name);
+                mApplicationUi.CameraRemoved(name);
+            }
+        }
+
+        public void DeleteSelectedModel()
+        {
+            if (SelectedModel != null)
+            {
+                var name = SelectedModel.ModelProperties.Name;
+                LoadedModels.Remove(name);
+                SelectedModel.Delete();
+                SelectedModel = null;
+                mApplicationUi.ModelRemoved(name);
             }
         }
 
@@ -394,11 +517,11 @@ namespace ApplicationLogic
 
         public void UpdateStatusBar()
         {
-            RefreshSelectedCameraProperties();
+            if (!mIsStarted) return;
             var pos = Engine.Instance.GetMainCameraPosition();
             var dir = Engine.Instance.GetMainCameraDirection();
-            var selectedModelName = (SelectedModel != null) ? SelectedModel.Name : "N/A";
-            string info = string.Format("Camera Pos:[{0} ; {1}; {2}] | Dir:[{3} ; {4} ; {5}] | Selected Model: {6}",pos.x,pos.y,pos.z,dir.x,dir.y,dir.z,selectedModelName);
+            var selectedModelName = (SelectedModel != null) ? SelectedModel.ModelProperties.Name : "N/A";
+            string info = string.Format("Camera Pos:[{0} ; {1}; {2}] | Dir:[{3} ; {4} ; {5}] | Selected Model: {6} | ActiveMode: {7}",pos.x,pos.y,pos.z,dir.x,dir.y,dir.z,selectedModelName,ActiveMode.ToString());
             mApplicationUi.UpdateStatusBarInfo(info);
         }
 
@@ -429,6 +552,8 @@ namespace ApplicationLogic
         public void Destroy()
         {
             SerializeLibrary(@ApplicationLogicResources.LibraryFilename);
+            if(mIsStarted)
+                Engine.Instance.Shutdown();
         }
     }
 }

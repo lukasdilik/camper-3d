@@ -25,8 +25,6 @@ namespace ApplicationLogic
             var modelFiles = Directory.GetFiles(modelFolderPath,"*.mesh");
             var materialFiles = Directory.GetFiles(modelFolderPath,"*.material");
             var textureFiles = Directory.GetFiles(modelFolderPath);
-           
-            ModelData newModel;
 
             if (modelFiles.Length == 0)
             {
@@ -45,7 +43,7 @@ namespace ApplicationLogic
                 throw new NullReferenceException("Model file name is NULL");
             }
 
-            newModel = new ModelData(modelFileName, Path.Combine(@StoredModelsPath, modelFileName));
+            var newModel = new ModelData(modelFileName, Path.Combine(@StoredModelsPath, modelFileName));
             File.Copy(Path.GetFullPath(modelFiles[0]), Path.Combine(@StoredModelsPath, modelFileName), true);
 
             if (materialFiles.Length < 1)

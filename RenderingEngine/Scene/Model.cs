@@ -9,9 +9,9 @@ namespace RenderingEngine.Scene
 
         private readonly Engine.Engine mEngine = Engine.Engine.Instance;
 
-        public Model(string name, string filePath)
+        public Model(string name, string fileName)
         {
-            Entity = mEngine.SceneManager.CreateEntity(name, filePath);
+            Entity = mEngine.SceneManager.CreateEntity(name, fileName);
             SceneNode = mEngine.SceneManager.RootSceneNode.CreateChildSceneNode(name + "Node");
             SceneNode.AttachObject(Entity);
         }
@@ -28,7 +28,7 @@ namespace RenderingEngine.Scene
 
         public void Translate(Vector3 t)
         {
-            SceneNode.Translate(new Vector3(t.x,1,t.z));
+            SceneNode.Translate(t);
         }
 
     }

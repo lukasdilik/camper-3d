@@ -59,20 +59,7 @@ namespace RenderingEngine.Engine
 
         private void SetupLights()
         {
-            SceneManager.AmbientLight = new ColourValue(0.25f, 0.25f, 0.25f);
-
-            Light pointLight = SceneManager.CreateLight("pointLight0");
-            pointLight.Type = Light.LightTypes.LT_POINT;
-            pointLight.Position = new Vector3(0, 150, 0);
-            pointLight.DiffuseColour = ColourValue.White;
-            pointLight.SpecularColour = ColourValue.White;
-
-
-            pointLight = SceneManager.CreateLight("pointLight1");
-            pointLight.Type = Light.LightTypes.LT_POINT;
-            pointLight.Position = new Vector3(1500, 150, 1500);
-            pointLight.DiffuseColour = ColourValue.White;
-            pointLight.SpecularColour = ColourValue.White;
+            LightManager.Instance.CreateWorldLight();
         }
 
         #region Model controls
@@ -165,19 +152,20 @@ namespace RenderingEngine.Engine
 
         protected override void UpdateScene(FrameEvent evt)
         {
-            var camPos = MainCamera.Position;
-            var cameraRay = new Ray(new Vector3(camPos.x, 5000.0f, camPos.z),Vector3.NEGATIVE_UNIT_Y);
-            RaySceneQuery.Ray = cameraRay;
-
-            // Perform the scene query;
-            var result = RaySceneQuery.Execute();
-            var itr = (RaySceneQueryResult.Enumerator)(result.GetEnumerator());
-
-            // Get the results, set the camera height
-            if (!itr.MoveNext()) return;
-
             try
             {
+
+                var camPos = MainCamera.Position;
+                var cameraRay = new Ray(new Vector3(camPos.x, 5000.0f, camPos.z), Vector3.NEGATIVE_UNIT_Y);
+                RaySceneQuery.Ray = cameraRay;
+
+                // Perform the scene query;
+                var result = RaySceneQuery.Execute();
+                var itr = (RaySceneQueryResult.Enumerator)(result.GetEnumerator());
+
+                // Get the results, set the camera height
+                if (!itr.MoveNext()) return;
+
                 var terrainHeight = itr.Current.worldFragment.singleIntersection.y;
 
                 if (mIsClampedToTerrain)
@@ -192,11 +180,10 @@ namespace RenderingEngine.Engine
             }
             catch (Exception e)
             {
-                //ApplicationLogic.LogMessage(e.ToString());  
             }
         }
 
-        protected override void DestroyScene()
+         protected override void DestroyScene()
         {
             base.DestroyScene();
             RaySceneQuery.Dispose();
