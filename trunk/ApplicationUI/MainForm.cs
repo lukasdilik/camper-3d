@@ -28,6 +28,7 @@ namespace ApplicationUI
             mLibraryForm = new LibraryForm(mAppController);
             mLibraryForm.Hide();
             mLibraryForm.FormClosed += LibraryFormOnFormClosed;
+            mLibraryForm.Closed += mLibraryForm_Closed;
 
             CameraProperties_panel.Hide();
             SecurityCameras_comboBox.Hide();
@@ -37,6 +38,17 @@ namespace ApplicationUI
                 AvailableModels_combo.SelectedIndex = 0;    
             }
         }
+
+        private void LibraryFormOnFormClosed(object sender, FormClosedEventArgs formClosedEventArgs)
+        {
+            mAppController.GetAvailableModels();
+        }
+
+        private void mLibraryForm_Closed(object sender, EventArgs e)
+        {
+            mAppController.GetAvailableModels();
+        }
+
 
         private void MainForm_Disposed(object sender, EventArgs e)
         {
@@ -102,14 +114,6 @@ namespace ApplicationUI
 
         #endregion
 
-        private void AddFile_btn_Click(object sender, EventArgs e)
-        {
-            DialogResult result = openFileDialog1.ShowDialog();
-            if (result == DialogResult.OK)
-            {
-            }
-        }
-
         public String GetSelectedModelName()
         {
             return (string) AvailableModels_combo.SelectedItem;
@@ -130,14 +134,37 @@ namespace ApplicationUI
             CameraCoords_label.Text = info;
         }
 
-        public void AddCamera(SecurityCameraProperties cameraProperties)
+        public void ModelRemoved(string modelName)
+        {
+            addedModels_listBox.Items.Remove(modelName);
+            if (addedModels_listBox.Items.Count > 0)
+            {
+                var firstItem = (string) addedModels_listBox.Items[0];
+                mAppController.SelectModel(firstItem);
+            }
+        }
+
+        public void CameraAdded(SecurityCameraProperties cameraProperties)
         {
             SecurityCameras_comboBox.Items.Add(cameraProperties.Name);
             SecurityCameras_comboBox.SelectedItem = cameraProperties.Name;
             FillCameraProperties(cameraProperties);
         }
 
-        public void RemoveCamera(string cameraName)
+        public void ModelAdded(ModelProperties modelProperties)
+        {
+            addedModels_listBox.Items.Add(string.Format("{0}", modelProperties.Name));
+            mAppController.SelectModel(modelProperties.Name);
+        }
+
+        public void ModelSelected(ModelProperties modelProperties)
+        {
+            addedModels_listBox.SelectedItem = modelProperties.Name;
+            ModelPosition_textBox.Text = String.Format("{0:f2};{1:f2};{2:f2}", modelProperties.Position.x, modelProperties.Position.y, modelProperties.Position.z);
+            ModelFileName_label.Text = modelProperties.FileName;
+        }
+
+        public void CameraRemoved(string cameraName)
         {
             SecurityCameras_comboBox.Items.Remove(cameraName);
         }
@@ -167,7 +194,6 @@ namespace ApplicationUI
         private void FillCameraProperties(SecurityCameraProperties properties)
         {
             ActualCameraProperties = properties;
-            Name_textBox.Text = properties.Name;
             Position_textBox.Text = String.Format("{0:f2};{1:f2};{2:f2}", properties.Position.x, properties.Position.y, properties.Position.z);
             Direction_textBox.Text = String.Format("{0:f2};{1:f2};{2:f2}", properties.Direction.x, properties.Direction.y, properties.Direction.z);
             AspectRatio_textBox.Text = properties.AspectRatio.ToString();
@@ -203,21 +229,11 @@ namespace ApplicationUI
         private void Update_btn_Click(object sender, EventArgs e)
         {
             var newProperties = new SecurityCameraProperties();
-            SetNewName(ref newProperties);
             SetNewPosition(ref newProperties);
             SetNewDirection(ref newProperties);
             SetNewAspectRatio(ref newProperties);
             SetNewFOVy(ref newProperties);
             mAppController.UpdateCameraProperties(newProperties);
-        }
-
-        private void SetNewName(ref SecurityCameraProperties newProperties)
-        {
-            newProperties.Name = !string.IsNullOrEmpty(Name_textBox.Text) ? Name_textBox.Text : ActualCameraProperties.Name;
-            if (string.IsNullOrEmpty(Name_textBox.Text))
-            {
-                Log_textBox.AppendText("Name cannot be empty");
-            }
         }
 
         private void SetNewPosition(ref SecurityCameraProperties newProperties)
@@ -298,9 +314,15 @@ namespace ApplicationUI
             mAppController.Start();
         }
 
-        private void LeftPanel_MouseEnter(object sender, EventArgs e)
+        private void DeactivateMainWindow(object sender, EventArgs e)
         {
             isMainWindowActive = false;
+            mAppController.StopMovement();
+        }
+
+        private void ActivateMainWindow(object sender, EventArgs e)
+        {
+            isMainWindowActive = true;
         }
 
         private void MainWindow_MouseEnter(object sender, EventArgs e)
@@ -346,9 +368,94 @@ namespace ApplicationUI
             mLibraryForm.Show();
         }
 
-        private void LibraryFormOnFormClosed(object sender, FormClosedEventArgs formClosedEventArgs)
+        private void Mode_tabControl_SelectedIndexChanged(object sender, EventArgs e)
         {
-            mAppController.GetAvailableModels();
+            if (Mode_tabControl.SelectedTab.Name == "Cameras_tab")
+            {
+                mAppController.SetCameraMode();
+            }else if (Mode_tabControl.SelectedTab.Name == "Lights_tab")
+            {
+                mAppController.SetLightMode();
+            }
+            else if (Mode_tabControl.SelectedTab.Name == "Models_tab")
+            {
+                mAppController.SetModelMode();
+            }
         }
+
+        private void addedModels_listBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var selectedModelName = (string)addedModels_listBox.SelectedItem;
+            mAppController.SelectModel(selectedModelName);
+        }
+
+        private void ModelApply_btn_Click(object sender, EventArgs e)
+        {
+            TryMoveSelectedModel();
+            TryRotateModel();
+            TryScaleModel();
+            ModelScale_textBox.Text = "";
+            ModelRotate_textBox.Text = "";
+        }
+
+        private void TryMoveSelectedModel()
+        {
+            try
+            {
+                var newPosition = VectorFromString(ModelPosition_textBox.Text);
+                mAppController.SetNewPositionToSelectedModel(newPosition);
+            }
+            catch (Exception exception)
+            {
+                Log_textBox.AppendText("Position data invalid: " + exception);
+            }
+        }
+
+        private void TryRotateModel()
+        {
+            var degStr = ModelRotate_textBox.Text;
+            if (string.IsNullOrEmpty(degStr)) return;
+            try
+            {
+                degStr = degStr.Replace(',', '.');
+                var deg = new Degree(float.Parse(degStr, CultureInfo.InvariantCulture));
+                if (deg < 0 || deg > 360) throw new Exception("Value must be in range 0:360 degree");
+                mAppController.RotateSelectedModel(deg);
+            }
+            catch (Exception exception)
+            {
+                Log_textBox.AppendText("Rotate Model data invalid: " + exception);
+            }
+        }
+
+        private void TryScaleModel()
+        {
+            string factorStr = ModelScale_textBox.Text;
+            if(string.IsNullOrEmpty(factorStr)) return;
+            try
+            {
+                factorStr = factorStr.Replace(',', '.');
+                var factor = float.Parse(factorStr, CultureInfo.InvariantCulture);
+                mAppController.ScaleSelectedModel(factor);
+            }
+            catch (Exception exception)
+            {
+                Log_textBox.AppendText("Scale data invalid: " + exception);
+            }
+        }
+
+        private void Mode_tabControl_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Left || e.KeyCode == Keys.Right)
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void deleteModel_btn_Click(object sender, EventArgs e)
+        {
+            mAppController.DeleteSelectedModel();
+        }
+
     }
 }

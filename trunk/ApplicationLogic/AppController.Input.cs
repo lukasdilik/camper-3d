@@ -49,10 +49,57 @@ namespace ApplicationLogic
                     Engine.Instance.ChangeTerrainClamping();
                     break;
                 case Keys.Delete:
-                    DeleteSelectedCamera();
+                    if (ActiveMode == Mode.CAMERA_MODE)
+                    {
+                        DeleteSelectedCamera();    
+                    }
+                    
                     break;
                 case Keys.Enter:
-                    SwitchToSelectedCamera();
+                    if (ActiveMode == Mode.CAMERA_MODE)
+                    {
+                        SwitchToSelectedCamera();
+                    }
+                    break;
+                case Keys.Up:
+                    if (ActiveMode == Mode.MODEL_MODE)
+                    {
+                        if (SelectedModel != null)
+                        {
+                            SelectedModel.MoveForward();
+                            mApplicationUi.ModelSelected(SelectedModel.ModelProperties);
+                        }
+                    }
+                    break;
+                case Keys.Down:
+                    if (ActiveMode == Mode.MODEL_MODE)
+                    {
+                        if (SelectedModel != null)
+                        {
+                            SelectedModel.MoveBackward();
+                            mApplicationUi.ModelSelected(SelectedModel.ModelProperties);
+                        }
+                    }
+                    break;
+                case Keys.Left:
+                    if (ActiveMode == Mode.MODEL_MODE)
+                    {
+                        if (SelectedModel != null)
+                        {
+                            SelectedModel.MoveLeft();
+                            mApplicationUi.ModelSelected(SelectedModel.ModelProperties);
+                        }
+                    }
+                    break;
+                case Keys.Right:
+                    if (ActiveMode == Mode.MODEL_MODE)
+                    {
+                        if (SelectedModel != null)
+                        {
+                            SelectedModel.MoveRight();
+                            mApplicationUi.ModelSelected(SelectedModel.ModelProperties);
+                        }
+                    }
                     break;
                 case Keys.Escape:
                     Engine.Instance.Shutdown();
@@ -93,6 +140,19 @@ namespace ApplicationLogic
                     Engine.Instance.CameraMan.FastMove = false;
                     break;
             }
+        }
+
+        public void StopMovement()
+        {
+            if (Engine.Instance.CameraMan == null) return;
+
+            Engine.Instance.CameraMan.GoingForward = false;
+            Engine.Instance.CameraMan.GoingBack = false;
+            Engine.Instance.CameraMan.GoingLeft = false;
+            Engine.Instance.CameraMan.GoingRight = false;
+            Engine.Instance.CameraMan.GoingUp = false;
+            Engine.Instance.CameraMan.GoingDown = false;
+            Engine.Instance.CameraMan.FastMove = false;
         }
 
         protected virtual void HandleMouseUp(MouseEventArgs e)

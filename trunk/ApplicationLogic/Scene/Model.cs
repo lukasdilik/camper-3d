@@ -2,18 +2,20 @@
 using System.Collections.Generic;
 using System.Windows.Forms;
 using Mogre;
+using RenderingEngine.Engine;
 using RenderingEngine.Helpers;
 
 namespace ApplicationLogic.Scene
 {
     public class Model
     {
-        private readonly RenderingEngine.Engine.Engine mEngine = RenderingEngine.Engine.Engine.Instance;
+        private readonly Engine mEngine = RenderingEngine.Engine.Engine.Instance;
+        
+        private const float MoveStep = 5f;
 
         private bool mSelected;
         private int mCameraCounter;
-        public string Name { get; private set; }
-        public string FilePath { get; private set; }
+        public ModelProperties ModelProperties; 
         public RenderingEngine.Scene.Model RenderModel { get; private set; }
         public Dictionary<string, SecurityCamera> SecurityCameras { get; private set; }
         public SecurityCamera SelectedSecurityCamera { get; private set; }
@@ -36,20 +38,37 @@ namespace ApplicationLogic.Scene
 
         }
 
-        public Model(string name, string filePath)
+        public Model(string name, string modelName)
         {
-            Name = name;
-            FilePath = filePath;
+            ModelProperties = new ModelProperties {Name = name, FileName = modelName};
+
             SecurityCameras = new Dictionary<string, SecurityCamera>();
             SelectedSecurityCamera = null;
 
-            RenderModel = new RenderingEngine.Scene.Model(name,filePath);
+            RenderModel = new RenderingEngine.Scene.Model(name,modelName);
         }
 
         public void Translate(Vector3 t)
         {
-           RenderModel.Translate(new Vector3(t.x,1,t.z));
+            RenderModel.Translate(t);
+            foreach (var securityCamera in SecurityCameras)
+            {
+                securityCamera.Value.Camera.Translate(t);
+            }
+            ModelProperties.Position = RenderModel.SceneNode.Position;
         }
+
+        public void RotateY(Degree deg)
+        {
+            RenderModel.SceneNode.Rotate(new Vector3(0,1,0),deg.ValueRadians);
+        }
+
+
+        public void Scale(float factor)
+        {
+            RenderModel.SceneNode.Scale(factor,factor,factor);
+        }
+
 
         public void SelectSecurityCamera(string name)
         {
@@ -59,6 +78,38 @@ namespace ApplicationLogic.Scene
                 SelectedSecurityCamera = SecurityCameras[name];
                 SelectedSecurityCamera.Selected = true;
             }
+        }
+
+        public void MoveForward()
+        {
+            var oldPos = RenderModel.SceneNode.Position;
+            var newPos = oldPos;
+            oldPos.z += MoveStep;
+            Translate(newPos- oldPos);
+        }
+
+        public void MoveBackward()
+        {
+            var oldPos = RenderModel.SceneNode.Position;
+            var newPos = oldPos;
+            oldPos.z -= MoveStep;
+            Translate(newPos - oldPos);
+        }
+
+        public void MoveLeft()
+        {
+            var oldPos = RenderModel.SceneNode.Position;
+            var newPos = oldPos;
+            oldPos.x += MoveStep;
+            Translate(newPos - oldPos);
+        }
+
+        public void MoveRight()
+        {
+            var oldPos = RenderModel.SceneNode.Position;
+            var newPos = oldPos;
+            oldPos.x -= MoveStep;
+            Translate(newPos - oldPos);
         }
 
         public void DeselectAllSecurityCameras()
@@ -136,6 +187,19 @@ namespace ApplicationLogic.Scene
                 }
             }
 
+        }
+
+        public void Delete()
+        {
+            RenderModel.HideBoundingBox();
+            foreach (var securityCamera in SecurityCameras)
+            {
+                securityCamera.Value.Delete();
+            }
+            SecurityCameras.Clear();
+            RenderModel.SceneNode.RemoveAndDestroyAllChildren();
+            Engine.Instance.SceneManager.DestroyEntity(RenderModel.Entity);
+            Engine.Instance.SceneManager.DestroySceneNode(RenderModel.SceneNode);
         }
 
         public void CameraControl(Keys key)

@@ -65,6 +65,7 @@
     <Compile Include="Helpers\PolygonRayCast.cs" />
     <Compile Include="Interfaces\IApplication.cs" />
     <Compile Include="ColorMaterialManager.cs" />
+    <Compile Include="LightManager.cs" />
     <Compile Include="Scene\Model.cs" />
     <Compile Include="Scene\Camera.cs" />
     <Compile Include="Helpers\CameraMan.cs" />

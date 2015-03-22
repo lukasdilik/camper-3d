@@ -49,6 +49,14 @@ namespace RenderingEngine.Scene
             MogreCamera.Position = SceneNode.Position;
             MogreCamera.LookAt(SceneNode.Position + mDirection*100);
 
+            Light light = Engine.Engine.Instance.SceneManager.CreateLight(Name + "light");
+            light.Type = Light.LightTypes.LT_SPOTLIGHT;
+            light.Position = SceneNode.Position;
+            light.Direction = mDirection;
+            light.DiffuseColour = ColourValue.Red;
+            light.SpecularColour = ColourValue.Red;
+            light.SpotlightInnerAngle = MogreCamera.FOVy;
+
             MogreCamera.NearClipDistance = 8;
         }
 

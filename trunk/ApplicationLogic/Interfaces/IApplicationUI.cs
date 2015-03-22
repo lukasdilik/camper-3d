@@ -10,8 +10,11 @@ namespace ApplicationLogic.Interfaces
         void SendMessage(string msg);
         void ShowAvailableModels(List<string> models);
         void UpdateStatusBarInfo(string info);
-        void AddCamera(SecurityCameraProperties cameraProperties);
-        void RemoveCamera(string cameraName);
+        void ModelAdded(ModelProperties modelProperties);
+        void ModelSelected(ModelProperties modelProperties);
+        void ModelRemoved(string modelName);
+        void CameraAdded(SecurityCameraProperties cameraProperties);
+        void CameraRemoved(string cameraName);
         void CameraSelected(SecurityCameraProperties cameraProperties);
         void UpdateCameraProperties(SecurityCameraProperties cameraProperties);
         Size GetCameraPreviewDimension();
