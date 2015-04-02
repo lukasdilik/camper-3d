@@ -65,23 +65,23 @@ namespace ApplicationUI
             this.Update_btn = new System.Windows.Forms.Button();
             this.Delete_btn = new System.Windows.Forms.Button();
             this.Models_tab = new System.Windows.Forms.TabPage();
+            this.deleteModel_btn = new System.Windows.Forms.Button();
+            this.ModelApply_btn = new System.Windows.Forms.Button();
+            this.ModelFileName_label = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.addedModels_listBox = new System.Windows.Forms.ListBox();
+            this.ModelRotate_textBox = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.ModelScale_textBox = new System.Windows.Forms.TextBox();
+            this.Scale_label = new System.Windows.Forms.Label();
+            this.ModelPosition_textBox = new System.Windows.Forms.TextBox();
+            this.modelPos_label = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
             this.AvailableModels_combo = new System.Windows.Forms.ComboBox();
             this.Lights_tab = new System.Windows.Forms.TabPage();
             this.preview_label = new System.Windows.Forms.Label();
             this.CameraView_pictureBox = new System.Windows.Forms.PictureBox();
             this.Log_textBox = new System.Windows.Forms.TextBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.modelPos_label = new System.Windows.Forms.Label();
-            this.ModelPosition_textBox = new System.Windows.Forms.TextBox();
-            this.Scale_label = new System.Windows.Forms.Label();
-            this.ModelScale_textBox = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.ModelRotate_textBox = new System.Windows.Forms.TextBox();
-            this.addedModels_listBox = new System.Windows.Forms.ListBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.ModelFileName_label = new System.Windows.Forms.Label();
-            this.ModelApply_btn = new System.Windows.Forms.Button();
-            this.deleteModel_btn = new System.Windows.Forms.Button();
             this.MainWindow.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -461,6 +461,112 @@ namespace ApplicationUI
             this.Models_tab.Text = "Models";
             this.Models_tab.UseVisualStyleBackColor = true;
             // 
+            // deleteModel_btn
+            // 
+            this.deleteModel_btn.Location = new System.Drawing.Point(231, 370);
+            this.deleteModel_btn.Name = "deleteModel_btn";
+            this.deleteModel_btn.Size = new System.Drawing.Size(75, 23);
+            this.deleteModel_btn.TabIndex = 20;
+            this.deleteModel_btn.Text = "Delete";
+            this.deleteModel_btn.UseVisualStyleBackColor = true;
+            this.deleteModel_btn.Click += new System.EventHandler(this.deleteModel_btn_Click);
+            // 
+            // ModelApply_btn
+            // 
+            this.ModelApply_btn.Location = new System.Drawing.Point(231, 443);
+            this.ModelApply_btn.Name = "ModelApply_btn";
+            this.ModelApply_btn.Size = new System.Drawing.Size(75, 52);
+            this.ModelApply_btn.TabIndex = 19;
+            this.ModelApply_btn.Text = "Apply";
+            this.ModelApply_btn.UseVisualStyleBackColor = true;
+            this.ModelApply_btn.Click += new System.EventHandler(this.ModelApply_btn_Click);
+            // 
+            // ModelFileName_label
+            // 
+            this.ModelFileName_label.AutoSize = true;
+            this.ModelFileName_label.Location = new System.Drawing.Point(93, 394);
+            this.ModelFileName_label.Name = "ModelFileName_label";
+            this.ModelFileName_label.Size = new System.Drawing.Size(13, 17);
+            this.ModelFileName_label.TabIndex = 18;
+            this.ModelFileName_label.Text = "-";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(7, 394);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(80, 17);
+            this.label4.TabIndex = 17;
+            this.label4.Text = "Model File: ";
+            // 
+            // addedModels_listBox
+            // 
+            this.addedModels_listBox.FormattingEnabled = true;
+            this.addedModels_listBox.ItemHeight = 16;
+            this.addedModels_listBox.Location = new System.Drawing.Point(10, 88);
+            this.addedModels_listBox.Name = "addedModels_listBox";
+            this.addedModels_listBox.ScrollAlwaysVisible = true;
+            this.addedModels_listBox.Size = new System.Drawing.Size(296, 276);
+            this.addedModels_listBox.TabIndex = 16;
+            this.addedModels_listBox.SelectedIndexChanged += new System.EventHandler(this.addedModels_listBox_SelectedIndexChanged);
+            // 
+            // ModelRotate_textBox
+            // 
+            this.ModelRotate_textBox.Location = new System.Drawing.Point(81, 472);
+            this.ModelRotate_textBox.Name = "ModelRotate_textBox";
+            this.ModelRotate_textBox.Size = new System.Drawing.Size(144, 23);
+            this.ModelRotate_textBox.TabIndex = 15;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(7, 478);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(69, 17);
+            this.label3.TabIndex = 14;
+            this.label3.Text = "Rotate(Y)";
+            // 
+            // ModelScale_textBox
+            // 
+            this.ModelScale_textBox.Location = new System.Drawing.Point(81, 443);
+            this.ModelScale_textBox.Name = "ModelScale_textBox";
+            this.ModelScale_textBox.Size = new System.Drawing.Size(144, 23);
+            this.ModelScale_textBox.TabIndex = 13;
+            // 
+            // Scale_label
+            // 
+            this.Scale_label.AutoSize = true;
+            this.Scale_label.Location = new System.Drawing.Point(7, 449);
+            this.Scale_label.Name = "Scale_label";
+            this.Scale_label.Size = new System.Drawing.Size(43, 17);
+            this.Scale_label.TabIndex = 12;
+            this.Scale_label.Text = "Scale";
+            // 
+            // ModelPosition_textBox
+            // 
+            this.ModelPosition_textBox.Location = new System.Drawing.Point(81, 414);
+            this.ModelPosition_textBox.Name = "ModelPosition_textBox";
+            this.ModelPosition_textBox.Size = new System.Drawing.Size(225, 23);
+            this.ModelPosition_textBox.TabIndex = 11;
+            // 
+            // modelPos_label
+            // 
+            this.modelPos_label.AutoSize = true;
+            this.modelPos_label.Location = new System.Drawing.Point(6, 420);
+            this.modelPos_label.Name = "modelPos_label";
+            this.modelPos_label.Size = new System.Drawing.Size(58, 17);
+            this.modelPos_label.TabIndex = 10;
+            this.modelPos_label.Text = "Position";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(7, 68);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(162, 17);
+            this.label2.TabIndex = 8;
+            this.label2.Text = "Currently added models:";
+            // 
             // AvailableModels_combo
             // 
             this.AvailableModels_combo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -506,112 +612,6 @@ namespace ApplicationUI
             this.Log_textBox.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.Log_textBox.Size = new System.Drawing.Size(1233, 87);
             this.Log_textBox.TabIndex = 7;
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(7, 68);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(162, 17);
-            this.label2.TabIndex = 8;
-            this.label2.Text = "Currently added models:";
-            // 
-            // modelPos_label
-            // 
-            this.modelPos_label.AutoSize = true;
-            this.modelPos_label.Location = new System.Drawing.Point(6, 420);
-            this.modelPos_label.Name = "modelPos_label";
-            this.modelPos_label.Size = new System.Drawing.Size(58, 17);
-            this.modelPos_label.TabIndex = 10;
-            this.modelPos_label.Text = "Position";
-            // 
-            // ModelPosition_textBox
-            // 
-            this.ModelPosition_textBox.Location = new System.Drawing.Point(81, 414);
-            this.ModelPosition_textBox.Name = "ModelPosition_textBox";
-            this.ModelPosition_textBox.Size = new System.Drawing.Size(225, 23);
-            this.ModelPosition_textBox.TabIndex = 11;
-            // 
-            // Scale_label
-            // 
-            this.Scale_label.AutoSize = true;
-            this.Scale_label.Location = new System.Drawing.Point(7, 449);
-            this.Scale_label.Name = "Scale_label";
-            this.Scale_label.Size = new System.Drawing.Size(43, 17);
-            this.Scale_label.TabIndex = 12;
-            this.Scale_label.Text = "Scale";
-            // 
-            // ModelScale_textBox
-            // 
-            this.ModelScale_textBox.Location = new System.Drawing.Point(81, 443);
-            this.ModelScale_textBox.Name = "ModelScale_textBox";
-            this.ModelScale_textBox.Size = new System.Drawing.Size(144, 23);
-            this.ModelScale_textBox.TabIndex = 13;
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(7, 478);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(69, 17);
-            this.label3.TabIndex = 14;
-            this.label3.Text = "Rotate(Y)";
-            // 
-            // ModelRotate_textBox
-            // 
-            this.ModelRotate_textBox.Location = new System.Drawing.Point(81, 472);
-            this.ModelRotate_textBox.Name = "ModelRotate_textBox";
-            this.ModelRotate_textBox.Size = new System.Drawing.Size(144, 23);
-            this.ModelRotate_textBox.TabIndex = 15;
-            // 
-            // addedModels_listBox
-            // 
-            this.addedModels_listBox.FormattingEnabled = true;
-            this.addedModels_listBox.ItemHeight = 16;
-            this.addedModels_listBox.Location = new System.Drawing.Point(10, 88);
-            this.addedModels_listBox.Name = "addedModels_listBox";
-            this.addedModels_listBox.ScrollAlwaysVisible = true;
-            this.addedModels_listBox.Size = new System.Drawing.Size(296, 276);
-            this.addedModels_listBox.TabIndex = 16;
-            this.addedModels_listBox.SelectedIndexChanged += new System.EventHandler(this.addedModels_listBox_SelectedIndexChanged);
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(7, 394);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(80, 17);
-            this.label4.TabIndex = 17;
-            this.label4.Text = "Model File: ";
-            // 
-            // ModelFileName_label
-            // 
-            this.ModelFileName_label.AutoSize = true;
-            this.ModelFileName_label.Location = new System.Drawing.Point(93, 394);
-            this.ModelFileName_label.Name = "ModelFileName_label";
-            this.ModelFileName_label.Size = new System.Drawing.Size(13, 17);
-            this.ModelFileName_label.TabIndex = 18;
-            this.ModelFileName_label.Text = "-";
-            // 
-            // ModelApply_btn
-            // 
-            this.ModelApply_btn.Location = new System.Drawing.Point(231, 443);
-            this.ModelApply_btn.Name = "ModelApply_btn";
-            this.ModelApply_btn.Size = new System.Drawing.Size(75, 52);
-            this.ModelApply_btn.TabIndex = 19;
-            this.ModelApply_btn.Text = "Apply";
-            this.ModelApply_btn.UseVisualStyleBackColor = true;
-            this.ModelApply_btn.Click += new System.EventHandler(this.ModelApply_btn_Click);
-            // 
-            // deleteModel_btn
-            // 
-            this.deleteModel_btn.Location = new System.Drawing.Point(231, 370);
-            this.deleteModel_btn.Name = "deleteModel_btn";
-            this.deleteModel_btn.Size = new System.Drawing.Size(75, 23);
-            this.deleteModel_btn.TabIndex = 20;
-            this.deleteModel_btn.Text = "Delete";
-            this.deleteModel_btn.UseVisualStyleBackColor = true;
-            this.deleteModel_btn.Click += new System.EventHandler(this.deleteModel_btn_Click);
             // 
             // MainForm
             // 
