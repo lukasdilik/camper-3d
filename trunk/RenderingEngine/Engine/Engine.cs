@@ -47,7 +47,7 @@ namespace RenderingEngine.Engine
             
             SetSkyBox();
             
-            SceneManager.SetWorldGeometry("./Resources/terrain.cfg");
+            SetupTerrain();
 
             RaySceneQuery = SceneManager.CreateRayQuery(new Ray());
         }
@@ -60,6 +60,15 @@ namespace RenderingEngine.Engine
         private void SetupLights()
         {
             LightManager.Instance.CreateWorldLight();
+        }
+
+        private void SetupTerrain()
+        {
+            SceneManager.SetWorldGeometry("./Resources/terrain.cfg"); 
+            //var plane = new Plane(Vector3.UNIT_Y, 0);
+            //MeshManager.Singleton.CreatePlane("ground", ResourceGroupManager.DEFAULT_RESOURCE_GROUP_NAME, plane, 1500, 1500, 20, 20, true, 1, 5, 5, Vector3.UNIT_Z);
+            //Entity entGround = SceneManager.CreateEntity("GroundEntity", "ground");
+            //SceneManager.RootSceneNode.CreateChildSceneNode().AttachObject(entGround);
         }
 
         #region Model controls

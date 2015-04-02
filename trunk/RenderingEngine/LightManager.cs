@@ -9,7 +9,7 @@ namespace RenderingEngine
 
         private readonly SceneManager mSceneManager = Engine.Engine.Instance.SceneManager;
 
-        public ColourValue AmbientLightColor = new ColourValue(0.25f, 0.25f, 0.25f);
+        public ColourValue AmbientLightColor = new ColourValue(0.5f, 0.5f, 0.5f);
         public Dictionary<string, Light> WorldLights;
         public Dictionary<string,Light> PointLights;
         public Dictionary<string, Light> SpotLights;
@@ -31,17 +31,9 @@ namespace RenderingEngine
         public void CreateWorldLight()
         {
             Light worldLight1 = mSceneManager.CreateLight("worldLight1");
-            worldLight1.Type = Light.LightTypes.LT_POINT;
-            worldLight1.Position = new Vector3(0, 150, 0);
+            worldLight1.Type = Light.LightTypes.LT_DIRECTIONAL;
+            worldLight1.Position = new Vector3(0, -1,0);
             worldLight1.DiffuseColour = ColourValue.White;
-            worldLight1.SpecularColour = ColourValue.White;
-
-
-            Light worldLight2 = mSceneManager.CreateLight("worldLight2");
-            worldLight2.Type = Light.LightTypes.LT_POINT;
-            worldLight2.Position = new Vector3(1500, 150, 1500);
-            worldLight2.DiffuseColour = ColourValue.White;
-            worldLight2.SpecularColour = ColourValue.White;
         }
 
 
