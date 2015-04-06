@@ -31,8 +31,8 @@ namespace RenderingEngine
         public void CreateWorldLight()
         {
             Light worldLight1 = mSceneManager.CreateLight("worldLight1");
-            worldLight1.Type = Light.LightTypes.LT_DIRECTIONAL;
-            worldLight1.Position = new Vector3(0, -1,0);
+            worldLight1.Type = Light.LightTypes.LT_POINT;
+            worldLight1.Position = new Vector3(500, 1000,0);
             worldLight1.DiffuseColour = ColourValue.White;
         }
 

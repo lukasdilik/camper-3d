@@ -1,0 +1,70 @@
+material 1427013457_1_Translucent_Glass_Gold
+{
+  technique
+  {
+    pass
+    {
+      scene_blend alpha_blend
+      depth_check on
+      depth_write off
+      ambient 0.0 0.0 0.0 0.6
+      diffuse 1.0 0.996078431372549 0.101960784313725 0.6
+      specular 0.0 0.0 0.0 0.6 0.0
+      emissive 0.0 0.0 0.0 1.0
+      // texture size: 24.0, 24.0
+      texture_unit
+      {
+        texture 1427013457_2_Translucent_Glass_Tinted.jpg
+      }
+    }
+  }
+}
+material 1427013457_2_Metal_Corrogated_Shiny
+{
+  technique
+  {
+    pass
+    {
+      ambient 0.0 0.0 0.0
+      diffuse 0.756862745098039 0.756862745098039 0.756862745098039
+      specular 0.0 0.0 0.0 0.0
+      emissive 0.0 0.0 0.0
+      // texture size: 4.0, 4.0
+      texture_unit
+      {
+        texture 1427013457_3_Metal_Corrogated_Shiny.jpg
+      }
+    }
+  }
+}
+material 1427013457_3_Metal_Rough
+{
+  technique
+  {
+    pass
+    {
+      ambient 0.0 0.0 0.0
+      diffuse 0.6 0.615686274509804 0.627450980392157
+      specular 0.0 0.0 0.0 0.0
+      emissive 0.0 0.0 0.0
+      // texture size: 8.0, 8.0
+      texture_unit
+      {
+        texture 1427013457_1_Metal_Rough.jpg
+      }
+    }
+  }
+}
+material 1427013457_SketchupDefault
+{
+  technique
+  {
+    pass
+    {
+      ambient 0.0 0.0 0.0
+      diffuse 1.0 1.0 1.0
+      specular 0.0 0.0 0.0 0.0
+      emissive 0.0 0.0 0.0
+    }
+  }
+}
