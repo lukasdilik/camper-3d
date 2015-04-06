@@ -224,7 +224,6 @@
     <None Include="Resources\materials\programs\oceanHLSL_Cg.vert" />
     <None Include="Resources\materials\scripts\BlackAndWhite.material" />
     <None Include="Resources\materials\scripts\Bloom.material" />
-    <None Include="Resources\materials\scripts\bulb.material" />
     <None Include="Resources\materials\scripts\cctvCamera.material" />
     <None Include="Resources\materials\scripts\Default.material" />
     <None Include="Resources\materials\scripts\DepthShadowmap.material" />
@@ -269,7 +268,6 @@
     <None Include="Resources\materials\textures\Sepia1D.tga" />
     <None Include="Resources\materials\textures\WaterNormal1.tga" />
     <None Include="Resources\materials\textures\WaterNormal2.tga" />
-    <None Include="Resources\models\misc\bulb.mesh" />
     <None Include="Resources\models\misc\cctv1.mesh" />
     <None Include="Resources\models\misc\cctvCamera.mesh" />
     <None Include="Resources\models\misc\cube.mesh" />
@@ -384,9 +382,6 @@
     <Content Include="Resources\materials\textures\1386505864_7_Google_Earth_Snapshot.jpg" />
     <Content Include="Resources\materials\textures\1386505864_8_c02.jpg" />
     <Content Include="Resources\materials\textures\1386505864_9_r003.jpg" />
-    <Content Include="Resources\materials\textures\1427013457_1_Metal_Rough.jpg" />
-    <Content Include="Resources\materials\textures\1427013457_2_Translucent_Glass_Tinted.jpg" />
-    <Content Include="Resources\materials\textures\1427013457_3_Metal_Corrogated_Shiny.jpg" />
     <Content Include="Resources\materials\textures\1D_Noise.png" />
     <Content Include="Resources\materials\textures\1D_Noise2.png" />
     <Content Include="Resources\materials\textures\8x8PagesSplotches2.png" />
