@@ -13,10 +13,14 @@ namespace ApplicationLogic.Interfaces
         void ModelAdded(ModelProperties modelProperties);
         void ModelSelected(ModelProperties modelProperties);
         void ModelRemoved(string modelName);
+        void LightAdded(LightProperties lightProperties);
+        void LightSelected(LightProperties lightProperties);
+        void LightRemoved(string lightName);
         void CameraAdded(SecurityCameraProperties cameraProperties);
         void CameraRemoved(string cameraName);
         void CameraSelected(SecurityCameraProperties cameraProperties);
         void UpdateCameraProperties(SecurityCameraProperties cameraProperties);
+        void UpdateLightProperties(LightProperties lightProperties);
         Size GetCameraPreviewDimension();
         void UpdateCameraView(string cameraName, Bitmap bmp);
         void Close();

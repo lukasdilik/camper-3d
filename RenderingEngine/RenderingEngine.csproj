@@ -226,6 +226,7 @@
     <None Include="Resources\materials\scripts\Bloom.material" />
     <None Include="Resources\materials\scripts\bulb.material" />
     <None Include="Resources\materials\scripts\cctvCamera.material" />
+    <None Include="Resources\materials\scripts\cone.material" />
     <None Include="Resources\materials\scripts\Default.material" />
     <None Include="Resources\materials\scripts\DepthShadowmap.material" />
     <None Include="Resources\materials\scripts\DOF.material" />
@@ -272,6 +273,7 @@
     <None Include="Resources\models\misc\bulb.mesh" />
     <None Include="Resources\models\misc\cctv1.mesh" />
     <None Include="Resources\models\misc\cctvCamera.mesh" />
+    <None Include="Resources\models\misc\cone.mesh" />
     <None Include="Resources\models\misc\cube.mesh" />
     <None Include="Resources\models\scene\policeStation.mesh" />
     <None Include="Resources\models\scene\trainStation.mesh" />

@@ -14,6 +14,7 @@ namespace ApplicationUI
     {
         private readonly AppController mAppController;
         private SecurityCameraProperties ActualCameraProperties;
+        private LightProperties ActualLightProperties;
         private bool isMainWindowActive = true;
         private LibraryForm mLibraryForm;
 
@@ -29,14 +30,24 @@ namespace ApplicationUI
             mLibraryForm.Hide();
             mLibraryForm.FormClosed += LibraryFormOnFormClosed;
             mLibraryForm.Closed += mLibraryForm_Closed;
+            mLibraryForm.VisibleChanged += mLibraryForm_VisibleChanged;
 
             CameraProperties_panel.Hide();
             SecurityCameras_comboBox.Hide();
+
+            LightType_combo.Items.Add("SPOT");
+            LightType_combo.Items.Add("POINT");
+            LightType_combo.SelectedIndex = 0;
 
             if (AvailableModels_combo.Items.Count > 0)
             {
                 AvailableModels_combo.SelectedIndex = 0;    
             }
+        }
+
+        private void mLibraryForm_VisibleChanged(object sender, EventArgs e)
+        {
+            mAppController.GetAvailableModels();
         }
 
         private void LibraryFormOnFormClosed(object sender, FormClosedEventArgs formClosedEventArgs)
@@ -126,7 +137,11 @@ namespace ApplicationUI
 
         public void ShowAvailableModels(List<string> models)
         {
-            if (models != null) AvailableModels_combo.Items.AddRange(models.ToArray());
+            AvailableModels_combo.Items.Clear();
+            foreach (var model in models)
+            {
+                AvailableModels_combo.Items.Add(model);
+            }
         }
 
         public void UpdateStatusBarInfo(string info)
@@ -140,6 +155,67 @@ namespace ApplicationUI
             if (addedModels_listBox.Items.Count > 0)
             {
                 var firstItem = (string) addedModels_listBox.Items[0];
+                mAppController.SelectModel(firstItem);
+            }
+        }
+
+        public void LightAdded(LightProperties lightProperties)
+        {
+            Lights_listBox.Items.Add(lightProperties.Name);
+            mAppController.SelectLight(lightProperties.Name);
+        }
+
+        public void LightSelected(LightProperties lightProperties)
+        {
+            ShowCorrectControls(lightProperties.Type);
+
+            FillLightProperties(lightProperties);
+        }
+
+        private void FillLightProperties(LightProperties lightProperties)
+        {
+            ActualLightProperties = lightProperties;
+
+            Lights_listBox.SelectedItem = lightProperties.Name;
+            LightName_label.Text = lightProperties.Name;
+            LightType_combo.SelectedIndex = (lightProperties.Type == LightProperties.LightType.Spot) ? 0 : 1;
+            LightPosition_textBox.Text = String.Format("{0:f2};{1:f2};{2:f2}", lightProperties.Position.x,
+                lightProperties.Position.y, lightProperties.Position.z);
+            LightDirection_textBox.Text = String.Format("{0:f2};{1:f2};{2:f2}", lightProperties.Direction.x,
+                lightProperties.Direction.y, lightProperties.Direction.z);
+            Color color = Color.FromArgb((int) (lightProperties.Color.r*255), (int) (lightProperties.Color.g*255),
+                (int) (lightProperties.Color.b*255));
+            LightColor_dialog.Color = color;
+            ColorLight_btn.BackColor = color;
+
+            Angle_textBox.Text = string.Format("{0:f0};{1:f0}", lightProperties.InnerAngle.ValueDegrees,
+                lightProperties.OuterAngle.ValueDegrees);
+        }
+
+        private void ShowCorrectControls(LightProperties.LightType lightType)
+        {
+            if (lightType == LightProperties.LightType.Point)
+            {
+                LightDirection_label.Hide();
+                Angle_label.Hide();
+                LightDirection_textBox.Hide();
+                Angle_textBox.Hide();
+            }
+            else
+            {
+                LightDirection_label.Show();
+                Angle_label.Show();
+                LightDirection_textBox.Show();
+                Angle_textBox.Show();
+            }
+        }
+
+        public void LightRemoved(string lightName)
+        {
+            Lights_listBox.Items.Remove(lightName);
+            if (addedModels_listBox.Items.Count > 0)
+            {
+                var firstItem = (string)addedModels_listBox.Items[0];
                 mAppController.SelectModel(firstItem);
             }
         }
@@ -178,6 +254,11 @@ namespace ApplicationUI
         public void UpdateCameraProperties(SecurityCameraProperties cameraProperties)
         {
             FillCameraProperties(cameraProperties);
+        }
+
+        public void UpdateLightProperties(LightProperties lightProperties)
+        {
+            FillLightProperties(lightProperties);
         }
 
         public Size GetCameraPreviewDimension()
@@ -235,7 +316,8 @@ namespace ApplicationUI
             SetNewFOVy(ref newProperties);
             mAppController.UpdateCameraProperties(newProperties);
         }
-
+        
+        #region CameraProperties
         private void SetNewPosition(ref SecurityCameraProperties newProperties)
         {
             try
@@ -291,7 +373,7 @@ namespace ApplicationUI
                 Log_textBox.AppendText("FieldOfView data invalid: " + e);
             }
         }
-
+        #endregion
         private Vector3 VectorFromString(string value)
         {
             try
@@ -332,7 +414,13 @@ namespace ApplicationUI
 
         private void quitToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Close();
+            Exit();
+        }
+
+        private void Exit()
+        {
+            mAppController.Exit();
+            Application.Exit();
         }
 
         private void Delete_btn_Click(object sender, EventArgs e)
@@ -360,7 +448,7 @@ namespace ApplicationUI
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            mAppController.Destroy();
+            Exit();
         }
 
         private void showLibraryToolStripMenuItem_Click(object sender, EventArgs e)
@@ -457,5 +545,98 @@ namespace ApplicationUI
             mAppController.DeleteSelectedModel();
         }
 
+        private void ColorLight_btn_Click(object sender, EventArgs e)
+        {
+            LightColor_dialog.ShowDialog();
+        }
+
+        private void UpdateLight_btn_Click(object sender, EventArgs e)
+        {
+            var newLightProperties = new LightProperties();
+            newLightProperties.Name = ActualLightProperties.Name;
+            SetNewDirection(ref newLightProperties);
+            SetNewPosition(ref newLightProperties);
+            SetNewColor(ref newLightProperties);
+            SetNewInnerOuterAngle(ref newLightProperties);
+            mAppController.UpdateLightProperties(newLightProperties);
+        }
+
+        #region LightProperties
+        private void SetNewPosition(ref LightProperties newProperties)
+        {
+            try
+            {
+                newProperties.Position = VectorFromString(LightPosition_textBox.Text);
+            }
+            catch (Exception e)
+            {
+                newProperties.Position = ActualLightProperties.Position;
+                Log_textBox.AppendText("Light position data invalid: " + e);
+            }
+        }
+
+        private void SetNewDirection(ref LightProperties newProperties)
+        {
+            try
+            {
+                newProperties.Direction = VectorFromString(LightDirection_textBox.Text);
+            }
+            catch (Exception e)
+            {
+                newProperties.Direction = ActualLightProperties.Direction;
+                Log_textBox.AppendText("Light direction data invalid: " + e);
+            }
+        }
+
+        private void SetNewColor(ref LightProperties newProperties)
+        {
+            try
+            {
+                var color = LightColor_dialog.Color;
+                var r = (float) (color.R / 255.0);
+                var g = (float) (color.G / 255.0);
+                var b = (float) (color.B / 255.0);
+                newProperties.Color = new Mogre.ColourValue(r, g, b);
+            }
+            catch (Exception e)
+            {
+                newProperties.Color = ActualLightProperties.Color;
+                Log_textBox.AppendText(" Light color data invalid: " + e);
+            }
+        }
+
+        private void SetNewInnerOuterAngle(ref LightProperties newProperties)
+        {
+            try
+            {
+                var innerOuterStr = Angle_textBox.Text;
+                var angles = innerOuterStr.Split(ApplicationUIResources.ValueDelimiter.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+
+                var innerAngle = new Degree(float.Parse(angles[0], CultureInfo.InvariantCulture));
+                var outerAngle = new Degree(float.Parse(angles[1], CultureInfo.InvariantCulture));
+                if (innerAngle < 0 || innerAngle > 180) throw new Exception("Inner Angle Value must be in range 0:180 degree");
+                if (outerAngle < 0 || outerAngle > 180) throw new Exception("Inner Angle Value must be in range 0:180 degree");
+                newProperties.InnerAngle = innerAngle;
+                newProperties.OuterAngle = outerAngle;
+            }
+            catch (Exception e)
+            {
+                newProperties.InnerAngle = ActualLightProperties.InnerAngle;
+                newProperties.OuterAngle = ActualLightProperties.OuterAngle;
+                Log_textBox.AppendText("Inner/outer angle data invalid: " + e);
+            }
+        }
+        #endregion
+
+        private void LightType_combo_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            mAppController.ActiveLightType = LightType_combo.SelectedIndex == 0 ? LightProperties.LightType.Spot : LightProperties.LightType.Point;
+        }
+
+        private void Lights_listBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var seletectedLight = (string)Lights_listBox.SelectedItem;
+            mAppController.SelectLight(seletectedLight);
+        }
     }
 }

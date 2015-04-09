@@ -79,22 +79,26 @@ namespace ApplicationUI
             this.label2 = new System.Windows.Forms.Label();
             this.AvailableModels_combo = new System.Windows.Forms.ComboBox();
             this.Lights_tab = new System.Windows.Forms.TabPage();
+            this.label6 = new System.Windows.Forms.Label();
+            this.LightType_combo = new System.Windows.Forms.ComboBox();
+            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.label7 = new System.Windows.Forms.Label();
+            this.LightPosition_textBox = new System.Windows.Forms.TextBox();
+            this.UpdateLight_btn = new System.Windows.Forms.Button();
+            this.DeleteLight_btn = new System.Windows.Forms.Button();
+            this.Angle_label = new System.Windows.Forms.Label();
+            this.Angle_textBox = new System.Windows.Forms.TextBox();
+            this.LightDirection_label = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
+            this.LightDirection_textBox = new System.Windows.Forms.TextBox();
+            this.ColorLight_btn = new System.Windows.Forms.Button();
+            this.LightName_label = new System.Windows.Forms.Label();
+            this.Lights_listBox = new System.Windows.Forms.ListBox();
             this.preview_label = new System.Windows.Forms.Label();
             this.CameraView_pictureBox = new System.Windows.Forms.PictureBox();
             this.Log_textBox = new System.Windows.Forms.TextBox();
-            this.Lights_listBox = new System.Windows.Forms.ListBox();
+            this.LightColor_dialog = new System.Windows.Forms.ColorDialog();
             this.label5 = new System.Windows.Forms.Label();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.label6 = new System.Windows.Forms.Label();
-            this.label7 = new System.Windows.Forms.Label();
-            this.label8 = new System.Windows.Forms.Label();
-            this.label9 = new System.Windows.Forms.Label();
-            this.UpdateLight_btn = new System.Windows.Forms.Button();
-            this.DeleteLight_btn = new System.Windows.Forms.Button();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
-            this.LightPosition_textBox = new System.Windows.Forms.TextBox();
-            this.LightDirection_textBox = new System.Windows.Forms.TextBox();
-            this.LightColor_textBox = new System.Windows.Forms.TextBox();
             this.MainWindow.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -104,8 +108,8 @@ namespace ApplicationUI
             this.CameraProperties_panel.SuspendLayout();
             this.Models_tab.SuspendLayout();
             this.Lights_tab.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.CameraView_pictureBox)).BeginInit();
             this.tableLayoutPanel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.CameraView_pictureBox)).BeginInit();
             this.SuspendLayout();
             // 
             // MainWindow
@@ -307,7 +311,7 @@ namespace ApplicationUI
             this.CameraProperties_panel.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.CameraProperties_panel.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.CameraProperties_panel.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.CameraProperties_panel.Size = new System.Drawing.Size(293, 258);
+            this.CameraProperties_panel.Size = new System.Drawing.Size(293, 259);
             this.CameraProperties_panel.TabIndex = 9;
             // 
             // Rotation_textBox
@@ -435,9 +439,9 @@ namespace ApplicationUI
             this.Update_btn.Dock = System.Windows.Forms.DockStyle.Left;
             this.Update_btn.Location = new System.Drawing.Point(3, 212);
             this.Update_btn.Name = "Update_btn";
-            this.Update_btn.Size = new System.Drawing.Size(75, 43);
+            this.Update_btn.Size = new System.Drawing.Size(75, 44);
             this.Update_btn.TabIndex = 14;
-            this.Update_btn.Text = "Apply";
+            this.Update_btn.Text = "Update";
             this.Update_btn.UseVisualStyleBackColor = true;
             this.Update_btn.Click += new System.EventHandler(this.Update_btn_Click);
             // 
@@ -446,7 +450,7 @@ namespace ApplicationUI
             this.Delete_btn.Dock = System.Windows.Forms.DockStyle.Right;
             this.Delete_btn.Location = new System.Drawing.Point(215, 212);
             this.Delete_btn.Name = "Delete_btn";
-            this.Delete_btn.Size = new System.Drawing.Size(75, 43);
+            this.Delete_btn.Size = new System.Drawing.Size(75, 44);
             this.Delete_btn.TabIndex = 15;
             this.Delete_btn.Text = "Delete";
             this.Delete_btn.UseVisualStyleBackColor = true;
@@ -480,7 +484,7 @@ namespace ApplicationUI
             // 
             this.deleteModel_btn.Location = new System.Drawing.Point(231, 370);
             this.deleteModel_btn.Name = "deleteModel_btn";
-            this.deleteModel_btn.Size = new System.Drawing.Size(75, 23);
+            this.deleteModel_btn.Size = new System.Drawing.Size(75, 28);
             this.deleteModel_btn.TabIndex = 20;
             this.deleteModel_btn.Text = "Delete";
             this.deleteModel_btn.UseVisualStyleBackColor = true;
@@ -492,7 +496,7 @@ namespace ApplicationUI
             this.ModelApply_btn.Name = "ModelApply_btn";
             this.ModelApply_btn.Size = new System.Drawing.Size(75, 52);
             this.ModelApply_btn.TabIndex = 19;
-            this.ModelApply_btn.Text = "Apply";
+            this.ModelApply_btn.Text = "Update";
             this.ModelApply_btn.UseVisualStyleBackColor = true;
             this.ModelApply_btn.Click += new System.EventHandler(this.ModelApply_btn_Click);
             // 
@@ -593,8 +597,9 @@ namespace ApplicationUI
             // 
             // Lights_tab
             // 
+            this.Lights_tab.Controls.Add(this.label6);
+            this.Lights_tab.Controls.Add(this.LightType_combo);
             this.Lights_tab.Controls.Add(this.tableLayoutPanel1);
-            this.Lights_tab.Controls.Add(this.label5);
             this.Lights_tab.Controls.Add(this.Lights_listBox);
             this.Lights_tab.Location = new System.Drawing.Point(4, 25);
             this.Lights_tab.Name = "Lights_tab";
@@ -602,6 +607,174 @@ namespace ApplicationUI
             this.Lights_tab.TabIndex = 2;
             this.Lights_tab.Text = "Lights";
             this.Lights_tab.UseVisualStyleBackColor = true;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(6, 10);
+            this.label6.Margin = new System.Windows.Forms.Padding(10, 10, 0, 0);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(283, 17);
+            this.label6.TabIndex = 0;
+            this.label6.Text = "Choose type of Light and click on the model";
+            // 
+            // LightType_combo
+            // 
+            this.LightType_combo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.LightType_combo.FormattingEnabled = true;
+            this.LightType_combo.Location = new System.Drawing.Point(6, 37);
+            this.LightType_combo.Margin = new System.Windows.Forms.Padding(10, 10, 0, 0);
+            this.LightType_combo.MaxDropDownItems = 2;
+            this.LightType_combo.Name = "LightType_combo";
+            this.LightType_combo.Size = new System.Drawing.Size(139, 24);
+            this.LightType_combo.TabIndex = 6;
+            this.LightType_combo.SelectedIndexChanged += new System.EventHandler(this.LightType_combo_SelectedIndexChanged);
+            // 
+            // tableLayoutPanel1
+            // 
+            this.tableLayoutPanel1.ColumnCount = 2;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.Controls.Add(this.label7, 0, 1);
+            this.tableLayoutPanel1.Controls.Add(this.LightPosition_textBox, 1, 1);
+            this.tableLayoutPanel1.Controls.Add(this.UpdateLight_btn, 0, 5);
+            this.tableLayoutPanel1.Controls.Add(this.DeleteLight_btn, 1, 5);
+            this.tableLayoutPanel1.Controls.Add(this.Angle_label, 0, 4);
+            this.tableLayoutPanel1.Controls.Add(this.Angle_textBox, 1, 4);
+            this.tableLayoutPanel1.Controls.Add(this.LightDirection_label, 0, 3);
+            this.tableLayoutPanel1.Controls.Add(this.label9, 0, 2);
+            this.tableLayoutPanel1.Controls.Add(this.LightDirection_textBox, 1, 3);
+            this.tableLayoutPanel1.Controls.Add(this.ColorLight_btn, 1, 2);
+            this.tableLayoutPanel1.Controls.Add(this.LightName_label, 1, 0);
+            this.tableLayoutPanel1.Controls.Add(this.label5, 0, 0);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(6, 283);
+            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+            this.tableLayoutPanel1.RowCount = 6;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 52.77778F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 47.22222F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 36F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 38F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 37F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 31F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(303, 219);
+            this.tableLayoutPanel1.TabIndex = 2;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(10, 50);
+            this.label7.Margin = new System.Windows.Forms.Padding(10, 10, 0, 0);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(58, 17);
+            this.label7.TabIndex = 1;
+            this.label7.Text = "Position";
+            // 
+            // LightPosition_textBox
+            // 
+            this.LightPosition_textBox.Location = new System.Drawing.Point(161, 50);
+            this.LightPosition_textBox.Margin = new System.Windows.Forms.Padding(10, 10, 0, 0);
+            this.LightPosition_textBox.Name = "LightPosition_textBox";
+            this.LightPosition_textBox.Size = new System.Drawing.Size(139, 23);
+            this.LightPosition_textBox.TabIndex = 7;
+            // 
+            // UpdateLight_btn
+            // 
+            this.UpdateLight_btn.Location = new System.Drawing.Point(3, 190);
+            this.UpdateLight_btn.Name = "UpdateLight_btn";
+            this.UpdateLight_btn.Size = new System.Drawing.Size(75, 25);
+            this.UpdateLight_btn.TabIndex = 4;
+            this.UpdateLight_btn.Text = "Update";
+            this.UpdateLight_btn.UseVisualStyleBackColor = true;
+            this.UpdateLight_btn.Click += new System.EventHandler(this.UpdateLight_btn_Click);
+            // 
+            // DeleteLight_btn
+            // 
+            this.DeleteLight_btn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.DeleteLight_btn.Location = new System.Drawing.Point(224, 190);
+            this.DeleteLight_btn.Name = "DeleteLight_btn";
+            this.DeleteLight_btn.Size = new System.Drawing.Size(76, 25);
+            this.DeleteLight_btn.TabIndex = 5;
+            this.DeleteLight_btn.Text = "Delete";
+            this.DeleteLight_btn.UseVisualStyleBackColor = true;
+            // 
+            // Angle_label
+            // 
+            this.Angle_label.AutoSize = true;
+            this.Angle_label.Location = new System.Drawing.Point(10, 160);
+            this.Angle_label.Margin = new System.Windows.Forms.Padding(10, 10, 0, 0);
+            this.Angle_label.Name = "Angle_label";
+            this.Angle_label.Size = new System.Drawing.Size(120, 17);
+            this.Angle_label.TabIndex = 10;
+            this.Angle_label.Text = "Inner;Outer Angle";
+            // 
+            // Angle_textBox
+            // 
+            this.Angle_textBox.Location = new System.Drawing.Point(161, 160);
+            this.Angle_textBox.Margin = new System.Windows.Forms.Padding(10, 10, 0, 0);
+            this.Angle_textBox.Name = "Angle_textBox";
+            this.Angle_textBox.Size = new System.Drawing.Size(139, 23);
+            this.Angle_textBox.TabIndex = 11;
+            // 
+            // LightDirection_label
+            // 
+            this.LightDirection_label.AutoSize = true;
+            this.LightDirection_label.Location = new System.Drawing.Point(10, 122);
+            this.LightDirection_label.Margin = new System.Windows.Forms.Padding(10, 10, 0, 0);
+            this.LightDirection_label.Name = "LightDirection_label";
+            this.LightDirection_label.Size = new System.Drawing.Size(64, 17);
+            this.LightDirection_label.TabIndex = 2;
+            this.LightDirection_label.Text = "Direction";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(10, 86);
+            this.label9.Margin = new System.Windows.Forms.Padding(10, 10, 0, 0);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(41, 17);
+            this.label9.TabIndex = 3;
+            this.label9.Text = "Color";
+            // 
+            // LightDirection_textBox
+            // 
+            this.LightDirection_textBox.Location = new System.Drawing.Point(161, 122);
+            this.LightDirection_textBox.Margin = new System.Windows.Forms.Padding(10, 10, 0, 0);
+            this.LightDirection_textBox.Name = "LightDirection_textBox";
+            this.LightDirection_textBox.Size = new System.Drawing.Size(139, 23);
+            this.LightDirection_textBox.TabIndex = 8;
+            // 
+            // ColorLight_btn
+            // 
+            this.ColorLight_btn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.ColorLight_btn.BackColor = System.Drawing.Color.White;
+            this.ColorLight_btn.Location = new System.Drawing.Point(161, 86);
+            this.ColorLight_btn.Margin = new System.Windows.Forms.Padding(10, 10, 0, 0);
+            this.ColorLight_btn.Name = "ColorLight_btn";
+            this.ColorLight_btn.Size = new System.Drawing.Size(142, 24);
+            this.ColorLight_btn.TabIndex = 9;
+            this.ColorLight_btn.UseVisualStyleBackColor = false;
+            this.ColorLight_btn.Click += new System.EventHandler(this.ColorLight_btn_Click);
+            // 
+            // LightName_label
+            // 
+            this.LightName_label.AutoSize = true;
+            this.LightName_label.Location = new System.Drawing.Point(161, 10);
+            this.LightName_label.Margin = new System.Windows.Forms.Padding(10, 10, 0, 0);
+            this.LightName_label.Name = "LightName_label";
+            this.LightName_label.Size = new System.Drawing.Size(31, 17);
+            this.LightName_label.TabIndex = 3;
+            this.LightName_label.Text = "N/A";
+            // 
+            // Lights_listBox
+            // 
+            this.Lights_listBox.FormattingEnabled = true;
+            this.Lights_listBox.ItemHeight = 16;
+            this.Lights_listBox.Location = new System.Drawing.Point(6, 65);
+            this.Lights_listBox.Name = "Lights_listBox";
+            this.Lights_listBox.Size = new System.Drawing.Size(303, 212);
+            this.Lights_listBox.TabIndex = 0;
+            this.Lights_listBox.SelectedIndexChanged += new System.EventHandler(this.Lights_listBox_SelectedIndexChanged);
             // 
             // preview_label
             // 
@@ -632,146 +805,15 @@ namespace ApplicationUI
             this.Log_textBox.Size = new System.Drawing.Size(1233, 87);
             this.Log_textBox.TabIndex = 7;
             // 
-            // Lights_listBox
-            // 
-            this.Lights_listBox.FormattingEnabled = true;
-            this.Lights_listBox.ItemHeight = 16;
-            this.Lights_listBox.Location = new System.Drawing.Point(6, 49);
-            this.Lights_listBox.Name = "Lights_listBox";
-            this.Lights_listBox.Size = new System.Drawing.Size(303, 228);
-            this.Lights_listBox.TabIndex = 0;
-            // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(3, 13);
+            this.label5.Location = new System.Drawing.Point(10, 10);
+            this.label5.Margin = new System.Windows.Forms.Padding(10, 10, 0, 0);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(103, 17);
-            this.label5.TabIndex = 1;
-            this.label5.Text = "Lights in scene";
-            // 
-            // tableLayoutPanel1
-            // 
-            this.tableLayoutPanel1.ColumnCount = 2;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.Controls.Add(this.LightColor_textBox, 1, 3);
-            this.tableLayoutPanel1.Controls.Add(this.LightDirection_textBox, 1, 2);
-            this.tableLayoutPanel1.Controls.Add(this.label6, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.label7, 0, 1);
-            this.tableLayoutPanel1.Controls.Add(this.label8, 0, 2);
-            this.tableLayoutPanel1.Controls.Add(this.label9, 0, 3);
-            this.tableLayoutPanel1.Controls.Add(this.UpdateLight_btn, 0, 4);
-            this.tableLayoutPanel1.Controls.Add(this.DeleteLight_btn, 1, 4);
-            this.tableLayoutPanel1.Controls.Add(this.comboBox1, 1, 0);
-            this.tableLayoutPanel1.Controls.Add(this.LightPosition_textBox, 1, 1);
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(6, 299);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 5;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 43.90244F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 56.09756F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 43F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 37F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(303, 206);
-            this.tableLayoutPanel1.TabIndex = 2;
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(10, 10);
-            this.label6.Margin = new System.Windows.Forms.Padding(10, 10, 0, 0);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(40, 17);
-            this.label6.TabIndex = 0;
-            this.label6.Text = "Type";
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(10, 52);
-            this.label7.Margin = new System.Windows.Forms.Padding(10, 10, 0, 0);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(58, 17);
-            this.label7.TabIndex = 1;
-            this.label7.Text = "Position";
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(10, 105);
-            this.label8.Margin = new System.Windows.Forms.Padding(10, 10, 0, 0);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(64, 17);
-            this.label8.TabIndex = 2;
-            this.label8.Text = "Direction";
-            // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(10, 148);
-            this.label9.Margin = new System.Windows.Forms.Padding(10, 10, 0, 0);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(41, 17);
-            this.label9.TabIndex = 3;
-            this.label9.Text = "Color";
-            // 
-            // UpdateLight_btn
-            // 
-            this.UpdateLight_btn.Location = new System.Drawing.Point(3, 178);
-            this.UpdateLight_btn.Name = "UpdateLight_btn";
-            this.UpdateLight_btn.Size = new System.Drawing.Size(75, 25);
-            this.UpdateLight_btn.TabIndex = 4;
-            this.UpdateLight_btn.Text = "Update";
-            this.UpdateLight_btn.UseVisualStyleBackColor = true;
-            // 
-            // DeleteLight_btn
-            // 
-            this.DeleteLight_btn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.DeleteLight_btn.Location = new System.Drawing.Point(224, 178);
-            this.DeleteLight_btn.Name = "DeleteLight_btn";
-            this.DeleteLight_btn.Size = new System.Drawing.Size(76, 25);
-            this.DeleteLight_btn.TabIndex = 5;
-            this.DeleteLight_btn.Text = "Delete";
-            this.DeleteLight_btn.UseVisualStyleBackColor = true;
-            // 
-            // comboBox1
-            // 
-            this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Items.AddRange(new object[] {
-            "Directional",
-            "Point"});
-            this.comboBox1.Location = new System.Drawing.Point(161, 10);
-            this.comboBox1.Margin = new System.Windows.Forms.Padding(10, 10, 0, 0);
-            this.comboBox1.MaxDropDownItems = 2;
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(121, 24);
-            this.comboBox1.TabIndex = 6;
-            // 
-            // LightPosition_textBox
-            // 
-            this.LightPosition_textBox.Location = new System.Drawing.Point(161, 52);
-            this.LightPosition_textBox.Margin = new System.Windows.Forms.Padding(10, 10, 0, 0);
-            this.LightPosition_textBox.Name = "LightPosition_textBox";
-            this.LightPosition_textBox.Size = new System.Drawing.Size(121, 23);
-            this.LightPosition_textBox.TabIndex = 7;
-            // 
-            // LightDirection_textBox
-            // 
-            this.LightDirection_textBox.Location = new System.Drawing.Point(161, 105);
-            this.LightDirection_textBox.Margin = new System.Windows.Forms.Padding(10, 10, 0, 0);
-            this.LightDirection_textBox.Name = "LightDirection_textBox";
-            this.LightDirection_textBox.Size = new System.Drawing.Size(121, 23);
-            this.LightDirection_textBox.TabIndex = 8;
-            // 
-            // LightColor_textBox
-            // 
-            this.LightColor_textBox.Location = new System.Drawing.Point(161, 148);
-            this.LightColor_textBox.Margin = new System.Windows.Forms.Padding(10, 10, 0, 0);
-            this.LightColor_textBox.Name = "LightColor_textBox";
-            this.LightColor_textBox.Size = new System.Drawing.Size(121, 23);
-            this.LightColor_textBox.TabIndex = 9;
+            this.label5.Size = new System.Drawing.Size(76, 17);
+            this.label5.TabIndex = 12;
+            this.label5.Text = "LightName";
             // 
             // MainForm
             // 
@@ -808,9 +850,9 @@ namespace ApplicationUI
             this.Models_tab.PerformLayout();
             this.Lights_tab.ResumeLayout(false);
             this.Lights_tab.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.CameraView_pictureBox)).EndInit();
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.CameraView_pictureBox)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -874,16 +916,20 @@ namespace ApplicationUI
         private TableLayoutPanel tableLayoutPanel1;
         private Label label6;
         private Label label7;
-        private Label label8;
+        private Label LightDirection_label;
         private Label label9;
-        private Label label5;
         private ListBox Lights_listBox;
         private Button UpdateLight_btn;
         private Button DeleteLight_btn;
-        private ComboBox comboBox1;
-        private TextBox LightColor_textBox;
+        private ComboBox LightType_combo;
         private TextBox LightDirection_textBox;
         private TextBox LightPosition_textBox;
+        private Button ColorLight_btn;
+        private ColorDialog LightColor_dialog;
+        private Label Angle_label;
+        private TextBox Angle_textBox;
+        private Label LightName_label;
+        private Label label5;
 
     }
 }

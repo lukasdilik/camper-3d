@@ -24,7 +24,7 @@ namespace ApplicationLogic
         public enum Mode { CAMERA_MODE, LIGHT_MODE, MODEL_MODE };
 
         public Mode ActiveMode = Mode.CAMERA_MODE;
-
+        public LightProperties.LightType ActiveLightType = LightProperties.LightType.Spot;
         private int mModelCounter;
         private bool mIsStarted;
         private bool mIsMainCameraActivated = true;
@@ -152,6 +152,25 @@ namespace ApplicationLogic
             }
         }
 
+        public void SelectLight(int screenX, int screenY)
+        {
+            DeselectAllLights();
+            var movableObject = Engine.Instance.SelectObject(screenX, screenY);
+
+            if (movableObject == null) return;
+
+            var name = movableObject.Name;
+
+            foreach (var model in LoadedModels)
+            {
+                foreach (var light in model.Value.Lights.Where(x => name == x.Value.Properties.Name))
+                {
+                    SelectedModel.SelectLight(light.Key);
+                    mApplicationUi.LightSelected(light.Value.Properties);
+                }
+            }
+        }
+
         public void SwitchToSelectedCamera()
         {
             if (SelectedModel != null)
@@ -231,6 +250,14 @@ namespace ApplicationLogic
             }
         }
 
+        private void DeselectAllLights()
+        {
+            foreach (var model in LoadedModels)
+            {
+                model.Value.DeselectAllLights();
+            }
+        }
+
         public void CreateSecurityCamera(int screenX, int screenY)
         {
             if (SelectedModel != null)
@@ -243,6 +270,21 @@ namespace ApplicationLogic
 
                         InitRTTOnSelectedCamera(SelectedModel.SelectedSecurityCamera);
                         mApplicationUi.CameraAdded(SelectedModel.SelectedSecurityCamera.Properties);
+                    }
+                }
+            }
+        }
+
+        public void CreateLight(int screenX, int screenY)
+        {
+            if (SelectedModel != null)
+            {
+                var success = SelectedModel.CreateLight(screenX, screenY, ActiveLightType);
+                if (success)
+                {
+                    if (SelectedModel.SelectedLight != null)
+                    {
+                        mApplicationUi.LightAdded(SelectedModel.SelectedLight.Properties);
                     }
                 }
             }
@@ -297,7 +339,7 @@ namespace ApplicationLogic
                 TextureType.TEX_TYPE_2D, width, height, 0, PixelFormat.PF_B8G8R8, (int)TextureUsage.TU_RENDERTARGET);
         }
 
-#endregion
+        #endregion
 
         public void SelectCamera(string key)
         {
@@ -311,11 +353,32 @@ namespace ApplicationLogic
             }
         }
 
+        public void SelectLight(string name)
+        {
+            foreach (var model in LoadedModels)
+            {
+                if (model.Value.Lights.ContainsKey(name))
+                {
+                    model.Value.SelectLight(name);
+                    mApplicationUi.LightSelected(model.Value.Lights[name].Properties);
+                }
+            }
+        }
+
         public bool IsSecurityCameraSelected()
         {
             if (SelectedModel != null)
             {
                 return SelectedModel.IsSecurityCameraSelected();
+            }
+            return false;
+        }
+
+        public bool IsLightSelected()
+        {
+            if (SelectedModel != null)
+            {
+                return SelectedModel.IsLightSelected();
             }
             return false;
         }
@@ -328,11 +391,27 @@ namespace ApplicationLogic
             }
         }
 
+        public void LightMouseClick(MouseEventArgs e)
+        {
+            if (SelectedModel != null)
+            {
+                SelectedModel.LightMouseClick(e);
+            }
+        }
+
         public void CameraMouseMove(MouseEventArgs e)
         {
             if (SelectedModel != null)
             {
                 SelectedModel.CameraMouseMove(e);
+            }
+        }
+
+        public void LightMouseMove(MouseEventArgs e)
+        {
+            if (SelectedModel != null)
+            {
+                SelectedModel.LightMouseMove(e);
             }
         }
 
@@ -355,14 +434,6 @@ namespace ApplicationLogic
 
             HandleKeyDown(key);
             UpdateStatusBar();
-        }
-
-        private void RefreshSelectedCameraProperties()
-        {
-            if (SelectedModel != null && SelectedModel.SelectedSecurityCamera != null)
-            {
-                mApplicationUi.UpdateCameraProperties(SelectedModel.SelectedSecurityCamera.Properties);
-            }
         }
 
         public void KeyUp(Keys key)
@@ -413,6 +484,11 @@ namespace ApplicationLogic
                     }
                     break;
                 case Mode.LIGHT_MODE:
+                    SelectLight(e.X,e.Y);
+                    if (IsLightSelected())
+                    {
+                        LightMouseClick(e);
+                    }
                     break;
                 case Mode.MODEL_MODE:
                     SelectModel(e.X, e.Y);
@@ -428,6 +504,7 @@ namespace ApplicationLogic
                     CreateSecurityCamera(e.X, e.Y);
                     break;
                 case Mode.LIGHT_MODE:
+                    CreateLight(e.X,e.Y);
                     break;
                 case Mode.MODEL_MODE:
                     AddModel(e.X, e.Y);
@@ -439,9 +516,13 @@ namespace ApplicationLogic
         {
             if (!mIsStarted) return;
             
-            if (IsSecurityCameraSelected())
+            if (IsSecurityCameraSelected() && ActiveMode == Mode.CAMERA_MODE)
             {
                 CameraMouseMove(e);
+            }
+            if (IsLightSelected() && ActiveMode == Mode.LIGHT_MODE)
+            {
+                LightMouseMove(e);
             }
             else
             {
@@ -515,6 +596,18 @@ namespace ApplicationLogic
             }
         }
 
+        public void UpdateLightProperties(LightProperties properties)
+        {
+            if (mIsStarted)
+            {
+                if (SelectedModel != null)
+                {
+                    SelectedModel.UpdateSelectedLightProperties(properties);
+                    mApplicationUi.UpdateLightProperties(properties);
+                }
+            }
+        }
+
         public void UpdateStatusBar()
         {
             if (!mIsStarted) return;
@@ -549,7 +642,7 @@ namespace ApplicationLogic
             mApplicationUi.LogMessage(msg);
         }
 
-        public void Destroy()
+        public void Exit()
         {
             SerializeLibrary(@ApplicationLogicResources.LibraryFilename);
             if(mIsStarted)

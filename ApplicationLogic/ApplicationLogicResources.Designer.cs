@@ -70,11 +70,29 @@ namespace ApplicationLogic {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to bulb.mesh.
+        /// </summary>
+        internal static string PointLightModelMesh {
+            get {
+                return ResourceManager.GetString("PointLightModelMesh", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to cctv1.mesh.
         /// </summary>
         internal static string SecurityCameraMeshName {
             get {
                 return ResourceManager.GetString("SecurityCameraMeshName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to cone.mesh.
+        /// </summary>
+        internal static string SpotLightMesh {
+            get {
+                return ResourceManager.GetString("SpotLightMesh", resourceCulture);
             }
         }
         
