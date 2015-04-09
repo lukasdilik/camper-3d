@@ -1,4 +1,5 @@
-﻿using Mogre;
+﻿using System;
+using Mogre;
 
 namespace ApplicationLogic.Scene
 {
@@ -6,12 +7,15 @@ namespace ApplicationLogic.Scene
     {
         public enum LightType
         {
-            Directional,Point
+            Spot,Point
         }
 
-        public LightType Type;
+        public String Name;
+        public LightType Type = LightType.Spot;
         public Vector3 Direction;
         public Vector3 Position;
-        public Vector3 Color;
+        public ColourValue Color = ColourValue.White;
+        public Degree InnerAngle = new Degree(45);
+        public Degree OuterAngle = new Degree(45);
     }
 }

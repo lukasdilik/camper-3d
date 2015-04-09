@@ -59,10 +59,12 @@
     <Compile Include="ModelData.cs" />
     <Compile Include="ModelLibrary.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Scene\SpotLight.cs" />
     <Compile Include="Scene\Light.cs" />
     <Compile Include="Scene\LightProperties.cs" />
     <Compile Include="Scene\Model.cs" />
     <Compile Include="Scene\ModelProperties.cs" />
+    <Compile Include="Scene\PointLight.cs" />
     <Compile Include="Scene\SecurityCamera.cs" />
     <Compile Include="Scene\SecurityCameraProperties.cs" />
     <Compile Include="SerializableDictionary.cs" />

@@ -120,8 +120,14 @@
   <data name="LibraryFilename" xml:space="preserve">
     <value>./library.xml</value>
   </data>
+  <data name="PointLightModelMesh" xml:space="preserve">
+    <value>bulb.mesh</value>
+  </data>
   <data name="SecurityCameraMeshName" xml:space="preserve">
     <value>cctv1.mesh</value>
+  </data>
+  <data name="SpotLightMesh" xml:space="preserve">
+    <value>cone.mesh</value>
   </data>
   <data name="StoredMaterialPath" xml:space="preserve">
     <value>./Resources/materials/scripts</value>
