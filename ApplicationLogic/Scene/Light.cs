@@ -40,7 +40,6 @@ namespace ApplicationLogic.Scene
             
             SceneNode = Engine.Instance.SceneManager.RootSceneNode.CreateChildSceneNode(properties.Name + "_node");
             SceneNode.AttachObject(Mesh);
-
             SceneNode.Position = properties.Position;
         }
 
@@ -60,10 +59,8 @@ namespace ApplicationLogic.Scene
         public void Translate(Vector3 t)
         {
             SceneNode.Translate(t, Node.TransformSpace.TS_WORLD);
-            OgreLight.Position = SceneNode.Position;
+            Properties.Position = SceneNode.Position;
         }
-
-
 
         public void Delete()
         {
@@ -97,9 +94,8 @@ namespace ApplicationLogic.Scene
                 t = t * Engine.Instance.MainCamera.Direction;
             }
 
-            SceneNode.Translate(t);
+            Translate(t);
             Properties.Position = SceneNode.Position;
-            OgreLight.Position = SceneNode.Position;
         }
 
         protected void RotateToDirection(Vector3 destination)

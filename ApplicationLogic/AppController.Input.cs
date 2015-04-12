@@ -49,11 +49,6 @@ namespace ApplicationLogic
                     Engine.Instance.ChangeTerrainClamping();
                     break;
                 case Keys.Delete:
-                    if (ActiveMode == Mode.CAMERA_MODE)
-                    {
-                        DeleteSelectedCamera();    
-                    }
-                    
                     break;
                 case Keys.Enter:
                     if (ActiveMode == Mode.CAMERA_MODE)
@@ -157,6 +152,8 @@ namespace ApplicationLogic
 
         protected virtual void HandleMouseUp(MouseEventArgs e)
         {
+            if(e.Button == MouseButtons.Left)
+                isLeftMouseButtonDown = false;
         }
 
         protected virtual void HandleMouseDown(MouseEventArgs e)

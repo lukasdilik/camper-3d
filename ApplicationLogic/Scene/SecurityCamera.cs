@@ -60,17 +60,16 @@ namespace ApplicationLogic.Scene
 
         public void UpdateCameraProperties(SecurityCameraProperties newProperties)
         {
-            Properties = newProperties;
-
+            Properties.Position = newProperties.Position;
+            Properties.Direction = newProperties.Direction;
+            Properties.FOVy = newProperties.FOVy;
+            Properties.Resolution = newProperties.Resolution;
             Camera.UpdateProperties(newProperties.Position,newProperties.Direction, newProperties.FOVy, newProperties.AspectRatio);
         }
 
         private void CreateCameraInScene()
         {
-            Camera = new Camera(Properties.Name, Properties.Position, Properties.Direction, MeshName)
-            {
-                MogreCamera = {AspectRatio = Properties.AspectRatio, FOVy = Properties.FOVy}
-            };
+            Camera = new Camera(Properties.Name, Properties.Position, Properties.Direction,Properties.FOVy, Properties.AspectRatio, MeshName);
         }
 
         public void HandleKey(Keys key)
@@ -78,7 +77,7 @@ namespace ApplicationLogic.Scene
             switch (key)
             {
                 case Keys.Up:
-                    Camera.MoveTop();
+                    Camera.MoveForward();
                     Properties.Position = Camera.SceneNode.Position;
                     break;
                 case Keys.Left:
@@ -86,19 +85,19 @@ namespace ApplicationLogic.Scene
                     Properties.Position = Camera.SceneNode.Position;
                     break;
                 case Keys.Down:
-                    Camera.MoveDown();
+                    Camera.MoveBackward();
                     Properties.Position = Camera.SceneNode.Position;
                     break;
                 case Keys.Right:
                     Camera.MoveRight();
                     Properties.Position = Camera.SceneNode.Position;
                     break;
-                case Keys.Add:
-                    Camera.MoveForward();
+                case Keys.PageUp:
+                    Camera.MoveTop();
                     Properties.Position = Camera.SceneNode.Position;
                     break;
-                case Keys.Subtract:
-                    Camera.MoveBackward();
+                case Keys.PageDown:
+                    Camera.MoveDown();
                     Properties.Position = Camera.SceneNode.Position;
                     break;
             }

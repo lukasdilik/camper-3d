@@ -14,8 +14,7 @@ namespace ApplicationLogic.Scene
         private const float MoveStep = 5f;
 
         private bool mSelected;
-        private int mCameraCounter;
-        private int mLightCounter;
+
         public ModelProperties ModelProperties; 
         public RenderingEngine.Scene.Model RenderModel { get; private set; }
         public Dictionary<string, SecurityCamera> SecurityCameras { get; private set; }
@@ -133,7 +132,6 @@ namespace ApplicationLogic.Scene
             foreach (var camera in SecurityCameras)
             {
                 camera.Value.Selected = false;
-                Selected = true;
             }
             SelectedSecurityCamera = null;
         }
@@ -143,12 +141,11 @@ namespace ApplicationLogic.Scene
             foreach (var light in Lights)
             {
                 light.Value.Selected = false;
-                Selected = true;
             }
             SelectedLight = null;
         }
 
-        public Boolean CreateCamera(int screenX, int screenY)
+        public Boolean CreateCamera(int index, int screenX, int screenY)
         {
             try
             {
@@ -160,9 +157,8 @@ namespace ApplicationLogic.Scene
 
                 if (isHit)
                 {
-                    var internalName = "SecurityCamera" + mCameraCounter;
+                    var internalName = "SecurityCamera" + index;
                     var securityCamera = new SecurityCamera(internalName,contactPoint, normal);
-                    mCameraCounter++;
                     SecurityCameras.Add(securityCamera.InternalName, securityCamera);
 
                     securityCamera.Selected = true;
@@ -201,7 +197,7 @@ namespace ApplicationLogic.Scene
             return contactPoint;
         }
 
-        public Boolean CreateLight(int screenX, int screenY, LightProperties.LightType ligthType)
+        public Boolean CreateLight(int index, int screenX, int screenY, LightProperties.LightType ligthType)
         {
             try
             {
@@ -219,17 +215,16 @@ namespace ApplicationLogic.Scene
                     if (ligthType == LightProperties.LightType.Spot)
                     {
                         ligthProperties.Type = LightProperties.LightType.Spot;
-                        ligthProperties.Name = "SpotLight" + mLightCounter;
+                        ligthProperties.Name = "SpotLight" + index;
                         ligthProperties.Direction = normal;
                         light = new SpotLight(RenderModel.SceneNode, ligthProperties);
                     }
                     else
                     {
                         ligthProperties.Type = LightProperties.LightType.Point;
-                        ligthProperties.Name = "PointLight" + mLightCounter;
+                        ligthProperties.Name = "PointLight" + index;
                         light = new PointLight(RenderModel.SceneNode, ligthProperties);
                     }
-                    mLightCounter++;
                     Lights.Add(light.Properties.Name, light);
 
                     light.Selected = true;
@@ -278,6 +273,19 @@ namespace ApplicationLogic.Scene
                     SecurityCameras[toDeleteKey].Delete();
                     SecurityCameras.Remove(toDeleteKey);
                     SelectedSecurityCamera = null;
+                }
+            }
+
+        }
+        public void DeleteSelectedLight()
+        {
+            {
+                var toDeleteKey = SelectedLight.Properties.Name;
+                if (Lights.ContainsKey(toDeleteKey))
+                {
+                    Lights[toDeleteKey].Delete();
+                    Lights.Remove(toDeleteKey);
+                    SelectedLight = null;
                 }
             }
 

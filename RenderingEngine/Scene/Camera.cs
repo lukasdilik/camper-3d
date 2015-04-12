@@ -6,7 +6,7 @@ namespace RenderingEngine.Scene
     public class Camera
     {
         private readonly Vector3 mDirection;
-        public static readonly Vector3 DefaultScaleVector = new Vector3(8, 8, 8);
+        public static readonly Vector3 DefaultScaleVector = new Vector3(4, 4, 4);
         private const float TranslationRate = 0.1f;
         public string Name { get; private set; }
         public Entity Mesh { get; private set; }
@@ -15,7 +15,7 @@ namespace RenderingEngine.Scene
         public CameraFrustum Frustum { get; private set; }
         public Line NormalLine { get; private set; }
 
-        public Camera(string name, Vector3 position, Vector3 direction, string meshName)
+        public Camera(string name, Vector3 position, Vector3 direction, Degree foVy, float aspectRatio,string meshName)
         {
             if (SceneNode != null)
             {
@@ -36,31 +36,24 @@ namespace RenderingEngine.Scene
             
             RotateToDirection(position + direction * 10);
 
-            CreateMogreCameraObject();
+            CreateMogreCameraObject(foVy,aspectRatio);
             
             Frustum = new CameraFrustum(this);
 
             NormalLine = new Line(name + "_line",new Vector3(), Frustum.FarCenter, SceneNode);
         }
 
-        private void CreateMogreCameraObject()
+        private void CreateMogreCameraObject(Degree foVy, float aspectRatio)
         {
             MogreCamera = Engine.Engine.Instance.SceneManager.CreateCamera(Name+"_camera");
-            MogreCamera.Position = SceneNode.Position;
+            MogreCamera.FOVy = foVy;
+            MogreCamera.AspectRatio = aspectRatio;
+            MogreCamera.Position = GetCameraCenterWorld();
             MogreCamera.LookAt(SceneNode.Position + mDirection*100);
-
-            Light light = Engine.Engine.Instance.SceneManager.CreateLight(Name + "light");
-            light.Type = Light.LightTypes.LT_SPOTLIGHT;
-            light.Position = SceneNode.Position;
-            light.Direction = mDirection;
-            light.DiffuseColour = ColourValue.Red;
-            light.SpecularColour = ColourValue.Red;
-            light.SpotlightInnerAngle = MogreCamera.FOVy;
-
-            MogreCamera.NearClipDistance = 8;
+            MogreCamera.NearClipDistance = 4;
         }
 
-        public void UpdateProperties(Vector3 position, Vector3 direction, Degree FOVy, float aspectRatio)
+        public void UpdateProperties(Vector3 position, Vector3 direction, Degree foVy, float aspectRatio)
         {
             direction.Normalise();
             
@@ -71,13 +64,14 @@ namespace RenderingEngine.Scene
             RotateToDirection(position + direction * 10);
             
             SceneNode.Position = position;
-            
-            if (Math.Abs(MogreCamera.AspectRatio - aspectRatio) > 0.001 || MogreCamera.FOVy != FOVy.ValueRadians)
+
+            if (Math.Abs(MogreCamera.AspectRatio - aspectRatio) > 0.001 || MogreCamera.FOVy != foVy.ValueRadians)
             {
                 MogreCamera.AspectRatio = aspectRatio;
-                MogreCamera.FOVy = FOVy.ValueRadians;
-                Frustum.RecalculatePoints();
+                MogreCamera.FOVy = foVy.ValueRadians;
             }
+
+            Frustum.RecalculatePoints();
 
             NormalLine.Destroy();
             NormalLine = new Line(Name + "_line", new Vector3(), Frustum.FarCenter, SceneNode);
@@ -98,31 +92,46 @@ namespace RenderingEngine.Scene
             Frustum.RecalculatePoints();
         }
 
+        public void MoveForward()
+        {
+            var t = NormaliseCameraDirection();
+            t = RotateVector(t, 0);
+            Translate(t);
+        }
+
+        public void MoveBackward()
+        {
+            var t = NormaliseCameraDirection();
+            t = RotateVector(t, 180);
+            Translate(t);
+        }
+
         public void MoveRight()
         {
-            var dir = Engine.Engine.Instance.MainCamera.Direction;
-            if (dir.z != 0)
-            {
-                Translate(dir.z < 0 ? new Vector3(TranslationRate, 0, 0) : new Vector3(-TranslationRate, 0, 0));
-            }
-            else if (dir.x != 0)
-            {
-                Translate(dir.z < 0 ? new Vector3(0, TranslationRate, 0) : new Vector3(0, TranslationRate,0 ));
-            }
-            
+            var t = NormaliseCameraDirection();
+            t = RotateVector(t, 270);
+            Translate(t);
         }
 
         public void MoveLeft()
         {
-            var dir = Engine.Engine.Instance.MainCamera.Direction;
-            if (dir.z != 0)
-            {
-                Translate(dir.z > 0 ? new Vector3(TranslationRate, 0, 0) : new Vector3(-TranslationRate, 0, 0));
-            }
-            else if (dir.x != 0)
-            {
-                Translate(dir.z > 0 ? new Vector3(0, 0, TranslationRate) : new Vector3(0,0, TranslationRate));
-            }
+            var t = NormaliseCameraDirection();
+            t = RotateVector(t, 90);
+            Translate(t);
+        }
+
+        private Vector3 RotateVector(Vector3 v, float degree)
+        {
+            return new Quaternion(new Degree(degree), Vector3.UNIT_Y) * v;
+        }
+
+        private static Vector3 NormaliseCameraDirection()
+        {
+            var camDir = Engine.Engine.Instance.MainCamera.Direction;
+            camDir.y = 0;
+            camDir.Normalise();
+            camDir *= TranslationRate;
+            return camDir;
         }
 
         public void MoveTop()
@@ -133,16 +142,6 @@ namespace RenderingEngine.Scene
         public void MoveDown()
         {
             Translate(new Vector3(0, -TranslationRate, 0));
-        }
-
-        public void MoveForward()
-        {
-            Translate(new Vector3(0, 0 ,-TranslationRate));
-        }
-
-        public void MoveBackward()
-        {
-            Translate(new Vector3(0, 0, TranslationRate));
         }
 
         private void TranslateCameraOnPolygonFace()
@@ -179,6 +178,11 @@ namespace RenderingEngine.Scene
             return Mesh.BoundingBox;
         }
 
+        public Vector3 GetCameraCenterWorld()
+        {
+            return SceneNode.ConvertLocalToWorldPosition(GetBoundingBox().Center);
+        }
+
         public void Scale(Vector3 scaleVector)
         {
             SceneNode.Scale(scaleVector);
@@ -210,7 +214,7 @@ namespace RenderingEngine.Scene
         public void Pitch(Radian angleInRad)
         {
             MogreCamera.Pitch(-angleInRad);
-            SceneNode.Pitch(angleInRad);
+            SceneNode.Pitch(-angleInRad);
 
         }
         public void Yaw(Radian angleInRad)

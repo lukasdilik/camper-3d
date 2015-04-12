@@ -33,7 +33,7 @@ namespace ApplicationUI
             mLibraryForm.VisibleChanged += mLibraryForm_VisibleChanged;
 
             CameraProperties_panel.Hide();
-            SecurityCameras_comboBox.Hide();
+            Cameras_listBox.Hide();
 
             LightType_combo.Items.Add("SPOT");
             LightType_combo.Items.Add("POINT");
@@ -213,17 +213,17 @@ namespace ApplicationUI
         public void LightRemoved(string lightName)
         {
             Lights_listBox.Items.Remove(lightName);
-            if (addedModels_listBox.Items.Count > 0)
+            if (Lights_listBox.Items.Count > 0)
             {
-                var firstItem = (string)addedModels_listBox.Items[0];
-                mAppController.SelectModel(firstItem);
+                var firstItem = (string)Lights_listBox.Items[0];
+                mAppController.SelectLight(firstItem);
             }
         }
 
         public void CameraAdded(SecurityCameraProperties cameraProperties)
         {
-            SecurityCameras_comboBox.Items.Add(cameraProperties.Name);
-            SecurityCameras_comboBox.SelectedItem = cameraProperties.Name;
+            Cameras_listBox.Items.Add(cameraProperties.Name);
+            Cameras_listBox.SelectedItem = cameraProperties.Name;
             FillCameraProperties(cameraProperties);
         }
 
@@ -242,12 +242,13 @@ namespace ApplicationUI
 
         public void CameraRemoved(string cameraName)
         {
-            SecurityCameras_comboBox.Items.Remove(cameraName);
+            Cameras_listBox.Items.Remove(cameraName);
+            ClearCameraProperties();
         }
 
         public void CameraSelected(SecurityCameraProperties cameraProperties)
         {
-            SecurityCameras_comboBox.SelectedIndex = SecurityCameras_comboBox.FindString(cameraProperties.Name);
+            Cameras_listBox.SelectedIndex = Cameras_listBox.FindString(cameraProperties.Name);
             UpdateCameraProperties(cameraProperties);
         }
 
@@ -277,11 +278,28 @@ namespace ApplicationUI
             ActualCameraProperties = properties;
             Position_textBox.Text = String.Format("{0:f2};{1:f2};{2:f2}", properties.Position.x, properties.Position.y, properties.Position.z);
             Direction_textBox.Text = String.Format("{0:f2};{1:f2};{2:f2}", properties.Direction.x, properties.Direction.y, properties.Direction.z);
-            AspectRatio_textBox.Text = properties.AspectRatio.ToString();
-            FOVy_textBox.Text = properties.FOVy.ValueDegrees.ToString();
-            Resolution_textBox.Text = String.Format("{0:f2};{1:f2}", properties.Resolution.x, properties.Resolution.y);
-            Rotation_textBox.Text = properties.Rotation.ToString();
+            AspectRatio_textBox.Text = properties.AspectRatio.ToString(CultureInfo.InvariantCulture);
+            FOVy_textBox.Text = properties.FOVy.ValueDegrees.ToString(CultureInfo.InvariantCulture);
+            Resolution_textBox.Text = String.Format("{0:f0};{1:f0}", properties.Resolution.x, properties.Resolution.y);
 
+        }
+
+        private void ClearCameraProperties()
+        {
+            ActualCameraProperties = new SecurityCameraProperties();
+            Position_textBox.Text = "";
+            Direction_textBox.Text = "";
+            AspectRatio_textBox.Text = "";
+            FOVy_textBox.Text = "";
+            Resolution_textBox.Text = "";
+            if (Cameras_listBox.Items.Count < 1)
+            {
+                CameraProperties_panel.Hide();
+            }
+            else
+            {
+                mAppController.SelectCamera((string)Cameras_listBox.Items[0]);
+            }
         }
 
         private void MainWindow_MouseClick(object sender, MouseEventArgs e)
@@ -312,8 +330,8 @@ namespace ApplicationUI
             var newProperties = new SecurityCameraProperties();
             SetNewPosition(ref newProperties);
             SetNewDirection(ref newProperties);
-            SetNewAspectRatio(ref newProperties);
             SetNewFOVy(ref newProperties);
+            SetNewResolution(ref newProperties);
             mAppController.UpdateCameraProperties(newProperties);
         }
         
@@ -344,20 +362,6 @@ namespace ApplicationUI
             }
         }
 
-        private void SetNewAspectRatio(ref SecurityCameraProperties newProperties)
-        {
-            try
-            {
-                var aspRatioStr = AspectRatio_textBox.Text.Replace(',', '.');
-                newProperties.AspectRatio = float.Parse(aspRatioStr, CultureInfo.InvariantCulture);
-            }
-            catch (Exception e)
-            {
-                newProperties.AspectRatio = ActualCameraProperties.AspectRatio;
-                Log_textBox.AppendText("AspectRatio data invalid: "+e);
-            }
-        }
-
         private void SetNewFOVy(ref SecurityCameraProperties newProperties)
         {
             try
@@ -373,6 +377,25 @@ namespace ApplicationUI
                 Log_textBox.AppendText("FieldOfView data invalid: " + e);
             }
         }
+
+        private void SetNewResolution(ref SecurityCameraProperties newProperties)
+        {
+            try
+            {
+                var resolutionStr = Resolution_textBox.Text.Replace(',', '.');
+                var resParts = resolutionStr.Split(ApplicationUIResources.ValueDelimiter.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                var x = int.Parse(resParts[0], CultureInfo.InvariantCulture);
+                var y = int.Parse(resParts[1], CultureInfo.InvariantCulture);
+                if (x <= 0 || y <= 0) throw new Exception("Value must positive");
+                newProperties.Resolution = new Vector2(x,y);
+            }
+            catch (Exception e)
+            {
+                newProperties.Resolution = ActualCameraProperties.Resolution;
+                Log_textBox.AppendText("Resolution data invalid: " + e);
+            }
+        }
+
         #endregion
         private Vector3 VectorFromString(string value)
         {
@@ -426,24 +449,6 @@ namespace ApplicationUI
         private void Delete_btn_Click(object sender, EventArgs e)
         {
             mAppController.DeleteSelectedCamera();
-        }
-
-        private void SecurityCameras_comboBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (SecurityCameras_comboBox.SelectedIndex > -1)
-            {
-                if (SecurityCameras_comboBox.Items.Count > 0)
-                {
-                    CameraProperties_panel.Show();
-                    SecurityCameras_comboBox.Show();
-                }
-                else
-                {
-                    SecurityCameras_comboBox.Hide();
-                    CameraProperties_panel.Hide();
-                }
-                mAppController.SelectCamera((string)SecurityCameras_comboBox.Items[SecurityCameras_comboBox.SelectedIndex]);
-            }
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -596,7 +601,7 @@ namespace ApplicationUI
                 var r = (float) (color.R / 255.0);
                 var g = (float) (color.G / 255.0);
                 var b = (float) (color.B / 255.0);
-                newProperties.Color = new Mogre.ColourValue(r, g, b);
+                newProperties.Color = new ColourValue(r, g, b);
             }
             catch (Exception e)
             {
@@ -638,5 +643,38 @@ namespace ApplicationUI
             var seletectedLight = (string)Lights_listBox.SelectedItem;
             mAppController.SelectLight(seletectedLight);
         }
+
+        private void DeleteLight_btn_Click(object sender, EventArgs e)
+        {
+            mAppController.DeleteSelectedLight();
+        }
+
+        private void Cameras_listBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (Cameras_listBox.SelectedIndex > -1)
+            {
+                if (Cameras_listBox.Items.Count > 0)
+                {
+                    CameraProperties_panel.Show();
+                    Cameras_listBox.Show();
+                }
+                else
+                {
+                    Cameras_listBox.Hide();
+                    CameraProperties_panel.Hide();
+                }
+                mAppController.SelectCamera((string)Cameras_listBox.Items[Cameras_listBox.SelectedIndex]);
+            }
+        }
+
+        private void Cameras_listBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Control && (e.KeyCode == Keys.W || e.KeyCode == Keys.D))
+            {
+                Clipboard.SetDataObject(Cameras_listBox.Items[Cameras_listBox.SelectedIndex], true);
+                e.SuppressKeyPress = true;
+            }
+        }
+
     }
 }

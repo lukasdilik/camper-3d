@@ -9,6 +9,7 @@ namespace ApplicationLogic.Scene
         public PointLight(SceneNode parentNode, LightProperties properties) : base(parentNode, ApplicationLogicResources.PointLightModelMesh, properties)
         {
             CreateOgreLight();
+            OgreLight.Position = Properties.Position;
         }
 
         public override sealed void CreateOgreLight()

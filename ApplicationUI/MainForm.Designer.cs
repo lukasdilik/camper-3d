@@ -47,10 +47,11 @@ namespace ApplicationUI
             this.LeftPanel = new System.Windows.Forms.Panel();
             this.Mode_tabControl = new System.Windows.Forms.TabControl();
             this.Cameras_tab = new System.Windows.Forms.TabPage();
-            this.SecurityCameras_comboBox = new System.Windows.Forms.ComboBox();
+            this.Cameras_listBox = new System.Windows.Forms.ListBox();
+            this.label11 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.CameraProperties_panel = new System.Windows.Forms.TableLayoutPanel();
-            this.Rotation_textBox = new System.Windows.Forms.TextBox();
             this.Resolution_textBox = new System.Windows.Forms.TextBox();
             this.FOVy_textBox = new System.Windows.Forms.TextBox();
             this.AspectRatio_textBox = new System.Windows.Forms.TextBox();
@@ -61,7 +62,6 @@ namespace ApplicationUI
             this.AspectRatio_label = new System.Windows.Forms.Label();
             this.FOVy_label = new System.Windows.Forms.Label();
             this.Resolution_label = new System.Windows.Forms.Label();
-            this.Rotation_label = new System.Windows.Forms.Label();
             this.Update_btn = new System.Windows.Forms.Button();
             this.Delete_btn = new System.Windows.Forms.Button();
             this.Models_tab = new System.Windows.Forms.TabPage();
@@ -93,12 +93,12 @@ namespace ApplicationUI
             this.LightDirection_textBox = new System.Windows.Forms.TextBox();
             this.ColorLight_btn = new System.Windows.Forms.Button();
             this.LightName_label = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
             this.Lights_listBox = new System.Windows.Forms.ListBox();
             this.preview_label = new System.Windows.Forms.Label();
             this.CameraView_pictureBox = new System.Windows.Forms.PictureBox();
             this.Log_textBox = new System.Windows.Forms.TextBox();
             this.LightColor_dialog = new System.Windows.Forms.ColorDialog();
-            this.label5 = new System.Windows.Forms.Label();
             this.MainWindow.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -251,7 +251,9 @@ namespace ApplicationUI
             // 
             // Cameras_tab
             // 
-            this.Cameras_tab.Controls.Add(this.SecurityCameras_comboBox);
+            this.Cameras_tab.Controls.Add(this.Cameras_listBox);
+            this.Cameras_tab.Controls.Add(this.label11);
+            this.Cameras_tab.Controls.Add(this.label8);
             this.Cameras_tab.Controls.Add(this.label1);
             this.Cameras_tab.Controls.Add(this.CameraProperties_panel);
             this.Cameras_tab.Location = new System.Drawing.Point(4, 25);
@@ -262,31 +264,49 @@ namespace ApplicationUI
             this.Cameras_tab.Text = "Cameras";
             this.Cameras_tab.UseVisualStyleBackColor = true;
             // 
-            // SecurityCameras_comboBox
+            // Cameras_listBox
             // 
-            this.SecurityCameras_comboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.SecurityCameras_comboBox.FormattingEnabled = true;
-            this.SecurityCameras_comboBox.Location = new System.Drawing.Point(9, 21);
-            this.SecurityCameras_comboBox.Name = "SecurityCameras_comboBox";
-            this.SecurityCameras_comboBox.Size = new System.Drawing.Size(293, 24);
-            this.SecurityCameras_comboBox.TabIndex = 12;
-            this.SecurityCameras_comboBox.SelectedIndexChanged += new System.EventHandler(this.SecurityCameras_comboBox_SelectedIndexChanged);
+            this.Cameras_listBox.FormattingEnabled = true;
+            this.Cameras_listBox.ItemHeight = 16;
+            this.Cameras_listBox.Location = new System.Drawing.Point(12, 88);
+            this.Cameras_listBox.Name = "Cameras_listBox";
+            this.Cameras_listBox.Size = new System.Drawing.Size(288, 180);
+            this.Cameras_listBox.TabIndex = 17;
+            this.Cameras_listBox.SelectedIndexChanged += new System.EventHandler(this.Cameras_listBox_SelectedIndexChanged);
+            this.Cameras_listBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Cameras_listBox_KeyDown);
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(9, 41);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(219, 17);
+            this.label11.TabIndex = 16;
+            this.label11.Text = "Left mouse click to Select camera";
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(9, 13);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(214, 17);
+            this.label8.TabIndex = 14;
+            this.label8.Text = "Right Mouse click to Add camera";
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 3);
+            this.label1.Location = new System.Drawing.Point(9, 70);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(118, 17);
+            this.label1.Size = new System.Drawing.Size(109, 17);
             this.label1.TabIndex = 13;
-            this.label1.Text = "Selected camera:";
+            this.label1.Text = "Added Cameras";
             // 
             // CameraProperties_panel
             // 
             this.CameraProperties_panel.ColumnCount = 2;
-            this.CameraProperties_panel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 30F));
-            this.CameraProperties_panel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 70F));
-            this.CameraProperties_panel.Controls.Add(this.Rotation_textBox, 1, 6);
+            this.CameraProperties_panel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 31.39932F));
+            this.CameraProperties_panel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 68.60069F));
             this.CameraProperties_panel.Controls.Add(this.Resolution_textBox, 1, 5);
             this.CameraProperties_panel.Controls.Add(this.FOVy_textBox, 1, 4);
             this.CameraProperties_panel.Controls.Add(this.AspectRatio_textBox, 1, 3);
@@ -297,10 +317,9 @@ namespace ApplicationUI
             this.CameraProperties_panel.Controls.Add(this.AspectRatio_label, 0, 3);
             this.CameraProperties_panel.Controls.Add(this.FOVy_label, 0, 4);
             this.CameraProperties_panel.Controls.Add(this.Resolution_label, 0, 5);
-            this.CameraProperties_panel.Controls.Add(this.Rotation_label, 0, 6);
             this.CameraProperties_panel.Controls.Add(this.Update_btn, 0, 7);
             this.CameraProperties_panel.Controls.Add(this.Delete_btn, 1, 7);
-            this.CameraProperties_panel.Location = new System.Drawing.Point(9, 51);
+            this.CameraProperties_panel.Location = new System.Drawing.Point(12, 282);
             this.CameraProperties_panel.Name = "CameraProperties_panel";
             this.CameraProperties_panel.RowCount = 8;
             this.CameraProperties_panel.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -311,61 +330,52 @@ namespace ApplicationUI
             this.CameraProperties_panel.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.CameraProperties_panel.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.CameraProperties_panel.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.CameraProperties_panel.Size = new System.Drawing.Size(293, 259);
+            this.CameraProperties_panel.Size = new System.Drawing.Size(293, 217);
             this.CameraProperties_panel.TabIndex = 9;
-            // 
-            // Rotation_textBox
-            // 
-            this.Rotation_textBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.Rotation_textBox.Location = new System.Drawing.Point(87, 186);
-            this.Rotation_textBox.Margin = new System.Windows.Forms.Padding(0, 10, 5, 0);
-            this.Rotation_textBox.Name = "Rotation_textBox";
-            this.Rotation_textBox.Size = new System.Drawing.Size(201, 23);
-            this.Rotation_textBox.TabIndex = 13;
             // 
             // Resolution_textBox
             // 
             this.Resolution_textBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.Resolution_textBox.Location = new System.Drawing.Point(87, 153);
+            this.Resolution_textBox.Location = new System.Drawing.Point(91, 153);
             this.Resolution_textBox.Margin = new System.Windows.Forms.Padding(0, 10, 5, 0);
             this.Resolution_textBox.Name = "Resolution_textBox";
-            this.Resolution_textBox.Size = new System.Drawing.Size(201, 23);
+            this.Resolution_textBox.Size = new System.Drawing.Size(197, 23);
             this.Resolution_textBox.TabIndex = 12;
             // 
             // FOVy_textBox
             // 
             this.FOVy_textBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.FOVy_textBox.Location = new System.Drawing.Point(87, 120);
+            this.FOVy_textBox.Location = new System.Drawing.Point(91, 120);
             this.FOVy_textBox.Margin = new System.Windows.Forms.Padding(0, 10, 5, 0);
             this.FOVy_textBox.Name = "FOVy_textBox";
-            this.FOVy_textBox.Size = new System.Drawing.Size(201, 23);
+            this.FOVy_textBox.Size = new System.Drawing.Size(197, 23);
             this.FOVy_textBox.TabIndex = 11;
             // 
             // AspectRatio_textBox
             // 
             this.AspectRatio_textBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.AspectRatio_textBox.Location = new System.Drawing.Point(87, 76);
+            this.AspectRatio_textBox.Location = new System.Drawing.Point(91, 76);
             this.AspectRatio_textBox.Margin = new System.Windows.Forms.Padding(0, 10, 5, 0);
             this.AspectRatio_textBox.Name = "AspectRatio_textBox";
-            this.AspectRatio_textBox.Size = new System.Drawing.Size(201, 23);
+            this.AspectRatio_textBox.Size = new System.Drawing.Size(197, 23);
             this.AspectRatio_textBox.TabIndex = 10;
             // 
             // Direction_textBox
             // 
             this.Direction_textBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.Direction_textBox.Location = new System.Drawing.Point(87, 43);
+            this.Direction_textBox.Location = new System.Drawing.Point(91, 43);
             this.Direction_textBox.Margin = new System.Windows.Forms.Padding(0, 10, 5, 0);
             this.Direction_textBox.Name = "Direction_textBox";
-            this.Direction_textBox.Size = new System.Drawing.Size(201, 23);
+            this.Direction_textBox.Size = new System.Drawing.Size(197, 23);
             this.Direction_textBox.TabIndex = 9;
             // 
             // Position_textBox
             // 
             this.Position_textBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.Position_textBox.Location = new System.Drawing.Point(87, 10);
+            this.Position_textBox.Location = new System.Drawing.Point(91, 10);
             this.Position_textBox.Margin = new System.Windows.Forms.Padding(0, 10, 5, 0);
             this.Position_textBox.Name = "Position_textBox";
-            this.Position_textBox.Size = new System.Drawing.Size(201, 23);
+            this.Position_textBox.Size = new System.Drawing.Size(197, 23);
             this.Position_textBox.TabIndex = 8;
             // 
             // Position_label
@@ -423,23 +433,11 @@ namespace ApplicationUI
             this.Resolution_label.TabIndex = 5;
             this.Resolution_label.Text = "Resolution";
             // 
-            // Rotation_label
-            // 
-            this.Rotation_label.AutoSize = true;
-            this.Rotation_label.Dock = System.Windows.Forms.DockStyle.Left;
-            this.Rotation_label.Location = new System.Drawing.Point(5, 186);
-            this.Rotation_label.Margin = new System.Windows.Forms.Padding(5, 10, 0, 0);
-            this.Rotation_label.Name = "Rotation_label";
-            this.Rotation_label.Size = new System.Drawing.Size(61, 23);
-            this.Rotation_label.TabIndex = 6;
-            this.Rotation_label.Text = "Rotation";
-            // 
             // Update_btn
             // 
-            this.Update_btn.Dock = System.Windows.Forms.DockStyle.Left;
-            this.Update_btn.Location = new System.Drawing.Point(3, 212);
+            this.Update_btn.Location = new System.Drawing.Point(3, 179);
             this.Update_btn.Name = "Update_btn";
-            this.Update_btn.Size = new System.Drawing.Size(75, 44);
+            this.Update_btn.Size = new System.Drawing.Size(77, 33);
             this.Update_btn.TabIndex = 14;
             this.Update_btn.Text = "Update";
             this.Update_btn.UseVisualStyleBackColor = true;
@@ -448,9 +446,9 @@ namespace ApplicationUI
             // Delete_btn
             // 
             this.Delete_btn.Dock = System.Windows.Forms.DockStyle.Right;
-            this.Delete_btn.Location = new System.Drawing.Point(215, 212);
+            this.Delete_btn.Location = new System.Drawing.Point(215, 179);
             this.Delete_btn.Name = "Delete_btn";
-            this.Delete_btn.Size = new System.Drawing.Size(75, 44);
+            this.Delete_btn.Size = new System.Drawing.Size(75, 35);
             this.Delete_btn.TabIndex = 15;
             this.Delete_btn.Text = "Delete";
             this.Delete_btn.UseVisualStyleBackColor = true;
@@ -697,6 +695,7 @@ namespace ApplicationUI
             this.DeleteLight_btn.TabIndex = 5;
             this.DeleteLight_btn.Text = "Delete";
             this.DeleteLight_btn.UseVisualStyleBackColor = true;
+            this.DeleteLight_btn.Click += new System.EventHandler(this.DeleteLight_btn_Click);
             // 
             // Angle_label
             // 
@@ -766,6 +765,16 @@ namespace ApplicationUI
             this.LightName_label.TabIndex = 3;
             this.LightName_label.Text = "N/A";
             // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(10, 10);
+            this.label5.Margin = new System.Windows.Forms.Padding(10, 10, 0, 0);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(76, 17);
+            this.label5.TabIndex = 12;
+            this.label5.Text = "LightName";
+            // 
             // Lights_listBox
             // 
             this.Lights_listBox.FormattingEnabled = true;
@@ -804,16 +813,6 @@ namespace ApplicationUI
             this.Log_textBox.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.Log_textBox.Size = new System.Drawing.Size(1233, 87);
             this.Log_textBox.TabIndex = 7;
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(10, 10);
-            this.label5.Margin = new System.Windows.Forms.Padding(10, 10, 0, 0);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(76, 17);
-            this.label5.TabIndex = 12;
-            this.label5.Text = "LightName";
             // 
             // MainForm
             // 
@@ -878,8 +877,6 @@ namespace ApplicationUI
         private Label AspectRatio_label;
         private Label FOVy_label;
         private Label Resolution_label;
-        private Label Rotation_label;
-        private TextBox Rotation_textBox;
         private TextBox Resolution_textBox;
         private TextBox FOVy_textBox;
         private TextBox AspectRatio_textBox;
@@ -893,7 +890,6 @@ namespace ApplicationUI
         private Button Delete_btn;
         private PictureBox CameraView_pictureBox;
         private Label label1;
-        private ComboBox SecurityCameras_comboBox;
         private Label preview_label;
         private ToolStripMenuItem toolStripMenuItem2;
         private ToolStripMenuItem showLibraryToolStripMenuItem;
@@ -930,6 +926,9 @@ namespace ApplicationUI
         private TextBox Angle_textBox;
         private Label LightName_label;
         private Label label5;
+        private Label label8;
+        private ListBox Cameras_listBox;
+        private Label label11;
 
     }
 }

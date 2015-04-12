@@ -25,11 +25,29 @@ namespace RenderingEngine
             PointLights = new Dictionary<string, Light>();
             SpotLights = new Dictionary<string, Light>();
             mSceneManager.AmbientLight = AmbientLightColor;
-            //mSceneManager.ShadowTechnique = ShadowTechnique.SHADOWTYPE_STENCIL_ADDITIVE;
+            
+
+//            // Allow self shadowing (note: this only works in conjunction with the shaders defined above)
+//             // Set the caster material which uses the shaders defined above
+//            mSceneManager.ShadowTextureSelfShadow = true;
+//             mSceneManager.SetShadowTextureCasterMaterial("Ogre/DepthShadowmap/Caster/Float");
+//             // Set the pixel format to floating point
+//             mSceneManager.SetShadowTexturePixelFormat(PixelFormat.PF_FLOAT32_R);
+//             // You can switch this on or off, I suggest you try both and see which works best for you
+//            mSceneManager.ShadowCasterRenderBackFaces = false;
+//             // Finally enable the shadows using texture additive integrated
+//            mSceneManager.ShadowTechnique = ShadowTechnique.SHADOWDETAILTYPE_INTEGRATED;
         }
 
-        public void CreateWorldLight()
-        {
+        public void CreateWorldLight(){
+
+        
+//              Light dirLight = mSceneManager.CreateLight("worldLight1");
+//              dirLight.Type = Light.LightTypes.LT_DIRECTIONAL;
+//              dirLight.Direction = new Vector3(0, -1, -1);
+//              dirLight.DiffuseColour = ColourValue.White;
+//              dirLight.SpecularColour = ColourValue.White;
+
             Light worldLight1 = mSceneManager.CreateLight("worldLight1");
             worldLight1.Type = Light.LightTypes.LT_POINT;
             worldLight1.Position = new Vector3(0, 150, 0);

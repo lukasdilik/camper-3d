@@ -64,7 +64,7 @@ namespace RenderingEngine.Engine
 
         private void SetupTerrain()
         {
-            SceneManager.SetWorldGeometry("./Resources/terrain.cfg"); 
+            SceneManager.SetWorldGeometry("./Resources/terrain.cfg");
             //var plane = new Plane(Vector3.UNIT_Y, 0);
             //MeshManager.Singleton.CreatePlane("ground", ResourceGroupManager.DEFAULT_RESOURCE_GROUP_NAME, plane, 1500, 1500, 20, 20, true, 1, 5, 5, Vector3.UNIT_Z);
             //Entity entGround = SceneManager.CreateEntity("GroundEntity", "ground");
