@@ -166,6 +166,7 @@
     <None Include="Resources\gui\TaharezLookWidgetAliases.scheme" />
     <None Include="Resources\materials\cctv1.material" />
     <None Include="Resources\materials\programs\Cg\Combine_fp.cg" />
+    <None Include="Resources\materials\programs\Cg\DepthShadowmap.cg" />
     <None Include="Resources\materials\programs\Cg\DOF_ps.cg" />
     <None Include="Resources\materials\programs\Cg\Example_Basic.cg" />
     <None Include="Resources\materials\programs\Cg\Example_BumpMapping.cg" />
@@ -191,6 +192,7 @@
     <None Include="Resources\materials\programs\Cg\varianceshadowcastervp.cg" />
     <None Include="Resources\materials\programs\Cg\varianceshadowreceiverfp.cg" />
     <None Include="Resources\materials\programs\Cg\varianceshadowreceivervp.cg" />
+    <None Include="Resources\materials\programs\DepthShadowmap.program" />
     <None Include="Resources\materials\programs\GLSL\AmbientOneTexture.glsl" />
     <None Include="Resources\materials\programs\GLSL\Blur0_vs.glsl" />
     <None Include="Resources\materials\programs\GLSL\Blur1_vs.glsl" />

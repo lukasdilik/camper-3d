@@ -35,7 +35,7 @@ namespace RenderingEngine.Scene
 
         private void CalculateFarPointsWorld()
         {
-            Position = mParentCamera.SceneNode.Position;
+            Position = mParentCamera.GetCameraCenterWorld();
 
             Vector3 camUp = mParentCamera.MogreCamera.Up;
             Vector3 camRight = mParentCamera.MogreCamera.Right;

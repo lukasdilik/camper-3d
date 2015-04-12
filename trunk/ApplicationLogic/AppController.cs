@@ -25,11 +25,19 @@ namespace ApplicationLogic
 
         public Mode ActiveMode = Mode.CAMERA_MODE;
         public LightProperties.LightType ActiveLightType = LightProperties.LightType.Spot;
+       
         private int mModelCounter;
+        private int mCameraCounter;
+        private int mLightCounter;
+
         private bool mIsStarted;
         private bool mIsMainCameraActivated = true;
         private readonly IApplicationUI mApplicationUi;
         private Size mCameraViewDimension;
+
+        private String SelectedSceneNode;
+
+        private bool isLeftMouseButtonDown;
 
         public Dictionary<string, Model> LoadedModels { get; private set; }
         public Model SelectedModel { get; private set; }
@@ -81,11 +89,11 @@ namespace ApplicationLogic
             
             if (movableObject == null) return;
             
-            var name = movableObject.Name;
+            SelectedSceneNode = movableObject.Name;
             
             foreach (var model in LoadedModels)
             {
-                if (name == model.Value.ModelProperties.Name)
+                if (SelectedSceneNode == model.Value.ModelProperties.Name)
                 {
                     SelectModel(model.Value.ModelProperties.Name);    
                 }
@@ -140,14 +148,19 @@ namespace ApplicationLogic
 
             if (movableObject == null) return;
 
-            var name = movableObject.Name;
+            SelectedSceneNode =  movableObject.Name;
 
             foreach (var model in LoadedModels)
             {
-                foreach (var camera in model.Value.SecurityCameras.Where(camera => name == camera.Value.Camera.Name))
+                foreach (var camera in model.Value.SecurityCameras)
                 {
-                    SelectedModel.SelectSecurityCamera(name);
-                    mApplicationUi.CameraSelected(camera.Value.Properties);
+                    bool found = SelectedSceneNode.Contains(camera.Value.InternalName);
+                    if (found)
+                    {
+                        model.Value.SelectSecurityCamera(camera.Value.InternalName);    
+                        SelectModel(model.Key);
+                        mApplicationUi.CameraSelected(camera.Value.Properties);
+                    }
                 }
             }
         }
@@ -159,14 +172,19 @@ namespace ApplicationLogic
 
             if (movableObject == null) return;
 
-            var name = movableObject.Name;
+            SelectedSceneNode = movableObject.Name;
 
             foreach (var model in LoadedModels)
             {
-                foreach (var light in model.Value.Lights.Where(x => name == x.Value.Properties.Name))
+                foreach (var light in model.Value.Lights)
                 {
-                    SelectedModel.SelectLight(light.Key);
-                    mApplicationUi.LightSelected(light.Value.Properties);
+                    bool found = SelectedSceneNode.Contains(light.Value.Properties.Name);
+                    if (found)
+                    {
+                        SelectedModel.SelectLight(light.Value.Properties.Name);
+                        SelectModel(model.Key);
+                        mApplicationUi.LightSelected(light.Value.Properties);
+                    }
                 }
             }
         }
@@ -208,10 +226,7 @@ namespace ApplicationLogic
             
             var modelData = ModelLibrary.GetModel(selectedModelName);
             var newModel = LoadModel(modelData.Name);
-            
-            newModel.Selected = true;
-            
-            SelectedModel = newModel;
+           
 
             intersection.y += 1;
             newModel.Translate(intersection);
@@ -262,9 +277,10 @@ namespace ApplicationLogic
         {
             if (SelectedModel != null)
             {
-                var success = SelectedModel.CreateCamera(screenX, screenY);
+                var success = SelectedModel.CreateCamera(mCameraCounter,screenX, screenY);
                 if (success)
                 {
+                    mCameraCounter++;
                     if (SelectedModel.SelectedSecurityCamera != null)
                     {
 
@@ -279,9 +295,10 @@ namespace ApplicationLogic
         {
             if (SelectedModel != null)
             {
-                var success = SelectedModel.CreateLight(screenX, screenY, ActiveLightType);
+                var success = SelectedModel.CreateLight(mLightCounter, screenX, screenY, ActiveLightType);
                 if (success)
                 {
+                    mLightCounter++;
                     if (SelectedModel.SelectedLight != null)
                     {
                         mApplicationUi.LightAdded(SelectedModel.SelectedLight.Properties);
@@ -353,14 +370,14 @@ namespace ApplicationLogic
             }
         }
 
-        public void SelectLight(string name)
+        public void SelectLight(string key)
         {
             foreach (var model in LoadedModels)
             {
-                if (model.Value.Lights.ContainsKey(name))
+                if (model.Value.Lights.ContainsKey(key))
                 {
-                    model.Value.SelectLight(name);
-                    mApplicationUi.LightSelected(model.Value.Lights[name].Properties);
+                    model.Value.SelectLight(key);
+                    mApplicationUi.LightSelected(model.Value.Lights[key].Properties);
                 }
             }
         }
@@ -474,6 +491,7 @@ namespace ApplicationLogic
         private void MouseLeftClick(MouseEventArgs e)
         {
             DeselectAllModels();
+            isLeftMouseButtonDown = true;
             switch (ActiveMode)
             {
                 case Mode.CAMERA_MODE:
@@ -515,20 +533,20 @@ namespace ApplicationLogic
         public void MouseMove(MouseEventArgs e)
         {
             if (!mIsStarted) return;
-            
+
             if (IsSecurityCameraSelected() && ActiveMode == Mode.CAMERA_MODE)
             {
                 CameraMouseMove(e);
+                return;
             }
             if (IsLightSelected() && ActiveMode == Mode.LIGHT_MODE)
             {
                 LightMouseMove(e);
-            }
-            else
-            {
-                HandleMouseMove(e);    
+                return;
             }
             
+            HandleMouseMove(e);
+
             UpdateStatusBar();
         }
 
@@ -564,11 +582,21 @@ namespace ApplicationLogic
 
         public void DeleteSelectedCamera()
         {
-            if (SelectedModel != null)
+            if (SelectedModel != null && SelectedModel.SelectedSecurityCamera != null)
             {
                 var name = SelectedModel.SelectedSecurityCamera.InternalName;
                 SelectedModel.DeleteSelectedCamera();
                 mApplicationUi.CameraRemoved(name);
+            }
+        }
+
+        public void DeleteSelectedLight()
+        {
+            if (SelectedModel != null && SelectedModel.SelectedLight != null)
+            {
+                var lightName = SelectedModel.SelectedLight.Properties.Name;
+                SelectedModel.DeleteSelectedLight();
+                mApplicationUi.LightRemoved(lightName);
             }
         }
 
@@ -614,7 +642,7 @@ namespace ApplicationLogic
             var pos = Engine.Instance.GetMainCameraPosition();
             var dir = Engine.Instance.GetMainCameraDirection();
             var selectedModelName = (SelectedModel != null) ? SelectedModel.ModelProperties.Name : "N/A";
-            string info = string.Format("Camera Pos:[{0} ; {1}; {2}] | Dir:[{3} ; {4} ; {5}] | Selected Model: {6} | ActiveMode: {7}",pos.x,pos.y,pos.z,dir.x,dir.y,dir.z,selectedModelName,ActiveMode.ToString());
+            string info = string.Format("Camera Pos:[{0} ; {1}; {2}] | Dir:[{3} ; {4} ; {5}] | Selected Model: {6} | ActiveMode: {7} | SelectedNode: {8}",pos.x,pos.y,pos.z,dir.x,dir.y,dir.z,selectedModelName,ActiveMode,SelectedSceneNode);
             mApplicationUi.UpdateStatusBarInfo(info);
         }
 

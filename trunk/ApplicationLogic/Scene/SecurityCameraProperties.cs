@@ -1,16 +1,20 @@
-﻿using Mogre;
+﻿using System;
+using Mogre;
+using Math = System.Math;
 
 namespace ApplicationLogic.Scene
 {
     public class SecurityCameraProperties
     {
-        public string Name = "";
+        public string Name;
         public Vector3 Position = new Vector3();
         public Vector3 Direction = new Vector3();
-        public float AspectRatio = 1.44f;
-        public Degree FOVy = new Degree(110);
-        public float FocalDistance;
-        public Vector2 Resolution = new Vector2();
-        public float Rotation;
+        public float AspectRatio
+        {
+            get { return (float) Math.Round((Decimal)Resolution.x / (decimal) Resolution.y, 2, MidpointRounding.AwayFromZero); }
+        }
+
+        public Degree FOVy = new Degree(45);
+        public Vector2 Resolution = new Vector2(1280,720);
     }
 }

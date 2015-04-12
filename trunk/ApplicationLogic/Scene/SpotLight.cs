@@ -13,8 +13,12 @@ namespace ApplicationLogic.Scene
 
         public override sealed void CreateOgreLight()
         {
-            OgreLight = LightManager.Instance.CreateSpotLight(Properties.Name,Properties.Position,Properties.Direction,Properties.Color,Properties.InnerAngle,Properties.OuterAngle);
-            //TranslateCameraOnPolygonFace();
+            OgreLight = LightManager.Instance.CreateSpotLight(Properties.Name, Properties.Position, Properties.Direction,
+                Properties.Color, Properties.InnerAngle, Properties.OuterAngle);
+            RotateToDirection(Properties.Position+10*Properties.Direction);
+            TranslateCameraOnPolygonFace();
+            OgreLight.Position = Properties.Position;
+            OgreLight.Direction = Properties.Direction;
         }
 
         public override void UpdateLightProperties(LightProperties lightProperties)
