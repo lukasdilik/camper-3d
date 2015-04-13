@@ -1,10 +1,11 @@
 ﻿using Mogre;
+using ColourValue = Mogre.ColourValue;
 
 namespace RenderingEngine.Scene
 {
     public class Line
     {
-        public Vector3 LineColor = new Vector3(0,0,1f);
+        public ColourValue LineColor = ColourValue.Blue;
 
         public string Name { get; private set; }
         public Vector3 P0 { get; private set; }

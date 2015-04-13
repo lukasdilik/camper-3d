@@ -5,13 +5,14 @@ namespace RenderingEngine.Scene
 {
     public class Camera
     {
-        private readonly Vector3 mDirection;
+        private Vector3 mDirection;
         public static readonly Vector3 DefaultScaleVector = new Vector3(4, 4, 4);
         private const float TranslationRate = 0.1f;
         public string Name { get; private set; }
         public Entity Mesh { get; private set; }
         public SceneNode SceneNode { get; private set; }
         public Mogre.Camera MogreCamera { get; private set; }
+        public Mogre.Light SpotLight { get; private set; }
         public CameraFrustum Frustum { get; private set; }
         public Line NormalLine { get; private set; }
 
@@ -41,6 +42,9 @@ namespace RenderingEngine.Scene
             Frustum = new CameraFrustum(this);
 
             NormalLine = new Line(name + "_line",new Vector3(), Frustum.FarCenter, SceneNode);
+
+            SpotLight = LightManager.Instance.CreateSpotLight(Name + "_light", SceneNode.Position, mDirection, Frustum.Color,
+            MogreCamera.FOVy, MogreCamera.FOVy * aspectRatio);
         }
 
         private void CreateMogreCameraObject(Degree foVy, float aspectRatio)
@@ -53,12 +57,19 @@ namespace RenderingEngine.Scene
             MogreCamera.NearClipDistance = 4;
         }
 
+        private void UpdateLigth()
+        {
+            SpotLight.Direction = MogreCamera.Position;
+            SpotLight.Position = MogreCamera.Position;
+        }
+
         public void UpdateProperties(Vector3 position, Vector3 direction, Degree foVy, float aspectRatio)
         {
-            direction.Normalise();
+            mDirection = direction;
+            mDirection.Normalise();
             
             MogreCamera.Position = position;
-            MogreCamera.Direction = direction;
+            MogreCamera.Direction = mDirection;
             MogreCamera.LookAt(position + direction * 100);
             
             RotateToDirection(position + direction * 10);
@@ -75,6 +86,8 @@ namespace RenderingEngine.Scene
 
             NormalLine.Destroy();
             NormalLine = new Line(Name + "_line", new Vector3(), Frustum.FarCenter, SceneNode);
+
+            UpdateLigth();
         }
 
         public void ShowBoundingBox()
@@ -215,12 +228,14 @@ namespace RenderingEngine.Scene
         {
             MogreCamera.Pitch(-angleInRad);
             SceneNode.Pitch(-angleInRad);
+            UpdateLigth();
 
         }
         public void Yaw(Radian angleInRad)
         {
             MogreCamera.Yaw(-angleInRad);
             SceneNode.Yaw(-angleInRad);
+            UpdateLigth();
         }
     }
 }

@@ -28,8 +28,7 @@ namespace ApplicationLogic.Scene
             OgreLight.DiffuseColour = newlightProperties.Color;
             OgreLight.SpecularColour = newlightProperties.Color;
 
-            var color = new Vector4(Properties.Color.r, Properties.Color.g, Properties.Color.b, Properties.Color.a);
-            string materialName = ColorMaterialManager.Instance.GetSolidColorMaterialName(color);
+            string materialName = ColorMaterialManager.Instance.GetSolidColorMaterialName(Properties.Color);
             SetNewMaterial(materialName);
         }
 

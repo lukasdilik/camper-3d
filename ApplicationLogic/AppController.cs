@@ -490,11 +490,11 @@ namespace ApplicationLogic
 
         private void MouseLeftClick(MouseEventArgs e)
         {
-            DeselectAllModels();
             isLeftMouseButtonDown = true;
             switch (ActiveMode)
             {
                 case Mode.CAMERA_MODE:
+                    DeselectAllCameras();
                     SelectSecurityCamera(e.X, e.Y);
                     if (IsSecurityCameraSelected())
                     {
@@ -502,6 +502,7 @@ namespace ApplicationLogic
                     }
                     break;
                 case Mode.LIGHT_MODE:
+                    DeselectAllLights();
                     SelectLight(e.X,e.Y);
                     if (IsLightSelected())
                     {
@@ -509,6 +510,7 @@ namespace ApplicationLogic
                     }
                     break;
                 case Mode.MODEL_MODE:
+                    DeselectAllModels();
                     SelectModel(e.X, e.Y);
                     break;
             }
@@ -651,7 +653,7 @@ namespace ApplicationLogic
             var writer = new System.Xml.Serialization.XmlSerializer(typeof(ModelLibrary));
             var file = new StreamWriter(@fileName);
             writer.Serialize(file, ModelLibrary);
-            LogMessage("Model library serialized to file: " + fileName);
+            //LogMessage("Model library serialized to file: " + fileName);
             file.Close();
         }
 

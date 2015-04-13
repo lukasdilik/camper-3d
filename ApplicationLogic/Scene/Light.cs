@@ -34,8 +34,7 @@ namespace ApplicationLogic.Scene
             Properties = properties;
             Mesh = Engine.Instance.SceneManager.CreateEntity(properties.Name, meshName);
 
-            var color = new Vector4(properties.Color.r, properties.Color.g, properties.Color.b, properties.Color.a);
-            string materialName = ColorMaterialManager.Instance.GetSolidColorMaterialName(color);
+            string materialName = ColorMaterialManager.Instance.GetSolidColorMaterialName(properties.Color);
             SetNewMaterial(materialName);
             
             SceneNode = Engine.Instance.SceneManager.RootSceneNode.CreateChildSceneNode(properties.Name + "_node");

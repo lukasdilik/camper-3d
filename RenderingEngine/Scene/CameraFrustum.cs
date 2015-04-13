@@ -8,8 +8,10 @@ namespace RenderingEngine.Scene
         public const float NearDistance = 1f;
         private readonly Camera mParentCamera;
         private string mMaterialName;
+        private string mLineMaterialName;
         public string Name { private set; get; }
         public ManualObject FrustumManualObject { private set; get; }
+        public ColourValue Color { private set; get; }
         public SceneNode FrustumSceneNode { private set; get; }
         public Vector3 Position { private set; get; }
         public Vector3 FarCenter { private set; get; }
@@ -20,7 +22,12 @@ namespace RenderingEngine.Scene
 
         public CameraFrustum(Camera parentCamera)
         {
-            mMaterialName = ColorMaterialManager.Instance.GetNextSolidColorMaterialName();
+            ColourValue outColor;
+            mMaterialName = ColorMaterialManager.Instance.GetNextFrustumMaterialName(out outColor);
+            Color = outColor;
+
+            mLineMaterialName = ColorMaterialManager.Instance.GetSolidColorMaterialName(0, 0, 0, 1);
+            
             mParentCamera = parentCamera;
             Position = mParentCamera.SceneNode.Position;
 
@@ -78,6 +85,12 @@ namespace RenderingEngine.Scene
            
             TranformPointToLocalSpace();
 
+            CreateSolidFrustum();
+            CreateFrustumLines();
+        }
+
+        private void CreateSolidFrustum()
+        {
             FrustumManualObject.Begin(mMaterialName, RenderOperation.OperationTypes.OT_TRIANGLE_LIST);
             FrustumManualObject.Position(Position);
             FrustumManualObject.Position(FarTopRight);
@@ -105,7 +118,52 @@ namespace RenderingEngine.Scene
             FrustumManualObject.Position(FarBottomLeft);
             FrustumManualObject.Triangle(2, 1, 0);
             FrustumManualObject.End();
+        }
 
+        private void CreateFrustumLines()
+        {
+            FrustumManualObject.Begin(mLineMaterialName, RenderOperation.OperationTypes.OT_LINE_LIST);
+            FrustumManualObject.Position(Position);
+            FrustumManualObject.Position(FarTopRight);
+            FrustumManualObject.End();
+
+            FrustumManualObject.Begin(mLineMaterialName, RenderOperation.OperationTypes.OT_LINE_LIST);
+            FrustumManualObject.Position(Position);
+            FrustumManualObject.Position(FarTopLeft);
+            FrustumManualObject.End();
+
+            FrustumManualObject.Begin(mLineMaterialName, RenderOperation.OperationTypes.OT_LINE_LIST);
+            FrustumManualObject.Position(Position);
+            FrustumManualObject.Position(FarBottomLeft);
+            FrustumManualObject.End();
+
+            FrustumManualObject.Begin(mLineMaterialName, RenderOperation.OperationTypes.OT_LINE_LIST);
+            FrustumManualObject.Position(Position);
+            FrustumManualObject.Position(FarBottomRight);
+            FrustumManualObject.End();
+
+            FrustumManualObject.Begin(mLineMaterialName, RenderOperation.OperationTypes.OT_LINE_LIST);
+            FrustumManualObject.Position(FarTopLeft);
+            FrustumManualObject.Position(FarTopRight);
+            FrustumManualObject.End();
+
+
+            FrustumManualObject.Begin(mLineMaterialName, RenderOperation.OperationTypes.OT_LINE_LIST);
+            FrustumManualObject.Position(FarTopRight);
+            FrustumManualObject.Position(FarBottomRight);
+            FrustumManualObject.End();
+
+
+            FrustumManualObject.Begin(mLineMaterialName, RenderOperation.OperationTypes.OT_LINE_LIST);
+            FrustumManualObject.Position(FarBottomRight);
+            FrustumManualObject.Position(FarBottomLeft);
+            FrustumManualObject.End();
+
+
+            FrustumManualObject.Begin(mLineMaterialName, RenderOperation.OperationTypes.OT_LINE_LIST);
+            FrustumManualObject.Position(FarBottomLeft);
+            FrustumManualObject.Position(FarTopLeft);
+            FrustumManualObject.End();
         }
 
         private void TranformPointToLocalSpace()
