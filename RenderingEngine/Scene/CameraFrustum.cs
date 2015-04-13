@@ -118,6 +118,20 @@ namespace RenderingEngine.Scene
             FrustumManualObject.Position(FarBottomLeft);
             FrustumManualObject.Triangle(2, 1, 0);
             FrustumManualObject.End();
+
+            FrustumManualObject.Begin(mMaterialName, RenderOperation.OperationTypes.OT_TRIANGLE_LIST);
+            FrustumManualObject.Position(FarTopLeft);
+            FrustumManualObject.Position(FarTopRight);
+            FrustumManualObject.Position(FarBottomRight);
+            FrustumManualObject.Triangle(2, 1, 0);
+            FrustumManualObject.End();
+
+            FrustumManualObject.Begin(mMaterialName, RenderOperation.OperationTypes.OT_TRIANGLE_LIST);
+            FrustumManualObject.Position(FarBottomLeft);
+            FrustumManualObject.Position(FarBottomRight);
+            FrustumManualObject.Position(FarTopLeft);
+            FrustumManualObject.Triangle(2, 1, 0);
+            FrustumManualObject.End();
         }
 
         private void CreateFrustumLines()

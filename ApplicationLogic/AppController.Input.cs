@@ -96,10 +96,6 @@ namespace ApplicationLogic
                         }
                     }
                     break;
-                case Keys.Escape:
-                    Engine.Instance.Shutdown();
-                    mApplicationUi.Close();
-                    break;
             }
         }
 

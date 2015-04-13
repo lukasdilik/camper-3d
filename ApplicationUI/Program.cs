@@ -8,12 +8,14 @@ namespace ApplicationUI
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
+        private static MainForm ActiveMainForm;
         [STAThread]
         static void Main()
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MainForm());
+            ActiveMainForm = new MainForm();
+            Application.Run(ActiveMainForm);
         }
     }
 }

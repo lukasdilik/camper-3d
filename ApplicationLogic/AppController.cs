@@ -318,6 +318,10 @@ namespace ApplicationLogic
 
         private void RenderTexture_PreRenderTargetUpdate(RenderTargetEvent_NativePtr evt)
         {
+            if (SelectedModel.SelectedSecurityCamera != null)
+            {
+                SelectedModel.SelectedSecurityCamera.Camera.HideFrustum();
+            }
         }
 
         private void RenderTextureOnPostRenderTargetUpdate(RenderTargetEvent_NativePtr evt)
@@ -325,7 +329,8 @@ namespace ApplicationLogic
             if (SelectedModel.SelectedSecurityCamera != null)
             {
                 var bmp = MogreTexturePtrToBitmap(SelectedModel.SelectedSecurityCamera.RenderTexturePtr);
-                mApplicationUi.UpdateCameraView(SelectedModel.SelectedSecurityCamera.Properties.Name, bmp);    
+                mApplicationUi.UpdateCameraView(SelectedModel.SelectedSecurityCamera.Properties.Name, bmp);
+                SelectedModel.SelectedSecurityCamera.Camera.ShowFrustum();
             }
         }
 

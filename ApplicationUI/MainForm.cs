@@ -45,6 +45,8 @@ namespace ApplicationUI
             }
         }
 
+        
+
         private void mLibraryForm_VisibleChanged(object sender, EventArgs e)
         {
             mAppController.GetAvailableModels();
@@ -437,11 +439,6 @@ namespace ApplicationUI
 
         private void quitToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Exit();
-        }
-
-        private void Exit()
-        {
             mAppController.Exit();
             Application.Exit();
         }
@@ -449,11 +446,6 @@ namespace ApplicationUI
         private void Delete_btn_Click(object sender, EventArgs e)
         {
             mAppController.DeleteSelectedCamera();
-        }
-
-        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            Exit();
         }
 
         private void showLibraryToolStripMenuItem_Click(object sender, EventArgs e)
@@ -674,6 +666,12 @@ namespace ApplicationUI
                 Clipboard.SetDataObject(Cameras_listBox.Items[Cameras_listBox.SelectedIndex], true);
                 e.SuppressKeyPress = true;
             }
+        }
+
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            mAppController.Exit();
+            Application.Exit();
         }
 
     }

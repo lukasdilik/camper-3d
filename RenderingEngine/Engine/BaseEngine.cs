@@ -22,7 +22,7 @@ namespace RenderingEngine.Engine
         protected RenderWindow RenderWindow;
         protected RenderSystem RenderSystem;
         protected Viewport Viewport;
-        protected bool ShutDown = false;
+        public bool ShutDown = false;
         protected int TextureMode = 0;
         protected int RenderMode = 0;
         protected DebugOverlay DebugOverlay;
@@ -264,8 +264,11 @@ namespace RenderingEngine.Engine
 
         public void Shutdown()
         {
-            if(Root != null)
+            if (Root != null)
+            {
+                ShutDown = true;
                 Root.Shutdown();
+            }
         }
 
         protected virtual void CreateScene()

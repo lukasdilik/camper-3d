@@ -44,7 +44,15 @@ namespace RenderingEngine.Scene
             NormalLine = new Line(name + "_line",new Vector3(), Frustum.FarCenter, SceneNode);
 
             SpotLight = LightManager.Instance.CreateSpotLight(Name + "_light", SceneNode.Position, mDirection, Frustum.Color,
-            MogreCamera.FOVy, MogreCamera.FOVy * aspectRatio);
+            MogreCamera.FOVy*aspectRatio, MogreCamera.FOVy*aspectRatio);
+
+            UpdateSpotLight();
+        }
+
+        private void UpdateSpotLight()
+        {
+            SpotLight.Position = MogreCamera.Position;
+            SpotLight.Direction = MogreCamera.Direction;
         }
 
         private void CreateMogreCameraObject(Degree foVy, float aspectRatio)
@@ -55,12 +63,6 @@ namespace RenderingEngine.Scene
             MogreCamera.Position = GetCameraCenterWorld();
             MogreCamera.LookAt(SceneNode.Position + mDirection*100);
             MogreCamera.NearClipDistance = 4;
-        }
-
-        private void UpdateLigth()
-        {
-            SpotLight.Direction = MogreCamera.Position;
-            SpotLight.Position = MogreCamera.Position;
         }
 
         public void UpdateProperties(Vector3 position, Vector3 direction, Degree foVy, float aspectRatio)
@@ -80,6 +82,8 @@ namespace RenderingEngine.Scene
             {
                 MogreCamera.AspectRatio = aspectRatio;
                 MogreCamera.FOVy = foVy.ValueRadians;
+                SpotLight.SpotlightInnerAngle = foVy.ValueRadians;
+                SpotLight.SpotlightOuterAngle = foVy.ValueRadians;
             }
 
             Frustum.RecalculatePoints();
@@ -87,7 +91,23 @@ namespace RenderingEngine.Scene
             NormalLine.Destroy();
             NormalLine = new Line(Name + "_line", new Vector3(), Frustum.FarCenter, SceneNode);
 
-            UpdateLigth();
+            UpdateSpotLight();
+        }
+
+        public void HideFrustum()
+        {
+            if (Engine.Engine.Instance.ShutDown) return;
+
+            Frustum.FrustumSceneNode.SetVisible(false);
+            NormalLine.SceneNode.SetVisible(false);
+        }
+
+        public void ShowFrustum()
+        {
+            if (Engine.Engine.Instance.ShutDown) return;
+
+            Frustum.FrustumSceneNode.SetVisible(true);
+            NormalLine.SceneNode.SetVisible(true);
         }
 
         public void ShowBoundingBox()
@@ -184,6 +204,7 @@ namespace RenderingEngine.Scene
         {
             SceneNode.Translate(t, Node.TransformSpace.TS_WORLD);
             MogreCamera.Position = SceneNode.Position;
+            UpdateSpotLight();
         }
 
         public AxisAlignedBox GetBoundingBox()
@@ -226,16 +247,15 @@ namespace RenderingEngine.Scene
 
         public void Pitch(Radian angleInRad)
         {
-            MogreCamera.Pitch(-angleInRad);
+            MogreCamera.Pitch(angleInRad);
             SceneNode.Pitch(-angleInRad);
-            UpdateLigth();
-
+            UpdateSpotLight();
         }
         public void Yaw(Radian angleInRad)
         {
             MogreCamera.Yaw(-angleInRad);
             SceneNode.Yaw(-angleInRad);
-            UpdateLigth();
+            UpdateSpotLight();
         }
     }
 }

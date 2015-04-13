@@ -12,7 +12,7 @@ namespace RenderingEngine.Scene
         public Vector3 P1 { get; private set; }
 
         private readonly SceneNode mParentNode;
-        private SceneNode mSceneNode;
+        public SceneNode SceneNode;
 
         public Line(string name,Vector3 p0, Vector3 p1, SceneNode parentNode)
         {
@@ -25,7 +25,7 @@ namespace RenderingEngine.Scene
 
         public void Destroy()
         {
-            mParentNode.RemoveAndDestroyChild(mSceneNode.Name);
+            mParentNode.RemoveAndDestroyChild(SceneNode.Name);
             Engine.Engine.Instance.SceneManager.DestroyManualObject(Name);
         }
 
@@ -38,8 +38,8 @@ namespace RenderingEngine.Scene
                 lineManualObject.Position(P1);
             lineManualObject.End();
 
-            mSceneNode = mParentNode.CreateChildSceneNode(Name + "_node");
-            mSceneNode.AttachObject(lineManualObject);
+            SceneNode = mParentNode.CreateChildSceneNode(Name + "_node");
+            SceneNode.AttachObject(lineManualObject);
         }
     }
 }
