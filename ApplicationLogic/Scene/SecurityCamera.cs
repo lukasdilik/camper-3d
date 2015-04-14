@@ -1,5 +1,6 @@
 ﻿using System.Windows.Forms;
 using Mogre;
+using RenderingEngine.Engine;
 using Camera = RenderingEngine.Scene.Camera;
 
 namespace ApplicationLogic.Scene
@@ -9,6 +10,7 @@ namespace ApplicationLogic.Scene
         public string MeshName = ApplicationLogicResources.SecurityCameraMeshName;
         private bool mSelected;
         private int mOldX, mOldY;
+        private Vector3 mOriginalDirection;
 
         public bool Selected
         {
@@ -35,10 +37,12 @@ namespace ApplicationLogic.Scene
         public SecurityCameraProperties Properties { get; private set; }
         public Camera Camera { get; private set; }
         public RenderTexture RenderTexture { get; private set; }
+
         public TexturePtr RenderTexturePtr;
         public SecurityCamera(string internalName, Vector3 position, Vector3 normal)
         {
-       
+            mOriginalDirection = normal;
+            mOriginalDirection.Normalise();
             InternalName = internalName;
             Properties = new SecurityCameraProperties {Name = internalName, Position = position, Direction = normal};
 
@@ -64,7 +68,8 @@ namespace ApplicationLogic.Scene
             Properties.Direction = newProperties.Direction;
             Properties.FOVy = newProperties.FOVy;
             Properties.Resolution = newProperties.Resolution;
-            Camera.UpdateProperties(newProperties.Position,newProperties.Direction, newProperties.FOVy, newProperties.AspectRatio);
+            Properties.Rotation = newProperties.Rotation;
+            Camera.UpdateProperties(newProperties.Position,newProperties.Direction, newProperties.FOVy, newProperties.AspectRatio, Properties.Rotation);
         }
 
         private void CreateCameraInScene()
@@ -131,6 +136,18 @@ namespace ApplicationLogic.Scene
 
             mOldX = e.X;
             mOldY = e.Y;
+        }
+
+        public void CameraPitch(int deg)
+        {
+            Properties.PitchDeg = deg;
+            Camera.Pitch(new Degree(deg).ValueRadians);
+        }
+
+        public void CameraYaw(int deg)
+        {
+            Properties.YawDeg = deg;
+            Camera.Yaw(new Degree(deg).ValueRadians);
         }
 
         private void CameraRotation(Vector2 dir)

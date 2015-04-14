@@ -11,6 +11,7 @@ using ApplicationLogic.Scene;
 using Mogre;
 using RenderingEngine.Engine;
 using RenderingEngine.Interfaces;
+using Math = System.Math;
 using PixelFormat = Mogre.PixelFormat;
 using Rectangle = System.Drawing.Rectangle;
 
@@ -25,7 +26,7 @@ namespace ApplicationLogic
 
         public Mode ActiveMode = Mode.CAMERA_MODE;
         public LightProperties.LightType ActiveLightType = LightProperties.LightType.Spot;
-       
+        private int previousYaw, previousPitch;
         private int mModelCounter;
         private int mCameraCounter;
         private int mLightCounter;
@@ -198,11 +199,13 @@ namespace ApplicationLogic
                 {
                     if (mIsMainCameraActivated)
                     {
+                        selectedCamera.Camera.HideFrustum();
                         Engine.Instance.SetCameraViewport(selectedCamera.Camera.MogreCamera);
                         mIsMainCameraActivated = false;
                     }
                     else
                     {
+                        selectedCamera.Camera.ShowFrustum();
                         Engine.Instance.ResetViewportToMainCamera();
                         mIsMainCameraActivated = true;
                     }
@@ -233,8 +236,9 @@ namespace ApplicationLogic
             mApplicationUi.ModelAdded(newModel.ModelProperties);
         }
 
-        public void Start() 
+        public void Start()
         {
+            if (mIsStarted) return;
             mIsStarted = true;
             Engine.Instance.Start();
         }
@@ -318,7 +322,7 @@ namespace ApplicationLogic
 
         private void RenderTexture_PreRenderTargetUpdate(RenderTargetEvent_NativePtr evt)
         {
-            if (SelectedModel.SelectedSecurityCamera != null)
+            if (SelectedModel.SelectedSecurityCamera != null )
             {
                 SelectedModel.SelectedSecurityCamera.Camera.HideFrustum();
             }
@@ -407,10 +411,10 @@ namespace ApplicationLogic
 
         public void CameraMouseClick(MouseEventArgs e)
         {
-            if (SelectedModel != null)
-            {
-                SelectedModel.CameraMouseClick(e);
-            }
+            //if (SelectedModel != null)
+            //{
+            //    SelectedModel.CameraMouseClick(e);
+            //}
         }
 
         public void LightMouseClick(MouseEventArgs e)
@@ -423,10 +427,10 @@ namespace ApplicationLogic
 
         public void CameraMouseMove(MouseEventArgs e)
         {
-            if (SelectedModel != null)
-            {
-                SelectedModel.CameraMouseMove(e);
-            }
+            //if (SelectedModel != null)
+            //{
+            //    SelectedModel.CameraMouseMove(e);
+            //}
         }
 
         public void LightMouseMove(MouseEventArgs e)
@@ -434,6 +438,25 @@ namespace ApplicationLogic
             if (SelectedModel != null)
             {
                 SelectedModel.LightMouseMove(e);
+            }
+        }
+
+        public void CameraYaw(int deg)
+        {
+            if (SelectedModel != null && SelectedModel.SelectedSecurityCamera != null)
+            {
+                SelectedModel.SelectedSecurityCamera.CameraYaw(deg);
+                mApplicationUi.UpdateCameraOrientation(SelectedModel.SelectedSecurityCamera.Properties.YawDeg, SelectedModel.SelectedSecurityCamera.Properties.PitchDeg);
+            }
+            
+        }
+
+        public void CameraPitch(int deg)
+        {
+            if (SelectedModel != null && SelectedModel.SelectedSecurityCamera != null)
+            {
+                SelectedModel.SelectedSecurityCamera.CameraPitch(deg);
+                mApplicationUi.UpdateCameraOrientation(SelectedModel.SelectedSecurityCamera.Properties.YawDeg, SelectedModel.SelectedSecurityCamera.Properties.PitchDeg);
             }
         }
 

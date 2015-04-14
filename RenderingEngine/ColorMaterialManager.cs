@@ -13,7 +13,7 @@ namespace RenderingEngine
         public static readonly IList<ColourValue> VgaColors = new ReadOnlyCollection<ColourValue>
         (new List<ColourValue> { 
          new ColourValue(1f,0f,0f,0),
-         new ColourValue(1f,1f,0f,0),
+         //new ColourValue(1f,1f,0f,0),
          new ColourValue(0.5f,0.5f,0f,0),
          new ColourValue(0.75f,0.75f,0.75f,0),
          new ColourValue(0f,1f,0f,0),
@@ -70,6 +70,11 @@ namespace RenderingEngine
             }
         }
 
+        public string GetSemiTransparentMaterial(ColourValue color)
+        {
+            return CreateNewSemiTransparentColorMaterial(color);
+        }
+
         public string GetNextFrustumMaterialName(out ColourValue outColor)
         {
             outColor = VgaColors[mCounter];
@@ -121,7 +126,7 @@ namespace RenderingEngine
             return newMaterialName;
         }
 
-        private void CreateNewSemiTransparentColorMaterial(ColourValue color)
+        private string CreateNewSemiTransparentColorMaterial(ColourValue color)
         {
             float r = color.r;
             float g = color.g;
@@ -138,11 +143,12 @@ namespace RenderingEngine
             materialPtr.GetTechnique(0).GetPass(0).CullingMode = CullingMode.CULL_NONE;
             materialPtr.GetTechnique(0).GetPass(0).ManualCullingMode= ManualCullingMode.MANUAL_CULL_NONE;
             materialPtr.Dispose();
-
+            
             if (!mColorMaterials.ContainsKey(color))
             {
                 mColorMaterials.Add(color, newMaterialName);    
             }
+            return newMaterialName;
         }
     }
 }

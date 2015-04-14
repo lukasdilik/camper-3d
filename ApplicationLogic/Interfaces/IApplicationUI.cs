@@ -23,6 +23,7 @@ namespace ApplicationLogic.Interfaces
         void UpdateLightProperties(LightProperties lightProperties);
         Size GetCameraPreviewDimension();
         void UpdateCameraView(string cameraName, Bitmap bmp);
+        void UpdateCameraOrientation(int yawDeg, int pitchDeg);
         void Close();
         void LogMessage(string msg);
     }

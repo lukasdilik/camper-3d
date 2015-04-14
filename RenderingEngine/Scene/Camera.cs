@@ -12,9 +12,11 @@ namespace RenderingEngine.Scene
         public Entity Mesh { get; private set; }
         public SceneNode SceneNode { get; private set; }
         public Mogre.Camera MogreCamera { get; private set; }
-        public Mogre.Light SpotLight { get; private set; }
+        public Light SpotLight { get; private set; }
         public CameraFrustum Frustum { get; private set; }
         public Line NormalLine { get; private set; }
+
+        public Degree Rotation { get; set; }
 
         public Camera(string name, Vector3 position, Vector3 direction, Degree foVy, float aspectRatio,string meshName)
         {
@@ -65,7 +67,7 @@ namespace RenderingEngine.Scene
             MogreCamera.NearClipDistance = 4;
         }
 
-        public void UpdateProperties(Vector3 position, Vector3 direction, Degree foVy, float aspectRatio)
+        public void UpdateProperties(Vector3 position, Vector3 direction, Degree foVy, float aspectRatio, Degree rotation)
         {
             mDirection = direction;
             mDirection.Normalise();
@@ -85,6 +87,7 @@ namespace RenderingEngine.Scene
                 SpotLight.SpotlightInnerAngle = foVy.ValueRadians;
                 SpotLight.SpotlightOuterAngle = foVy.ValueRadians;
             }
+            Rotation = rotation;
 
             Frustum.RecalculatePoints();
 
@@ -243,6 +246,14 @@ namespace RenderingEngine.Scene
             SceneNode.RemoveAndDestroyAllChildren();
             Engine.Engine.Instance.SceneManager.DestroyEntity(Mesh);
             Engine.Engine.Instance.SceneManager.DestroySceneNode(SceneNode);
+        }
+
+        public void SetNewDirection(Vector3 dir)
+        {
+            MogreCamera.Direction = dir;
+            SceneNode.Position = SceneNode.ConvertLocalToWorldPosition(SceneNode.InitialPosition);
+            SceneNode.Orientation = SceneNode.InitialOrientation;
+            UpdateSpotLight();
         }
 
         public void Pitch(Radian angleInRad)

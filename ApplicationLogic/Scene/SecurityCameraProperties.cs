@@ -16,5 +16,8 @@ namespace ApplicationLogic.Scene
 
         public Degree FOVy = new Degree(45);
         public Vector2 Resolution = new Vector2(1280,720);
+        public Degree Rotation = new Degree(0);
+        public int PitchDeg;
+        public int YawDeg;
     }
 }

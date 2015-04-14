@@ -7,6 +7,7 @@ using ApplicationLogic;
 using ApplicationLogic.Interfaces;
 using ApplicationLogic.Scene;
 using Mogre;
+using Math = System.Math;
 
 namespace ApplicationUI
 {
@@ -34,6 +35,7 @@ namespace ApplicationUI
 
             CameraProperties_panel.Hide();
             Cameras_listBox.Hide();
+            cameraRotation_panel.Hide();
 
             LightType_combo.Items.Add("SPOT");
             LightType_combo.Items.Add("POINT");
@@ -275,6 +277,12 @@ namespace ApplicationUI
             CameraView_pictureBox.Invalidate();
         }
 
+        public void UpdateCameraOrientation(int yawDeg, int pitchDeg)
+        {
+            PitchAngle_label.Text = pitchDeg.ToString();
+            YawAngle_label.Text = yawDeg.ToString();
+        }
+
         private void FillCameraProperties(SecurityCameraProperties properties)
         {
             ActualCameraProperties = properties;
@@ -297,6 +305,7 @@ namespace ApplicationUI
             if (Cameras_listBox.Items.Count < 1)
             {
                 CameraProperties_panel.Hide();
+                cameraRotation_panel.Hide();
             }
             else
             {
@@ -649,10 +658,12 @@ namespace ApplicationUI
                 {
                     CameraProperties_panel.Show();
                     Cameras_listBox.Show();
+                    cameraRotation_panel.Show();
                 }
                 else
                 {
                     Cameras_listBox.Hide();
+                    cameraRotation_panel.Hide();
                     CameraProperties_panel.Hide();
                 }
                 mAppController.SelectCamera((string)Cameras_listBox.Items[Cameras_listBox.SelectedIndex]);
@@ -672,6 +683,20 @@ namespace ApplicationUI
         {
             mAppController.Exit();
             Application.Exit();
+        }
+
+        private void Yaw_hScrollBar_ValueChanged(object sender, EventArgs e)
+        {
+            YawAngle_label.Text = Yaw_hScrollBar.Value.ToString();
+            var yaw = Yaw_hScrollBar.Value;
+            mAppController.CameraYaw(step);
+        }
+
+        private void Pitch_vScrollBar_ValueChanged(object sender, EventArgs e)
+        {
+            PitchAngle_label.Text = Pitch_vScrollBar.Value.ToString();
+            var pitch = Pitch_vScrollBar.Value;
+            mAppController.CameraPitch(pitch);
         }
 
     }
