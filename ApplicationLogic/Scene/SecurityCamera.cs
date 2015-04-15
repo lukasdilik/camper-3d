@@ -140,14 +140,16 @@ namespace ApplicationLogic.Scene
 
         public void CameraPitch(int deg)
         {
+            var diff = Properties.PitchDeg - deg;
+            Camera.Yaw(new Degree(diff).ValueRadians);
             Properties.PitchDeg = deg;
-            Camera.Pitch(new Degree(deg).ValueRadians);
         }
 
         public void CameraYaw(int deg)
         {
+            var diff = Properties.YawDeg - deg;
+            Camera.Yaw(new Degree(diff).ValueRadians);
             Properties.YawDeg = deg;
-            Camera.Yaw(new Degree(deg).ValueRadians);
         }
 
         private void CameraRotation(Vector2 dir)

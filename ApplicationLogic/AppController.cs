@@ -446,7 +446,6 @@ namespace ApplicationLogic
             if (SelectedModel != null && SelectedModel.SelectedSecurityCamera != null)
             {
                 SelectedModel.SelectedSecurityCamera.CameraYaw(deg);
-                mApplicationUi.UpdateCameraOrientation(SelectedModel.SelectedSecurityCamera.Properties.YawDeg, SelectedModel.SelectedSecurityCamera.Properties.PitchDeg);
             }
             
         }
@@ -456,7 +455,6 @@ namespace ApplicationLogic
             if (SelectedModel != null && SelectedModel.SelectedSecurityCamera != null)
             {
                 SelectedModel.SelectedSecurityCamera.CameraPitch(deg);
-                mApplicationUi.UpdateCameraOrientation(SelectedModel.SelectedSecurityCamera.Properties.YawDeg, SelectedModel.SelectedSecurityCamera.Properties.PitchDeg);
             }
         }
 

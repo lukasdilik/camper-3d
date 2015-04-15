@@ -689,7 +689,7 @@ namespace ApplicationUI
         {
             YawAngle_label.Text = Yaw_hScrollBar.Value.ToString();
             var yaw = Yaw_hScrollBar.Value;
-            mAppController.CameraYaw(step);
+            mAppController.CameraYaw(yaw);
         }
 
         private void Pitch_vScrollBar_ValueChanged(object sender, EventArgs e)
