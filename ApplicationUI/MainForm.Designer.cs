@@ -48,12 +48,13 @@ namespace ApplicationUI
             this.Help_btn = new System.Windows.Forms.Button();
             this.Mode_tabControl = new System.Windows.Forms.TabControl();
             this.Cameras_tab = new System.Windows.Forms.TabPage();
-            this.PitchAngle_label = new System.Windows.Forms.Label();
-            this.YawAngle_label = new System.Windows.Forms.Label();
-            this.label10 = new System.Windows.Forms.Label();
+            this.cameraRotation_panel = new System.Windows.Forms.Panel();
             this.Y = new System.Windows.Forms.Label();
             this.Pitch_vScrollBar = new System.Windows.Forms.VScrollBar();
+            this.PitchAngle_label = new System.Windows.Forms.Label();
             this.Yaw_hScrollBar = new System.Windows.Forms.HScrollBar();
+            this.label10 = new System.Windows.Forms.Label();
+            this.YawAngle_label = new System.Windows.Forms.Label();
             this.Cameras_listBox = new System.Windows.Forms.ListBox();
             this.label1 = new System.Windows.Forms.Label();
             this.CameraProperties_panel = new System.Windows.Forms.TableLayoutPanel();
@@ -106,19 +107,18 @@ namespace ApplicationUI
             this.CameraView_pictureBox = new System.Windows.Forms.PictureBox();
             this.Log_textBox = new System.Windows.Forms.TextBox();
             this.LightColor_dialog = new System.Windows.Forms.ColorDialog();
-            this.cameraRotation_panel = new System.Windows.Forms.Panel();
             this.MainWindow.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.LeftPanel.SuspendLayout();
             this.Mode_tabControl.SuspendLayout();
             this.Cameras_tab.SuspendLayout();
+            this.cameraRotation_panel.SuspendLayout();
             this.CameraProperties_panel.SuspendLayout();
             this.Models_tab.SuspendLayout();
             this.Lights_tab.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.CameraView_pictureBox)).BeginInit();
-            this.cameraRotation_panel.SuspendLayout();
             this.SuspendLayout();
             // 
             // MainWindow
@@ -282,32 +282,18 @@ namespace ApplicationUI
             this.Cameras_tab.Text = "Cameras";
             this.Cameras_tab.UseVisualStyleBackColor = true;
             // 
-            // PitchAngle_label
+            // cameraRotation_panel
             // 
-            this.PitchAngle_label.AutoSize = true;
-            this.PitchAngle_label.Location = new System.Drawing.Point(265, 14);
-            this.PitchAngle_label.Name = "PitchAngle_label";
-            this.PitchAngle_label.Size = new System.Drawing.Size(16, 17);
-            this.PitchAngle_label.TabIndex = 23;
-            this.PitchAngle_label.Text = "0";
-            // 
-            // YawAngle_label
-            // 
-            this.YawAngle_label.AutoSize = true;
-            this.YawAngle_label.Location = new System.Drawing.Point(112, 14);
-            this.YawAngle_label.Name = "YawAngle_label";
-            this.YawAngle_label.Size = new System.Drawing.Size(16, 17);
-            this.YawAngle_label.TabIndex = 22;
-            this.YawAngle_label.Text = "0";
-            // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(157, 14);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(102, 17);
-            this.label10.TabIndex = 21;
-            this.label10.Text = "V. angle (deg):";
+            this.cameraRotation_panel.Controls.Add(this.Y);
+            this.cameraRotation_panel.Controls.Add(this.Pitch_vScrollBar);
+            this.cameraRotation_panel.Controls.Add(this.PitchAngle_label);
+            this.cameraRotation_panel.Controls.Add(this.Yaw_hScrollBar);
+            this.cameraRotation_panel.Controls.Add(this.label10);
+            this.cameraRotation_panel.Controls.Add(this.YawAngle_label);
+            this.cameraRotation_panel.Location = new System.Drawing.Point(6, 161);
+            this.cameraRotation_panel.Name = "cameraRotation_panel";
+            this.cameraRotation_panel.Size = new System.Drawing.Size(318, 110);
+            this.cameraRotation_panel.TabIndex = 24;
             // 
             // Y
             // 
@@ -328,6 +314,15 @@ namespace ApplicationUI
             this.Pitch_vScrollBar.TabIndex = 19;
             this.Pitch_vScrollBar.ValueChanged += new System.EventHandler(this.Pitch_vScrollBar_ValueChanged);
             // 
+            // PitchAngle_label
+            // 
+            this.PitchAngle_label.AutoSize = true;
+            this.PitchAngle_label.Location = new System.Drawing.Point(265, 14);
+            this.PitchAngle_label.Name = "PitchAngle_label";
+            this.PitchAngle_label.Size = new System.Drawing.Size(16, 17);
+            this.PitchAngle_label.TabIndex = 23;
+            this.PitchAngle_label.Text = "0";
+            // 
             // Yaw_hScrollBar
             // 
             this.Yaw_hScrollBar.Location = new System.Drawing.Point(8, 50);
@@ -337,6 +332,24 @@ namespace ApplicationUI
             this.Yaw_hScrollBar.Size = new System.Drawing.Size(120, 17);
             this.Yaw_hScrollBar.TabIndex = 18;
             this.Yaw_hScrollBar.ValueChanged += new System.EventHandler(this.Yaw_hScrollBar_ValueChanged);
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(157, 14);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(102, 17);
+            this.label10.TabIndex = 21;
+            this.label10.Text = "V. angle (deg):";
+            // 
+            // YawAngle_label
+            // 
+            this.YawAngle_label.AutoSize = true;
+            this.YawAngle_label.Location = new System.Drawing.Point(112, 14);
+            this.YawAngle_label.Name = "YawAngle_label";
+            this.YawAngle_label.Size = new System.Drawing.Size(16, 17);
+            this.YawAngle_label.TabIndex = 22;
+            this.YawAngle_label.Text = "0";
             // 
             // Cameras_listBox
             // 
@@ -896,19 +909,6 @@ namespace ApplicationUI
             this.Log_textBox.Size = new System.Drawing.Size(1277, 109);
             this.Log_textBox.TabIndex = 7;
             // 
-            // cameraRotation_panel
-            // 
-            this.cameraRotation_panel.Controls.Add(this.Y);
-            this.cameraRotation_panel.Controls.Add(this.Pitch_vScrollBar);
-            this.cameraRotation_panel.Controls.Add(this.PitchAngle_label);
-            this.cameraRotation_panel.Controls.Add(this.Yaw_hScrollBar);
-            this.cameraRotation_panel.Controls.Add(this.label10);
-            this.cameraRotation_panel.Controls.Add(this.YawAngle_label);
-            this.cameraRotation_panel.Location = new System.Drawing.Point(6, 161);
-            this.cameraRotation_panel.Name = "cameraRotation_panel";
-            this.cameraRotation_panel.Size = new System.Drawing.Size(318, 110);
-            this.cameraRotation_panel.TabIndex = 24;
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -938,6 +938,8 @@ namespace ApplicationUI
             this.Mode_tabControl.ResumeLayout(false);
             this.Cameras_tab.ResumeLayout(false);
             this.Cameras_tab.PerformLayout();
+            this.cameraRotation_panel.ResumeLayout(false);
+            this.cameraRotation_panel.PerformLayout();
             this.CameraProperties_panel.ResumeLayout(false);
             this.CameraProperties_panel.PerformLayout();
             this.Models_tab.ResumeLayout(false);
@@ -947,8 +949,6 @@ namespace ApplicationUI
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.CameraView_pictureBox)).EndInit();
-            this.cameraRotation_panel.ResumeLayout(false);
-            this.cameraRotation_panel.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 

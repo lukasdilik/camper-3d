@@ -141,7 +141,7 @@ namespace ApplicationLogic.Scene
         public void CameraPitch(int deg)
         {
             var diff = Properties.PitchDeg - deg;
-            Camera.Yaw(new Degree(diff).ValueRadians);
+            Camera.Pitch(new Degree(diff).ValueRadians);
             Properties.PitchDeg = deg;
         }
 

@@ -291,7 +291,7 @@ namespace ApplicationUI
             AspectRatio_textBox.Text = properties.AspectRatio.ToString(CultureInfo.InvariantCulture);
             FOVy_textBox.Text = properties.FOVy.ValueDegrees.ToString(CultureInfo.InvariantCulture);
             Resolution_textBox.Text = String.Format("{0:f0};{1:f0}", properties.Resolution.x, properties.Resolution.y);
-
+            Rotation_textBox.Text = String.Format("{0:f0}", properties.Rotation);
         }
 
         private void ClearCameraProperties()
@@ -302,6 +302,7 @@ namespace ApplicationUI
             AspectRatio_textBox.Text = "";
             FOVy_textBox.Text = "";
             Resolution_textBox.Text = "";
+            Rotation_textBox.Text = "";
             if (Cameras_listBox.Items.Count < 1)
             {
                 CameraProperties_panel.Hide();
@@ -343,6 +344,7 @@ namespace ApplicationUI
             SetNewDirection(ref newProperties);
             SetNewFOVy(ref newProperties);
             SetNewResolution(ref newProperties);
+            SetNewRotation(ref newProperties);
             mAppController.UpdateCameraProperties(newProperties);
         }
         
@@ -407,6 +409,22 @@ namespace ApplicationUI
             }
         }
 
+        private void SetNewRotation(ref SecurityCameraProperties newProperties)
+        {
+            try
+            {
+                var rotationStr = Rotation_textBox.Text.Replace(',', '.');
+                var deg = int.Parse(rotationStr, CultureInfo.InvariantCulture);
+                if (deg > 90) throw new Exception("Value must be max 90");
+                newProperties.Rotation = deg;
+            }
+            catch (Exception e)
+            {
+                newProperties.Rotation = ActualCameraProperties.Rotation;
+                Log_textBox.AppendText("Rotation angle invalid: " + e);
+            }
+        }
+
         #endregion
         private Vector3 VectorFromString(string value)
         {
@@ -448,8 +466,7 @@ namespace ApplicationUI
 
         private void quitToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            mAppController.Exit();
-            Application.Exit();
+            Close();
         }
 
         private void Delete_btn_Click(object sender, EventArgs e)
@@ -682,7 +699,6 @@ namespace ApplicationUI
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             mAppController.Exit();
-            Application.Exit();
         }
 
         private void Yaw_hScrollBar_ValueChanged(object sender, EventArgs e)
