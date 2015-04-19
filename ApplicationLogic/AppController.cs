@@ -255,7 +255,13 @@ namespace ApplicationLogic
                 if (model.Value.SecurityCameras.ContainsKey(key))
                 {
                     model.Value.SelectSecurityCamera(key);
-                    mApplicationUi.CameraSelected(model.Value.SecurityCameras[key].Properties);
+
+                    if (IsSecurityCameraSelected())
+                    {
+                        LogMessage("Seletected Camera: " + SelectedModel.SelectedSecurityCamera.Properties.Name);
+                        SetCameraMode();
+                        mApplicationUi.CameraSelected(model.Value.SecurityCameras[key].Properties);
+                    }
                 }
             }
         }
@@ -320,7 +326,7 @@ namespace ApplicationLogic
         }
         public void CameraYaw(int deg)
         {
-            if (SelectedModel != null && SelectedModel.SelectedSecurityCamera != null)
+            if (IsSecurityCameraSelected())
             {
                 SelectedModel.SelectedSecurityCamera.CameraYaw(deg);
             }
@@ -329,7 +335,7 @@ namespace ApplicationLogic
 
         public void CameraPitch(int deg)
         {
-            if (SelectedModel != null && SelectedModel.SelectedSecurityCamera != null)
+            if (IsSecurityCameraSelected())
             {
                 SelectedModel.SelectedSecurityCamera.CameraPitch(deg);
             }
@@ -577,12 +583,10 @@ namespace ApplicationLogic
             if (selectedObjectName.Contains("SecurityCamera"))
             {
                 SelectCamera(selectedObjectName);
-                SetCameraMode();
             }
             else if (selectedObjectName.Contains("Light"))
             {
                 SelectLight(selectedObjectName);
-                SetLightMode();
             }
             else
             {

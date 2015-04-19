@@ -40,19 +40,11 @@ namespace RenderingEngine
         }
 
         public void CreateWorldLight(){
-
-        
-//              Light dirLight = mSceneManager.CreateLight("worldLight1");
-//              dirLight.Type = Light.LightTypes.LT_DIRECTIONAL;
-//              dirLight.Direction = new Vector3(0, -1, -1);
-//              dirLight.DiffuseColour = ColourValue.White;
-//              dirLight.SpecularColour = ColourValue.White;
-
-            Light worldLight1 = mSceneManager.CreateLight("worldLight1");
-            worldLight1.Type = Light.LightTypes.LT_POINT;
-            worldLight1.Position = new Vector3(0, 150, 0);
-            worldLight1.DiffuseColour = ColourValue.White;
-            worldLight1.SpecularColour = ColourValue.White;
+            Light dirLight = mSceneManager.CreateLight("worldLight1");
+            dirLight.Type = Light.LightTypes.LT_DIRECTIONAL;
+            dirLight.Direction = new Vector3(0, -1, -1);
+            dirLight.DiffuseColour = ColourValue.White;
+            dirLight.SpecularColour = ColourValue.White;
         }
 
 

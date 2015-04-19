@@ -370,13 +370,12 @@ namespace ApplicationUI
             try
             {
                 Log_textBox.AppendText(msg);
-                Log_textBox.AppendText("-------------------------------------");
-
+                Log_textBox.AppendText(Environment.NewLine);
             }
             catch (Exception e)
             {
                 Log_textBox.AppendText(e.ToString());
-                Log_textBox.AppendText("-------------------------------------");
+                Log_textBox.AppendText(Environment.NewLine);
             }
 
         }

@@ -95,7 +95,6 @@ namespace ApplicationLogic.Scene
         {
             if (SecurityCameras.ContainsKey(name))
             {
-                DeselectAllSecurityCameras();
                 SelectedSecurityCamera = SecurityCameras[name];
                 SelectedSecurityCamera.Selected = true;
             }
@@ -105,7 +104,6 @@ namespace ApplicationLogic.Scene
         {
             if (Lights.ContainsKey(name))
             {
-                DeselectAllLights();
                 SelectedLight = Lights[name];
                 SelectedLight.Selected = true;
             }

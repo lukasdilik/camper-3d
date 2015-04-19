@@ -70,12 +70,8 @@ namespace RenderingEngine.Scene
             var R = quat.ToRotationMatrix();
             var topLeft = FarPlanePoints[0];
             var bottomLeft= FarPlanePoints[3];
-            var t1 = Matrix4.GetTrans(Position - topLeft).Extract3x3Matrix();
-            var t2 = Matrix4.GetTrans(Position - bottomLeft).Extract3x3Matrix();
-            var t3 = Matrix4.GetTrans(topLeft- Position).Extract3x3Matrix();
-            var t4 = Matrix4.GetTrans(bottomLeft-Position).Extract3x3Matrix();
-            topLeft *= t3*R*t1;
-            bottomLeft *= t4*R*t2;
+            topLeft *= R;
+            bottomLeft *= R;
             FarPlanePointsRotated.Add(topLeft);
             FarPlanePointsRotated.Add(bottomLeft);
         }
