@@ -16,7 +16,7 @@ namespace ApplicationLogic.Scene
         private bool mSelected;
 
         public ModelProperties ModelProperties; 
-        public RenderingEngine.Scene.Model RenderModel { get; private set; }
+        public RenderingEngine.Scene.RenderModel RenderModel { get; private set; }
         public Dictionary<string, SecurityCamera> SecurityCameras { get; private set; }
         public SecurityCamera SelectedSecurityCamera { get; private set; }
 
@@ -41,16 +41,16 @@ namespace ApplicationLogic.Scene
 
         }
 
-        public Model(string name, string modelName)
+        public Model(string name, string meshName)
         {
-            ModelProperties = new ModelProperties {Name = name, FileName = modelName};
+            ModelProperties = new ModelProperties {Name = name, MeshName = meshName};
 
             SecurityCameras = new Dictionary<string, SecurityCamera>();
             Lights = new Dictionary<string, Light>();
             SelectedSecurityCamera = null;
             SelectedLight = null;
 
-            RenderModel = new RenderingEngine.Scene.Model(name,modelName);
+            RenderModel = new RenderingEngine.Scene.RenderModel(name,meshName);
         }
 
         public void Translate(Vector3 t)
@@ -62,6 +62,22 @@ namespace ApplicationLogic.Scene
             }
             ModelProperties.Position = RenderModel.SceneNode.Position;
         }
+
+        public Matrix4 GetTransformationMatrix()
+        {
+            return RenderModel.SceneNode._getFullTransform();
+        }
+
+        public void SetTransformationMatrix(Matrix4 m)
+        {
+            var quat = m.ExtractQuaternion();
+            var trans = m.GetTrans();
+            RenderModel.SceneNode.Scale(m.m00,m.m11,m.m22);
+            RenderModel.SceneNode.SetOrientation(quat.w, quat.x, quat.y, quat.z);
+            Translate(trans);
+            
+        }
+
 
         public void RotateY(Degree deg)
         {
@@ -159,7 +175,7 @@ namespace ApplicationLogic.Scene
                 {
                     var internalName = "SecurityCamera" + index;
                     var securityCamera = new SecurityCamera(internalName,contactPoint, normal);
-                    SecurityCameras.Add(securityCamera.InternalName, securityCamera);
+                    SecurityCameras.Add(internalName, securityCamera);
 
                     securityCamera.Selected = true;
                     SelectedSecurityCamera = securityCamera;
@@ -179,6 +195,16 @@ namespace ApplicationLogic.Scene
                 return false;
             }
             return false;
+        }
+
+        public SecurityCamera AddCamera(SecurityCameraProperties properties)
+        {
+            var securityCamera = new SecurityCamera(properties.Name,properties.Position, properties.Direction);
+            SecurityCameras.Add(properties.Name, securityCamera);
+            securityCamera.Selected = true;
+            SelectedSecurityCamera = securityCamera;
+            UpdateSelectedCameraProperties(properties);
+            return securityCamera;
         }
 
         private Vector3 CalculateIntersection(int screenX, int screenY, out Vector3 normal, out bool isHit)
@@ -245,6 +271,32 @@ namespace ApplicationLogic.Scene
                 return false;
             }
             return false;
+        }
+
+        public Light AddLight(LightProperties properties)
+        {
+            var ligthProperties = new LightProperties { Position = properties.Position };
+
+            Light light = null;
+            if (properties.Type == LightProperties.LightType.Spot)
+            {
+                ligthProperties.Type = LightProperties.LightType.Spot;
+                ligthProperties.Name = properties.Name;
+                ligthProperties.Direction = properties.Direction;
+                light = new SpotLight(RenderModel.SceneNode, ligthProperties);
+            }
+            else
+            {
+                ligthProperties.Type = LightProperties.LightType.Point;
+                ligthProperties.Name = properties.Name;
+                light = new PointLight(RenderModel.SceneNode, ligthProperties);
+            }
+            Lights.Add(light.Properties.Name, light);
+
+            light.Selected = true;
+            SelectedLight = light;
+
+            return light;
         }
 
         public void UpdateSelectedCameraProperties(SecurityCameraProperties properties)

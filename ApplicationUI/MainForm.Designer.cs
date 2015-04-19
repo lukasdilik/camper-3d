@@ -43,7 +43,7 @@ namespace ApplicationUI
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.StatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.CameraCoords_label = new System.Windows.Forms.ToolStripStatusLabel();
-            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
+            this.Import_openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.LeftPanel = new System.Windows.Forms.Panel();
             this.Help_btn = new System.Windows.Forms.Button();
             this.Mode_tabControl = new System.Windows.Forms.TabControl();
@@ -107,6 +107,10 @@ namespace ApplicationUI
             this.CameraView_pictureBox = new System.Windows.Forms.PictureBox();
             this.Log_textBox = new System.Windows.Forms.TextBox();
             this.LightColor_dialog = new System.Windows.Forms.ColorDialog();
+            this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
+            this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.loadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.LoadScene_openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.MainWindow.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -154,6 +158,8 @@ namespace ApplicationUI
             // 
             this.toolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.startToolStripMenuItem,
+            this.loadToolStripMenuItem,
+            this.saveToolStripMenuItem,
             this.quitToolStripMenuItem});
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
             this.toolStripMenuItem1.Size = new System.Drawing.Size(80, 20);
@@ -162,14 +168,14 @@ namespace ApplicationUI
             // startToolStripMenuItem
             // 
             this.startToolStripMenuItem.Name = "startToolStripMenuItem";
-            this.startToolStripMenuItem.Size = new System.Drawing.Size(98, 22);
+            this.startToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.startToolStripMenuItem.Text = "Start";
             this.startToolStripMenuItem.Click += new System.EventHandler(this.startToolStripMenuItem_Click);
             // 
             // quitToolStripMenuItem
             // 
             this.quitToolStripMenuItem.Name = "quitToolStripMenuItem";
-            this.quitToolStripMenuItem.Size = new System.Drawing.Size(98, 22);
+            this.quitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.quitToolStripMenuItem.Text = "Quit";
             this.quitToolStripMenuItem.Click += new System.EventHandler(this.quitToolStripMenuItem_Click);
             // 
@@ -225,10 +231,10 @@ namespace ApplicationUI
             this.CameraCoords_label.Size = new System.Drawing.Size(131, 17);
             this.CameraCoords_label.Text = "Camera [N/A;N/A;N/A]";
             // 
-            // openFileDialog1
+            // Import_openFileDialog1
             // 
-            this.openFileDialog1.FileName = "openFileDialog1";
-            this.openFileDialog1.Filter = "\"OGRE mesh|*.mesh";
+            this.Import_openFileDialog1.FileName = "openFileDialog1";
+            this.Import_openFileDialog1.Filter = "\"OGRE mesh|*.mesh";
             // 
             // LeftPanel
             // 
@@ -885,9 +891,9 @@ namespace ApplicationUI
             this.preview_label.AutoSize = true;
             this.preview_label.Location = new System.Drawing.Point(3, 561);
             this.preview_label.Name = "preview_label";
-            this.preview_label.Size = new System.Drawing.Size(61, 17);
+            this.preview_label.Size = new System.Drawing.Size(88, 17);
             this.preview_label.TabIndex = 11;
-            this.preview_label.Text = "Preview:";
+            this.preview_label.Text = "Preview: N/A";
             // 
             // CameraView_pictureBox
             // 
@@ -898,6 +904,7 @@ namespace ApplicationUI
             this.CameraView_pictureBox.Size = new System.Drawing.Size(320, 240);
             this.CameraView_pictureBox.TabIndex = 10;
             this.CameraView_pictureBox.TabStop = false;
+            this.CameraView_pictureBox.DoubleClick += new System.EventHandler(this.CameraView_pictureBox_DoubleClick);
             // 
             // Log_textBox
             // 
@@ -908,6 +915,28 @@ namespace ApplicationUI
             this.Log_textBox.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.Log_textBox.Size = new System.Drawing.Size(1277, 109);
             this.Log_textBox.TabIndex = 7;
+            // 
+            // saveFileDialog1
+            // 
+            this.saveFileDialog1.DefaultExt = "scene";
+            // 
+            // saveToolStripMenuItem
+            // 
+            this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.saveToolStripMenuItem.Text = "Save";
+            this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
+            // 
+            // loadToolStripMenuItem
+            // 
+            this.loadToolStripMenuItem.Name = "loadToolStripMenuItem";
+            this.loadToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.loadToolStripMenuItem.Text = "Load";
+            this.loadToolStripMenuItem.Click += new System.EventHandler(this.loadToolStripMenuItem_Click);
+            // 
+            // LoadScene_openFileDialog
+            // 
+            this.LoadScene_openFileDialog.Filter = "\"Scene File|*scene";
             // 
             // MainForm
             // 
@@ -962,7 +991,7 @@ namespace ApplicationUI
         private Label AvailableModels_label;
         private StatusStrip statusStrip1;
         private ToolStripStatusLabel toolStripStatusLabel1;
-        private OpenFileDialog openFileDialog1;
+        private OpenFileDialog Import_openFileDialog1;
         private Panel LeftPanel;
         private ComboBox AvailableModels_combo;
         private ToolStripStatusLabel StatusLabel;
@@ -1034,6 +1063,10 @@ namespace ApplicationUI
         private VScrollBar Pitch_vScrollBar;
         private HScrollBar Yaw_hScrollBar;
         private Panel cameraRotation_panel;
+        private ToolStripMenuItem loadToolStripMenuItem;
+        private ToolStripMenuItem saveToolStripMenuItem;
+        private SaveFileDialog saveFileDialog1;
+        private OpenFileDialog LoadScene_openFileDialog;
 
     }
 }

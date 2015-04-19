@@ -1,6 +1,5 @@
 ﻿using System.Windows.Forms;
 using Mogre;
-using RenderingEngine.Engine;
 using Camera = RenderingEngine.Scene.Camera;
 
 namespace ApplicationLogic.Scene
@@ -10,51 +9,45 @@ namespace ApplicationLogic.Scene
         public string MeshName = ApplicationLogicResources.SecurityCameraMeshName;
         private bool mSelected;
         private int mOldX, mOldY;
-        private Vector3 mOriginalDirection;
 
         public bool Selected
         {
             get { return mSelected; }
             set
             {
-                if (RenderTexture != null)
-                {
-                    RenderTexture.IsAutoUpdated = value;
-                }
                 if (value)
                 {
                     Camera.ShowBoundingBox();
+                    StartRenderingToTexture();
                 }
                 else
                 {
                     Camera.HideBoundingBox();
+                    StopRenderingToTexture();
                 }
                 mSelected = value;
             }
         }
 
-        public string InternalName { get; private set; }
         public SecurityCameraProperties Properties { get; private set; }
         public Camera Camera { get; private set; }
         public RenderTexture RenderTexture { get; private set; }
 
-        public TexturePtr RenderTexturePtr;
-        public SecurityCamera(string internalName, Vector3 position, Vector3 normal)
+        public TexturePtr RenderTexturePtr { get; private set; }
+        public SecurityCamera(string name, Vector3 position, Vector3 normal)
         {
-            mOriginalDirection = normal;
-            mOriginalDirection.Normalise();
-            InternalName = internalName;
-            Properties = new SecurityCameraProperties {Name = internalName, Position = position, Direction = normal};
+            normal.Normalise();
+            Properties = new SecurityCameraProperties {Name = name, Position = position, Direction = normal};
 
             CreateCameraInScene();
             Properties.Position = Camera.SceneNode.Position;
+            InitRTT();
         }
 
-        public void InitRTT(TexturePtr texturePtr)
+        private void InitRTT()
         {
-            RenderTexturePtr = texturePtr;
-            RenderTexture = texturePtr.GetBuffer().GetRenderTarget();
-
+            CreateTexturePtr();
+            RenderTexture = RenderTexturePtr.GetBuffer().GetRenderTarget();
             RenderTexture.AddViewport(Camera.MogreCamera);
             RenderTexture.GetViewport(0).SetClearEveryFrame(true);
             RenderTexture.GetViewport(0).BackgroundColour = ColourValue.Black;
@@ -75,6 +68,31 @@ namespace ApplicationLogic.Scene
         private void CreateCameraInScene()
         {
             Camera = new Camera(Properties.Name, Properties.Position, Properties.Direction,Properties.FOVy, Properties.AspectRatio, MeshName);
+        }
+
+        private void CreateTexturePtr()
+        {
+            var textureName = "Texture" + Properties.Name;
+            var width = (uint)Properties.Resolution.x;
+            var height = (uint) Properties.Resolution.y;
+            RenderTexturePtr = TextureManager.Singleton.CreateManual(textureName, AppController.DefaultMaterialGroupName,
+                TextureType.TEX_TYPE_2D, width, height, 0, PixelFormat.PF_B8G8R8, (int)TextureUsage.TU_RENDERTARGET);
+        }
+
+        public void StartRenderingToTexture()
+        {
+            if (RenderTexture != null)
+            {
+                RenderTexture.IsAutoUpdated = true;
+            }
+        }
+
+        public void StopRenderingToTexture()
+        {
+            if (RenderTexture != null)
+            {
+                RenderTexture.IsAutoUpdated = false;
+            }
         }
 
         public void HandleKey(Keys key)

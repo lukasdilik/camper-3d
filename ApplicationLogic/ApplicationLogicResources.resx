@@ -123,6 +123,9 @@
   <data name="PointLightModelMesh" xml:space="preserve">
     <value>bulb.mesh</value>
   </data>
+  <data name="SceneFileExt" xml:space="preserve">
+    <value>.scene</value>
+  </data>
   <data name="SecurityCameraMeshName" xml:space="preserve">
     <value>cctv1.mesh</value>
   </data>

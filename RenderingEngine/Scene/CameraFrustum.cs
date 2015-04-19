@@ -20,10 +20,6 @@ namespace RenderingEngine.Scene
         //top left, top right, bottom right, bottom left
         public List<Vector3> FarPlanePoints { private set; get; }
         public List<Vector3> FarPlanePointsRotated { private set; get; }
-        public Vector3 FarRotatedTopLeft { private set; get; }
-        public Vector3 FarRotatedTopRight { private set; get; }
-        public Vector3 FarRotatedBottomLeft { private set; get; }
-        public Vector3 FarRotatedBottomRight { private set; get; }
 
         public CameraFrustum(Camera parentCamera)
         {
@@ -70,12 +66,18 @@ namespace RenderingEngine.Scene
 
         private void CalculateRotatedFrustum()
         {
-           var quat = new Quaternion(30, Vector3.UNIT_Y);
-            var m = quat.ToRotationMatrix();
-            for (int i = 0; i < FarPlanePoints.Count; i++)
-            {
-                FarPlanePointsRotated.Add(FarPlanePoints[i] * m);     
-            }
+            var quat = new Quaternion(new Degree(-30).ValueRadians, Vector3.UNIT_Y);
+            var R = quat.ToRotationMatrix();
+            var topLeft = FarPlanePoints[0];
+            var bottomLeft= FarPlanePoints[3];
+            var t1 = Matrix4.GetTrans(Position - topLeft).Extract3x3Matrix();
+            var t2 = Matrix4.GetTrans(Position - bottomLeft).Extract3x3Matrix();
+            var t3 = Matrix4.GetTrans(topLeft- Position).Extract3x3Matrix();
+            var t4 = Matrix4.GetTrans(bottomLeft-Position).Extract3x3Matrix();
+            topLeft *= t3*R*t1;
+            bottomLeft *= t4*R*t2;
+            FarPlanePointsRotated.Add(topLeft);
+            FarPlanePointsRotated.Add(bottomLeft);
         }
 
 
@@ -83,6 +85,9 @@ namespace RenderingEngine.Scene
         {
             mParentCamera.SceneNode.RemoveAndDestroyChild(Name + "_node");
             
+            FarPlanePoints.Clear();
+            FarPlanePointsRotated.Clear();
+
             CalculateFarPointsWorld();
             CreateManualObject();
 
@@ -108,6 +113,7 @@ namespace RenderingEngine.Scene
 
             CreateSolidFrustum();
             CreateFrustumLines();
+            CreateSolidFrustumRotatedRight();
         }
 
         private void CreateSolidFrustum()
@@ -153,6 +159,16 @@ namespace RenderingEngine.Scene
             }
         }
 
+        private void CreateSolidFrustumRotatedRight()
+        {
+            FrustumManualObject.Begin(mRotatedMaterialName, RenderOperation.OperationTypes.OT_TRIANGLE_LIST);
+            FrustumManualObject.Position(Position);
+            FrustumManualObject.Position(FarPlanePointsRotated[0]);
+            FrustumManualObject.Position(FarPlanePointsRotated[1]);
+            FrustumManualObject.Triangle(2, 1, 0);
+            FrustumManualObject.End();
+        }
+
         private void TranformPointToLocalSpace()
         {
             Position = mParentCamera.SceneNode.ConvertWorldToLocalPosition(Position);
@@ -160,6 +176,10 @@ namespace RenderingEngine.Scene
             for (int i = 0; i < FarPlanePoints.Count; i++)
             {
                 FarPlanePoints[i] = mParentCamera.SceneNode.ConvertWorldToLocalPosition(FarPlanePoints[i]);     
+            }
+            for (int i = 0; i < FarPlanePointsRotated.Count; i++)
+            {
+                FarPlanePointsRotated[i] = mParentCamera.SceneNode.ConvertWorldToLocalPosition(FarPlanePointsRotated[i]);
             }
         }
     }

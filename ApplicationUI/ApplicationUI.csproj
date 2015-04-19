@@ -69,6 +69,12 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ApplicationUIResources.resx</DependentUpon>
     </Compile>
+    <Compile Include="FullPreviewForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FullPreviewForm.Designer.cs">
+      <DependentUpon>FullPreviewForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="LibraryForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -86,6 +92,9 @@
     <EmbeddedResource Include="ApplicationUIResources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>ApplicationUIResources1.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FullPreviewForm.resx">
+      <DependentUpon>FullPreviewForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="LibraryForm.resx">
       <DependentUpon>LibraryForm.cs</DependentUpon>

@@ -58,6 +58,11 @@
     <Compile Include="ModelData.cs" />
     <Compile Include="ModelLibrary.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Scene\Seriaziable\CameraEntity.cs" />
+    <Compile Include="Scene\Seriaziable\LightEntity.cs" />
+    <Compile Include="Scene\Seriaziable\SceneEntity.cs" />
+    <Compile Include="Scene\Seriaziable\Entity.cs" />
+    <Compile Include="Scene\Seriaziable\ModelEntity.cs" />
     <Compile Include="Scene\SpotLight.cs" />
     <Compile Include="Scene\Light.cs" />
     <Compile Include="Scene\LightProperties.cs" />

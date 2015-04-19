@@ -5,7 +5,7 @@ namespace ApplicationLogic.Scene
     public class ModelProperties
     {
         public string Name = "";
-        public string FileName = "";
+        public string MeshName = "";
         public Vector3 Position = new Vector3();
     }
 }

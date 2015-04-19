@@ -112,7 +112,7 @@ namespace ApplicationLogic
             return modelNames;
         }
 
-        public ModelData GetModel(string name)
+        public ModelData GetModelMesh(string name)
         {
             if (String.IsNullOrEmpty(name)) return null;
 

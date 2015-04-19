@@ -79,6 +79,15 @@ namespace ApplicationLogic {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to .scene.
+        /// </summary>
+        internal static string SceneFileExt {
+            get {
+                return ResourceManager.GetString("SceneFileExt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to cctv1.mesh.
         /// </summary>
         internal static string SecurityCameraMeshName {

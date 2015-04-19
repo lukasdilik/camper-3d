@@ -18,6 +18,7 @@ namespace ApplicationUI
         private LightProperties ActualLightProperties;
         private bool isMainWindowActive = true;
         private LibraryForm mLibraryForm;
+        private FullPreviewForm mFullPreviewForm;
 
         public MainForm()
         {
@@ -33,6 +34,10 @@ namespace ApplicationUI
             mLibraryForm.Closed += mLibraryForm_Closed;
             mLibraryForm.VisibleChanged += mLibraryForm_VisibleChanged;
 
+            mFullPreviewForm = new FullPreviewForm();
+            mFullPreviewForm.Hide();
+            mLibraryForm.FormClosed += mLibraryForm_FormClosed;
+
             CameraProperties_panel.Hide();
             Cameras_listBox.Hide();
             cameraRotation_panel.Hide();
@@ -41,13 +46,19 @@ namespace ApplicationUI
             LightType_combo.Items.Add("POINT");
             LightType_combo.SelectedIndex = 0;
 
+            loadToolStripMenuItem.Enabled = false;
+            saveToolStripMenuItem.Enabled = false;
+
             if (AvailableModels_combo.Items.Count > 0)
             {
                 AvailableModels_combo.SelectedIndex = 0;    
             }
         }
 
-        
+        void mLibraryForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            mAppController.FullPreview = false;
+        }
 
         private void mLibraryForm_VisibleChanged(object sender, EventArgs e)
         {
@@ -241,7 +252,7 @@ namespace ApplicationUI
         {
             addedModels_listBox.SelectedItem = modelProperties.Name;
             ModelPosition_textBox.Text = String.Format("{0:f2};{1:f2};{2:f2}", modelProperties.Position.x, modelProperties.Position.y, modelProperties.Position.z);
-            ModelFileName_label.Text = modelProperties.FileName;
+            ModelFileName_label.Text = modelProperties.MeshName;
         }
 
         public void CameraRemoved(string cameraName)
@@ -271,16 +282,49 @@ namespace ApplicationUI
             return new Size(CameraView_pictureBox.Width,CameraView_pictureBox.Height);
         }
 
-        public void UpdateCameraView(string cameraName, Bitmap bmp)
+        public void UpdateCameraView(SecurityCameraProperties properties, Bitmap bmp)
         {
-            CameraView_pictureBox.Image = bmp;
-            CameraView_pictureBox.Invalidate();
+            if (mAppController.FullPreview)
+            {
+                mFullPreviewForm.Text = "Preview: "+properties.Name + string.Format("{0:f:0}x{1:f:0}",properties.Resolution.x,properties.Resolution.y);
+                var pb = mFullPreviewForm.GetPicturebox();
+                pb.Image = bmp;
+                pb.Invalidate();
+        }
+            else
+            {
+                preview_label.Text = "Preview:" + properties.Name;
+                CameraView_pictureBox.Image = bmp;
+                CameraView_pictureBox.Invalidate();
+            }
         }
 
         public void UpdateCameraOrientation(int yawDeg, int pitchDeg)
         {
             PitchAngle_label.Text = pitchDeg.ToString();
             YawAngle_label.Text = yawDeg.ToString();
+        }
+
+        public void ActiveModeChanged(AppController.Mode newMode)
+        {
+            if (newMode == AppController.Mode.CAMERA_MODE)
+            {
+                Mode_tabControl.SelectedIndex = 0;
+            }else if (newMode == AppController.Mode.MODEL_MODE)
+            {
+                Mode_tabControl.SelectedIndex = 1;
+            }
+            else if (newMode == AppController.Mode.LIGHT_MODE)
+            {
+                Mode_tabControl.SelectedIndex = 2;
+            }
+        }
+
+        public void ClearPreview()
+        {
+            CameraView_pictureBox.Image = null;
+            CameraView_pictureBox.Invalidate();
+            preview_label.Text = "Preview: N/A";
         }
 
         private void FillCameraProperties(SecurityCameraProperties properties)
@@ -291,7 +335,7 @@ namespace ApplicationUI
             AspectRatio_textBox.Text = properties.AspectRatio.ToString(CultureInfo.InvariantCulture);
             FOVy_textBox.Text = properties.FOVy.ValueDegrees.ToString(CultureInfo.InvariantCulture);
             Resolution_textBox.Text = String.Format("{0:f0};{1:f0}", properties.Resolution.x, properties.Resolution.y);
-            Rotation_textBox.Text = String.Format("{0:f0}", properties.Rotation);
+            Rotation_textBox.Text = String.Format("{0:f0}", properties.Rotation.ValueDegrees);
         }
 
         private void ClearCameraProperties()
@@ -416,7 +460,7 @@ namespace ApplicationUI
                 var rotationStr = Rotation_textBox.Text.Replace(',', '.');
                 var deg = int.Parse(rotationStr, CultureInfo.InvariantCulture);
                 if (deg > 90) throw new Exception("Value must be max 90");
-                newProperties.Rotation = deg;
+                newProperties.Rotation = new Degree(deg);
             }
             catch (Exception e)
             {
@@ -445,6 +489,8 @@ namespace ApplicationUI
 
         private void startToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            loadToolStripMenuItem.Enabled = true;
+            saveToolStripMenuItem.Enabled = true;
             mAppController.Start();
         }
 
@@ -713,6 +759,40 @@ namespace ApplicationUI
             PitchAngle_label.Text = Pitch_vScrollBar.Value.ToString();
             var pitch = Pitch_vScrollBar.Value;
             mAppController.CameraPitch(pitch);
+        }
+
+        private void loadToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DialogResult result = LoadScene_openFileDialog.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                mAppController.LoadScene(LoadScene_openFileDialog.FileName);
+            }
+        }
+
+        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DialogResult result = saveFileDialog1.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                mAppController.SaveScene(saveFileDialog1.FileName);
+            }
+        }
+
+        private void CameraView_pictureBox_DoubleClick(object sender, EventArgs e)
+        {
+            mAppController.FullPreview = !mAppController.FullPreview;
+            if (mAppController.FullPreview)
+            {
+                int width = (int) mAppController.GetActiveResolution().x;
+                int height = (int) mAppController.GetActiveResolution().y;
+                mFullPreviewForm.Size = new Size(width, height);
+                mFullPreviewForm.Show();
+            }
+            else
+            {
+                mFullPreviewForm.Hide();
+            }
         }
 
     }

@@ -149,7 +149,7 @@ namespace ApplicationLogic
         protected virtual void HandleMouseUp(MouseEventArgs e)
         {
             if(e.Button == MouseButtons.Left)
-                isLeftMouseButtonDown = false;
+                ;
         }
 
         protected virtual void HandleMouseDown(MouseEventArgs e)

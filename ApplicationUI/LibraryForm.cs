@@ -62,7 +62,7 @@ namespace ApplicationUI
 
         private void SelectModelData(string modelName)
         {
-            var modelData = mAppController.ModelLibrary.GetModel(modelName);
+            var modelData = mAppController.ModelLibrary.GetModelMesh(modelName);
             if (modelData != null)
             {
 

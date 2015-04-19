@@ -53,13 +53,6 @@ namespace RenderingEngine
             worldLight1.Position = new Vector3(0, 150, 0);
             worldLight1.DiffuseColour = ColourValue.White;
             worldLight1.SpecularColour = ColourValue.White;
-
-
-            Light worldLight2 = mSceneManager.CreateLight("worldLight2");
-            worldLight2.Type = Light.LightTypes.LT_POINT;
-            worldLight2.Position = new Vector3(1500, 150, 1500);
-            worldLight2.DiffuseColour = ColourValue.White;
-            worldLight2.SpecularColour = ColourValue.White;
         }
 
 

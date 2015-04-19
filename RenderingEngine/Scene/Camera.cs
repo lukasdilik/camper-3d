@@ -240,6 +240,7 @@ namespace RenderingEngine.Scene
         public void Delete()
         {
             Engine.Engine.Instance.SceneManager.DestroyCamera(MogreCamera);
+            Engine.Engine.Instance.SceneManager.DestroyLight(SpotLight);
             Frustum.Destroy();
             NormalLine.Destroy();
             SceneNode.ShowBoundingBox = false;

@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using ApplicationLogic.Interfaces;
 using ApplicationLogic.Scene;
+using ApplicationLogic.Scene.Seriaziable;
 using Mogre;
 using RenderingEngine.Engine;
 using RenderingEngine.Interfaces;
@@ -21,12 +21,11 @@ namespace ApplicationLogic
     public partial class AppController : IKeyboardInput, IMouseInput,IApplication
     {
         public static string DefaultMaterialGroupName = ResourceGroupManager.DEFAULT_RESOURCE_GROUP_NAME;
-
+        public bool FullPreview = false;
         public enum Mode { CAMERA_MODE, LIGHT_MODE, MODEL_MODE };
 
         public Mode ActiveMode = Mode.CAMERA_MODE;
         public LightProperties.LightType ActiveLightType = LightProperties.LightType.Spot;
-        private int previousYaw, previousPitch;
         private int mModelCounter;
         private int mCameraCounter;
         private int mLightCounter;
@@ -36,9 +35,7 @@ namespace ApplicationLogic
         private readonly IApplicationUI mApplicationUi;
         private Size mCameraViewDimension;
 
-        private String SelectedSceneNode;
-
-        private bool isLeftMouseButtonDown;
+        private String mSelectedSceneNode;
 
         public Dictionary<string, Model> LoadedModels { get; private set; }
         public Model SelectedModel { get; private set; }
@@ -61,44 +58,99 @@ namespace ApplicationLogic
             GetAvailableModels();
         }
 
-        public void GetAvailableModels()
-        {
-            mApplicationUi.ShowAvailableModels(ModelLibrary.GetAvailableModelsName());
-        }
-
         public void SetUpRenderingWindow(IntPtr handle, int width, int height)
         {
             Engine.Instance.SetUpRenderWindow(handle, width, height);
         }
 
-        private Model LoadModel(string modelName)
+        public string GetMovableObjectName(int screenX, int screenY)
         {
-            string modelInstanceName = Path.GetFileNameWithoutExtension(modelName) + mModelCounter;
-            var newModel = new Model(modelInstanceName, modelName);
+            var movableObject = Engine.Instance.SelectObject(screenX, screenY);
+            if (movableObject != null)
+            {
+                return movableObject.Name;
+            }
+            return null;
+        }
+
+        #region Model Controls
+
+        public void AddModel(int screenX, int screenY)
+        {
+            Vector3 intersection;
+
+            var isIntersection = Engine.Instance.IsIntersectionWithTerrain(screenX, screenY, out intersection);
+
+            if (!isIntersection) return;
+
+            DeselectAllModels();
+
+            string selectedModelName = mApplicationUi.GetSelectedModelName();
+            if (String.IsNullOrEmpty(selectedModelName)) return;
+
+            var modelData = ModelLibrary.GetModelMesh(selectedModelName);
+            var newModel = LoadModel(modelData.Name);
+
+
+            intersection.y += 1;
+            newModel.Translate(intersection);
+            mApplicationUi.ModelAdded(newModel.ModelProperties);
+        }
+
+        private Model CreateModel(ModelEntity entity)
+        {
+            string meshName = entity.MeshName;
+            if (String.IsNullOrEmpty(meshName)) return null;
+
+            var modelData = ModelLibrary.GetModelMesh(meshName);
+            var newModel = new Model(modelData.Name, entity.MeshName);
+       
+            newModel.SetTransformationMatrix(entity.GetTransformationMatrix());
+
+            foreach (var cameraEntity in entity.Cameras)
+            {
+                var newCamera = newModel.AddCamera(cameraEntity.GetCameraProperties());
+                InitRTTOnSelectedCamera(newCamera);
+                mApplicationUi.CameraAdded(newCamera.Properties);
+            }
+
+            foreach (var lightEntity in entity.Lights)
+            {
+                var newLight = newModel.AddLight(lightEntity.GetLightProperties());
+                mApplicationUi.LightAdded(newLight.Properties);
+            }
+
+            
+            return newModel;
+        }
+
+        public Vector2 GetActiveResolution()
+        {
+            if (SelectedModel != null)
+            {
+                if (SelectedModel.SelectedSecurityCamera != null)
+                {
+                    return SelectedModel.SelectedSecurityCamera.Properties.Resolution;
+                }
+            }
+            return new Vector2();
+        }
+
+        public void GetAvailableModels()
+        {
+            mApplicationUi.ShowAvailableModels(ModelLibrary.GetAvailableModelsName());
+        }
+
+        private Model LoadModel(string meshName)
+        {
+            string modelInstanceName = Path.GetFileNameWithoutExtension(meshName) + mModelCounter;
+            var newModel = new Model(modelInstanceName, meshName);
             LoadedModels.Add(modelInstanceName, newModel);
 
             mModelCounter++;
 
             mApplicationUi.SendMessage("Model " + modelInstanceName + " successfully loaded");
             return newModel;
-        }
-
-        public void SelectModel(int screenX, int screenY)
-        {
-            DeselectAllModels();
-            var movableObject = Engine.Instance.SelectObject(screenX, screenY);
-            
-            if (movableObject == null) return;
-            
-            SelectedSceneNode = movableObject.Name;
-            
-            foreach (var model in LoadedModels)
-            {
-                if (SelectedSceneNode == model.Value.ModelProperties.Name)
-                {
-                    SelectModel(model.Value.ModelProperties.Name);    
-                }
-            }
         }
 
         public void SelectModel(string name)
@@ -113,6 +165,15 @@ namespace ApplicationLogic
                 mApplicationUi.ModelSelected(selectedModel.ModelProperties);
             }
         }
+
+        private void DeselectAllModels()
+        {
+            foreach (var model in LoadedModels)
+            {
+                model.Value.Selected = false;
+            }
+        }
+
 
         public void SetNewPositionToSelectedModel(Vector3 newPosition)
         {
@@ -142,52 +203,70 @@ namespace ApplicationLogic
             }
         }
 
-        public void SelectSecurityCamera(int screenX, int screenY)
+        public void DeleteSelectedModel()
         {
-            DeselectAllCameras();
-            var movableObject = Engine.Instance.SelectObject(screenX, screenY);
-
-            if (movableObject == null) return;
-
-            SelectedSceneNode =  movableObject.Name;
-
-            foreach (var model in LoadedModels)
+            if (SelectedModel != null)
             {
-                foreach (var camera in model.Value.SecurityCameras)
+                var name = SelectedModel.ModelProperties.Name;
+                DeleteModel(name);
+            }
+        }
+
+        public void DeleteModel(string name)
+        {
+            if (LoadedModels.ContainsKey(name))
+            {
+                var toDelete = LoadedModels[name];
+                toDelete.Delete();
+                SelectedModel = null;
+                LoadedModels.Remove(name);
+                mApplicationUi.ModelRemoved(name);
+            }
+        }
+
+        #endregion
+
+        #region Camera Controls
+
+        public void CreateSecurityCamera(int screenX, int screenY)
+        {
+            if (SelectedModel != null)
+            {
+
+                var success = SelectedModel.CreateCamera(mCameraCounter, screenX, screenY);
+
+                if (success)
                 {
-                    bool found = SelectedSceneNode.Contains(camera.Value.InternalName);
-                    if (found)
+                    mCameraCounter++;
+                    if (SelectedModel.SelectedSecurityCamera != null)
                     {
-                        model.Value.SelectSecurityCamera(camera.Value.InternalName);    
-                        SelectModel(model.Key);
-                        mApplicationUi.CameraSelected(camera.Value.Properties);
+
+                        InitRTTOnSelectedCamera(SelectedModel.SelectedSecurityCamera);
+                        mApplicationUi.CameraAdded(SelectedModel.SelectedSecurityCamera.Properties);
                     }
                 }
             }
         }
 
-        public void SelectLight(int screenX, int screenY)
+        public void SelectCamera(string key)
         {
-            DeselectAllLights();
-            var movableObject = Engine.Instance.SelectObject(screenX, screenY);
-
-            if (movableObject == null) return;
-
-            SelectedSceneNode = movableObject.Name;
-
             foreach (var model in LoadedModels)
             {
-                foreach (var light in model.Value.Lights)
+                if (model.Value.SecurityCameras.ContainsKey(key))
                 {
-                    bool found = SelectedSceneNode.Contains(light.Value.Properties.Name);
-                    if (found)
-                    {
-                        SelectedModel.SelectLight(light.Value.Properties.Name);
-                        SelectModel(model.Key);
-                        mApplicationUi.LightSelected(light.Value.Properties);
-                    }
+                    model.Value.SelectSecurityCamera(key);
+                    mApplicationUi.CameraSelected(model.Value.SecurityCameras[key].Properties);
                 }
             }
+        }
+
+        public bool IsSecurityCameraSelected()
+        {
+            if (SelectedModel != null)
+            {
+                return SelectedModel.IsSecurityCameraSelected();
+            }
+            return false;
         }
 
         public void SwitchToSelectedCamera()
@@ -211,54 +290,6 @@ namespace ApplicationLogic
                     }
                 }
             }
-
-        }
-
-        public void AddModel(int screenX, int screenY)
-        {
-            Vector3 intersection;
-
-            var isIntersection = Engine.Instance.IsIntersectionWithTerrain(screenX, screenY, out intersection);
-            
-            if (!isIntersection) return;
-
-            DeselectAllModels();
-            
-            string selectedModelName = mApplicationUi.GetSelectedModelName();
-            if (String.IsNullOrEmpty(selectedModelName)) return;
-            
-            var modelData = ModelLibrary.GetModel(selectedModelName);
-            var newModel = LoadModel(modelData.Name);
-           
-
-            intersection.y += 1;
-            newModel.Translate(intersection);
-            mApplicationUi.ModelAdded(newModel.ModelProperties);
-        }
-
-        public void Start()
-        {
-            if (mIsStarted) return;
-            mIsStarted = true;
-            Engine.Instance.Start();
-        }
-
-        public void Resize(int width, int height)
-        {
-            Engine.Instance.Resize(width, height);
-        }
-
-        public void Shutdown()
-        {
-            Engine.Instance.Dispose();
-        }
-
-        private void DeselectAllModels()
-        {
-            foreach (var model in LoadedModels)
-            {
-                model.Value.Selected = false;
-            }
         }
 
         private void DeselectAllCameras()
@@ -267,7 +298,72 @@ namespace ApplicationLogic
             {
                 model.Value.DeselectAllSecurityCameras();
             }
+            mApplicationUi.ClearPreview();
         }
+
+        public void CameraMouseClick(MouseEventArgs e)
+        {
+            //if (SelectedModel != null)
+            //{
+            //    SelectedModel.CameraMouseClick(e);
+            //}
+        }
+
+
+
+        public void CameraMouseMove(MouseEventArgs e)
+        {
+            //if (SelectedModel != null)
+            //{
+            //    SelectedModel.CameraMouseMove(e);
+            //}
+        }
+        public void CameraYaw(int deg)
+        {
+            if (SelectedModel != null && SelectedModel.SelectedSecurityCamera != null)
+            {
+                SelectedModel.SelectedSecurityCamera.CameraYaw(deg);
+            }
+
+        }
+
+        public void CameraPitch(int deg)
+        {
+            if (SelectedModel != null && SelectedModel.SelectedSecurityCamera != null)
+            {
+                SelectedModel.SelectedSecurityCamera.CameraPitch(deg);
+            }
+        }
+
+        public void UpdateCameraProperties(SecurityCameraProperties properties)
+        {
+            if (mIsStarted)
+            {
+                if (SelectedModel != null)
+                {
+                    SelectedModel.UpdateSelectedCameraProperties(properties);
+                    mApplicationUi.UpdateCameraProperties(properties);
+                }
+            }
+        }
+
+        public void DeleteSelectedCamera()
+        {
+
+            foreach (var loadedModel in LoadedModels)
+            {
+                if (loadedModel.Value.SelectedSecurityCamera != null)
+                {
+                    var name = loadedModel.Value.SelectedSecurityCamera.Properties.Name;
+                    SelectedModel.DeleteSelectedCamera();
+                    mApplicationUi.CameraRemoved(name);
+                }
+            }
+        }
+
+        #endregion
+        
+        #region Light Controls
 
         private void DeselectAllLights()
         {
@@ -275,25 +371,7 @@ namespace ApplicationLogic
             {
                 model.Value.DeselectAllLights();
             }
-        }
-
-        public void CreateSecurityCamera(int screenX, int screenY)
-        {
-            if (SelectedModel != null)
-            {
-                var success = SelectedModel.CreateCamera(mCameraCounter,screenX, screenY);
-                if (success)
-                {
-                    mCameraCounter++;
-                    if (SelectedModel.SelectedSecurityCamera != null)
-                    {
-
-                        InitRTTOnSelectedCamera(SelectedModel.SelectedSecurityCamera);
-                        mApplicationUi.CameraAdded(SelectedModel.SelectedSecurityCamera.Properties);
-                    }
-                }
-            }
-        }
+        } 
 
         public void CreateLight(int screenX, int screenY)
         {
@@ -311,18 +389,78 @@ namespace ApplicationLogic
             }
         }
 
+        public void SelectLight(string key)
+        {
+            foreach (var model in LoadedModels)
+            {
+                if (model.Value.Lights.ContainsKey(key))
+                {
+                    model.Value.SelectLight(key);
+                    mApplicationUi.LightSelected(model.Value.Lights[key].Properties);
+                }
+            }
+        }
+
+        public bool IsLightSelected()
+        {
+            if (SelectedModel != null)
+            {
+                return SelectedModel.IsLightSelected();
+            }
+            return false;
+        }
+
+        public void UpdateLightProperties(LightProperties properties)
+        {
+            if (mIsStarted)
+            {
+                if (SelectedModel != null)
+                {
+                    SelectedModel.UpdateSelectedLightProperties(properties);
+                    mApplicationUi.UpdateLightProperties(properties);
+                }
+            }
+        }
+
+        public void LightMouseMove(MouseEventArgs e)
+        {
+            if (SelectedModel != null)
+            {
+                SelectedModel.LightMouseMove(e);
+            }
+        }
+
+        public void LightMouseClick(MouseEventArgs e)
+        {
+            if (SelectedModel != null)
+            {
+                SelectedModel.LightMouseClick(e);
+            }
+        }
+
+        public void DeleteSelectedLight()
+        {
+            if (SelectedModel != null && SelectedModel.SelectedLight != null)
+            {
+                var lightName = SelectedModel.SelectedLight.Properties.Name;
+                SelectedModel.DeleteSelectedLight();
+                mApplicationUi.LightRemoved(lightName);
+            }
+        }
+
+        #endregion
+
         #region RenderToTexture
 
-        private void InitRTTOnSelectedCamera(SecurityCamera selectedSecurityCamera)
+        private void InitRTTOnSelectedCamera(SecurityCamera camera)
         {
-            selectedSecurityCamera.InitRTT(CreateTexturePtr(SelectedModel.SelectedSecurityCamera.InternalName));
-            selectedSecurityCamera.RenderTexture.PreRenderTargetUpdate += RenderTexture_PreRenderTargetUpdate;
-            selectedSecurityCamera.RenderTexture.PostRenderTargetUpdate += RenderTextureOnPostRenderTargetUpdate;
+            camera.RenderTexture.PreRenderTargetUpdate += RenderTexture_PreRenderTargetUpdate;
+            camera.RenderTexture.PostRenderTargetUpdate += RenderTextureOnPostRenderTargetUpdate;
         }
 
         private void RenderTexture_PreRenderTargetUpdate(RenderTargetEvent_NativePtr evt)
         {
-            if (SelectedModel.SelectedSecurityCamera != null )
+            if (SelectedModel != null && SelectedModel.SelectedSecurityCamera != null)
             {
                 SelectedModel.SelectedSecurityCamera.Camera.HideFrustum();
             }
@@ -330,10 +468,16 @@ namespace ApplicationLogic
 
         private void RenderTextureOnPostRenderTargetUpdate(RenderTargetEvent_NativePtr evt)
         {
-            if (SelectedModel.SelectedSecurityCamera != null)
+            if (SelectedModel != null && SelectedModel.SelectedSecurityCamera != null)
             {
                 var bmp = MogreTexturePtrToBitmap(SelectedModel.SelectedSecurityCamera.RenderTexturePtr);
-                mApplicationUi.UpdateCameraView(SelectedModel.SelectedSecurityCamera.Properties.Name, bmp);
+
+                if (!FullPreview)
+                {
+                    bmp = ResizeBitmap(bmp, mCameraViewDimension.Width, mCameraViewDimension.Height);
+                }
+
+                mApplicationUi.UpdateCameraView(SelectedModel.SelectedSecurityCamera.Properties, bmp);
                 SelectedModel.SelectedSecurityCamera.Camera.ShowFrustum();
             }
         }
@@ -356,107 +500,13 @@ namespace ApplicationLogic
             return bitmap;
         }
 
-        private TexturePtr CreateTexturePtr(string cameraName)
+        private Bitmap ResizeBitmap(Bitmap bmp, int width, int height)
         {
-            var textureName = "Texture" + cameraName;
-            var width = (uint)mCameraViewDimension.Width;
-            var height = (uint)mCameraViewDimension.Height;
-            return TextureManager.Singleton.CreateManual(textureName, AppController.DefaultMaterialGroupName,
-                TextureType.TEX_TYPE_2D, width, height, 0, PixelFormat.PF_B8G8R8, (int)TextureUsage.TU_RENDERTARGET);
+            return new Bitmap(bmp, new Size(width, height));
         }
+  
 
         #endregion
-
-        public void SelectCamera(string key)
-        {
-            foreach (var model in LoadedModels)
-            {
-                if (model.Value.SecurityCameras.ContainsKey(key))
-                {
-                    model.Value.SelectSecurityCamera(key);
-                    mApplicationUi.CameraSelected(model.Value.SecurityCameras[key].Properties);
-                }
-            }
-        }
-
-        public void SelectLight(string key)
-        {
-            foreach (var model in LoadedModels)
-            {
-                if (model.Value.Lights.ContainsKey(key))
-                {
-                    model.Value.SelectLight(key);
-                    mApplicationUi.LightSelected(model.Value.Lights[key].Properties);
-                }
-            }
-        }
-
-        public bool IsSecurityCameraSelected()
-        {
-            if (SelectedModel != null)
-            {
-                return SelectedModel.IsSecurityCameraSelected();
-            }
-            return false;
-        }
-
-        public bool IsLightSelected()
-        {
-            if (SelectedModel != null)
-            {
-                return SelectedModel.IsLightSelected();
-            }
-            return false;
-        }
-
-        public void CameraMouseClick(MouseEventArgs e)
-        {
-            //if (SelectedModel != null)
-            //{
-            //    SelectedModel.CameraMouseClick(e);
-            //}
-        }
-
-        public void LightMouseClick(MouseEventArgs e)
-        {
-            if (SelectedModel != null)
-            {
-                SelectedModel.LightMouseClick(e);
-            }
-        }
-
-        public void CameraMouseMove(MouseEventArgs e)
-        {
-            //if (SelectedModel != null)
-            //{
-            //    SelectedModel.CameraMouseMove(e);
-            //}
-        }
-
-        public void LightMouseMove(MouseEventArgs e)
-        {
-            if (SelectedModel != null)
-            {
-                SelectedModel.LightMouseMove(e);
-            }
-        }
-
-        public void CameraYaw(int deg)
-        {
-            if (SelectedModel != null && SelectedModel.SelectedSecurityCamera != null)
-            {
-                SelectedModel.SelectedSecurityCamera.CameraYaw(deg);
-            }
-            
-        }
-
-        public void CameraPitch(int deg)
-        {
-            if (SelectedModel != null && SelectedModel.SelectedSecurityCamera != null)
-            {
-                SelectedModel.SelectedSecurityCamera.CameraPitch(deg);
-            }
-        }
 
         #region Keyboard Input
 
@@ -516,28 +566,43 @@ namespace ApplicationLogic
 
         private void MouseLeftClick(MouseEventArgs e)
         {
-            isLeftMouseButtonDown = true;
+            var selectedObjectName = GetMovableObjectName(e.X, e.Y);
+            
+            if (selectedObjectName == null) return;
+            
+            DeselectAllCameras();
+            DeselectAllLights();
+            DeselectAllModels();
+
+            if (selectedObjectName.Contains("SecurityCamera"))
+            {
+                SelectCamera(selectedObjectName);
+                SetCameraMode();
+            }
+            else if (selectedObjectName.Contains("Light"))
+            {
+                SelectLight(selectedObjectName);
+                SetLightMode();
+            }
+            else
+            {
+                SelectModel(selectedObjectName);
+                SetModelMode();
+            }
+            mApplicationUi.ActiveModeChanged(ActiveMode);
             switch (ActiveMode)
             {
                 case Mode.CAMERA_MODE:
-                    DeselectAllCameras();
-                    SelectSecurityCamera(e.X, e.Y);
                     if (IsSecurityCameraSelected())
                     {
                         CameraMouseClick(e);
                     }
                     break;
                 case Mode.LIGHT_MODE:
-                    DeselectAllLights();
-                    SelectLight(e.X,e.Y);
                     if (IsLightSelected())
                     {
                         LightMouseClick(e);
                     }
-                    break;
-                case Mode.MODEL_MODE:
-                    DeselectAllModels();
-                    SelectModel(e.X, e.Y);
                     break;
             }
         }
@@ -608,60 +673,116 @@ namespace ApplicationLogic
         }
         #endregion
 
-        public void DeleteSelectedCamera()
+
+        public void Start()
         {
-            if (SelectedModel != null && SelectedModel.SelectedSecurityCamera != null)
-            {
-                var name = SelectedModel.SelectedSecurityCamera.InternalName;
-                SelectedModel.DeleteSelectedCamera();
-                mApplicationUi.CameraRemoved(name);
-            }
+            if (mIsStarted) return;
+            mIsStarted = true;
+            Engine.Instance.Start();
         }
 
-        public void DeleteSelectedLight()
+        public void Resize(int width, int height)
         {
-            if (SelectedModel != null && SelectedModel.SelectedLight != null)
-            {
-                var lightName = SelectedModel.SelectedLight.Properties.Name;
-                SelectedModel.DeleteSelectedLight();
-                mApplicationUi.LightRemoved(lightName);
-            }
+            Engine.Instance.Resize(width, height);
         }
-
-        public void DeleteSelectedModel()
+        
+        #region Saving Scene
+        public void LoadScene(string fileName)
         {
-            if (SelectedModel != null)
+            try
             {
-                var name = SelectedModel.ModelProperties.Name;
-                LoadedModels.Remove(name);
-                SelectedModel.Delete();
-                SelectedModel = null;
-                mApplicationUi.ModelRemoved(name);
-            }
-        }
-
-        public void UpdateCameraProperties(SecurityCameraProperties properties)
-        {
-            if (mIsStarted)
-            {
-                if (SelectedModel != null)
+                if (!File.Exists(fileName))
                 {
-                    SelectedModel.UpdateSelectedCameraProperties(properties);
-                    mApplicationUi.UpdateCameraProperties(properties);
+                    MessageBox.Show("File " + fileName + " does not exist");
+                    return;
                 }
+
+                if (Path.GetExtension(fileName) != ApplicationLogicResources.SceneFileExt)
+                {
+                    MessageBox.Show("Wrong file name extension, correct is: " + ApplicationLogicResources.SceneFileExt);
+                    return;
+                }
+
+                var reader = new System.Xml.Serialization.XmlSerializer(typeof(SceneEntity));
+                var file = new StreamReader(@fileName);
+                SceneEntity loadedScene = (SceneEntity)reader.Deserialize(file);
+                file.Close();
+                ClearScene();
+
+                mModelCounter = loadedScene.ModelCounterValue;
+                mCameraCounter = loadedScene.CameraCounterValue;
+                mLightCounter = loadedScene.LightCounterValue;
+
+                foreach (var loadedModel in loadedScene.Models)
+                {
+                    var newModel = CreateModel(loadedModel);
+                    LoadedModels.Add(newModel.ModelProperties.Name, newModel);
+                    mApplicationUi.ModelAdded(newModel.ModelProperties);
+                }
+
+                LogMessage("Model library loaded from file: " + fileName);
+                MessageBox.Show("Scene successfully loaded from file: " + fileName);
+            }
+            catch (Exception e)
+            {
+                LogMessage("Loading scene failed:"+e);
+                MessageBox.Show("Loading scene failed:" + e.Message);
+            }
+            
+        }
+
+        public void SaveScene(string fileName)
+        {
+            try
+            {
+                var savedScene = new SceneEntity
+                {
+                    CameraCounterValue = mCameraCounter,
+                    LightCounterValue = mLightCounter,
+                    ModelCounterValue = mModelCounter
+                };
+                foreach (var loadedModel in LoadedModels)
+                {
+                    var model = new ModelEntity(loadedModel.Value.ModelProperties);
+                    var m = loadedModel.Value.GetTransformationMatrix();
+                    model.SetTransformationMatrix(m);
+                    foreach (var camera in loadedModel.Value.SecurityCameras)
+                    {
+                        model.AddCameraProperties(camera.Value.Properties);
+                    }
+                    foreach (var light in loadedModel.Value.Lights)
+                    {
+                        model.AddLightProperties(light.Value.Properties);
+                    }
+                    savedScene.AddModel(model);
+                }
+
+                var writer = new System.Xml.Serialization.XmlSerializer(typeof(Scene.Seriaziable.SceneEntity));
+                var file = new StreamWriter(@fileName);
+                writer.Serialize(file, savedScene);
+                file.Close();
+                MessageBox.Show("Scene successfully saved to file: " + fileName);
+            }
+            catch (Exception e)
+            {
+                LogMessage("Scene saving failed: " + e);
+                MessageBox.Show("Scene saving failed: " + e.Message);
             }
         }
 
-        public void UpdateLightProperties(LightProperties properties)
+        public void ClearScene()
         {
-            if (mIsStarted)
+            foreach (var loadedModel in LoadedModels)
             {
-                if (SelectedModel != null)
-                {
-                    SelectedModel.UpdateSelectedLightProperties(properties);
-                    mApplicationUi.UpdateLightProperties(properties);
-                }
+                DeleteModel(loadedModel.Key);
             }
+        }
+
+        #endregion
+
+        public void Shutdown()
+        {
+            Engine.Instance.Dispose();
         }
 
         public void UpdateStatusBar()
@@ -670,7 +791,7 @@ namespace ApplicationLogic
             var pos = Engine.Instance.GetMainCameraPosition();
             var dir = Engine.Instance.GetMainCameraDirection();
             var selectedModelName = (SelectedModel != null) ? SelectedModel.ModelProperties.Name : "N/A";
-            string info = string.Format("Camera Pos:[{0} ; {1}; {2}] | Dir:[{3} ; {4} ; {5}] | Selected Model: {6} | ActiveMode: {7} | SelectedNode: {8}",pos.x,pos.y,pos.z,dir.x,dir.y,dir.z,selectedModelName,ActiveMode,SelectedSceneNode);
+            string info = string.Format("Camera Pos:[{0} ; {1}; {2}] | Dir:[{3} ; {4} ; {5}] | Selected Model: {6} | ActiveMode: {7} | SelectedNode: {8}",pos.x,pos.y,pos.z,dir.x,dir.y,dir.z,selectedModelName,ActiveMode,mSelectedSceneNode);
             mApplicationUi.UpdateStatusBarInfo(info);
         }
 
@@ -679,7 +800,6 @@ namespace ApplicationLogic
             var writer = new System.Xml.Serialization.XmlSerializer(typeof(ModelLibrary));
             var file = new StreamWriter(@fileName);
             writer.Serialize(file, ModelLibrary);
-            //LogMessage("Model library serialized to file: " + fileName);
             file.Close();
         }
 
