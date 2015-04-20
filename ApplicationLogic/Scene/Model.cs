@@ -273,7 +273,7 @@ namespace ApplicationLogic.Scene
 
         public Light AddLight(LightProperties properties)
         {
-            var ligthProperties = new LightProperties { Position = properties.Position };
+            var ligthProperties = new LightProperties { Position = properties.Position, Color = properties.Color };
 
             Light light = null;
             if (properties.Type == LightProperties.LightType.Spot)
