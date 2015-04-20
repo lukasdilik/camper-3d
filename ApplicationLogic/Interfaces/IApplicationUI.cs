@@ -26,6 +26,7 @@ namespace ApplicationLogic.Interfaces
         void UpdateCameraOrientation(int yawDeg, int pitchDeg);
         void ActiveModeChanged(AppController.Mode newMode);
         void ClearPreview();
+        void ClearScene();
         void Close();
         void LogMessage(string msg);
     }

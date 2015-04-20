@@ -109,7 +109,7 @@ namespace RenderingEngine.Scene
 
             CreateSolidFrustum();
             CreateFrustumLines();
-            CreateSolidFrustumRotatedRight();
+            //CreateSolidFrustumRotatedRight();
         }
 
         private void CreateSolidFrustum()

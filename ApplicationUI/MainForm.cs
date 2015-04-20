@@ -794,5 +794,11 @@ namespace ApplicationUI
             }
         }
 
+        public void ClearScene()
+        {
+            Cameras_listBox.Items.Clear();
+            addedModels_listBox.Items.Clear();
+            Lights_listBox.Items.Clear();
+        }
     }
 }

@@ -103,7 +103,7 @@ namespace ApplicationLogic
             if (String.IsNullOrEmpty(meshName)) return null;
 
             var modelData = ModelLibrary.GetModelMesh(meshName);
-            var newModel = new Model(modelData.Name, entity.MeshName);
+            var newModel = new Model(entity.Name, entity.MeshName);
        
             newModel.SetTransformationMatrix(entity.GetTransformationMatrix());
 
@@ -329,6 +329,7 @@ namespace ApplicationLogic
             if (IsSecurityCameraSelected())
             {
                 SelectedModel.SelectedSecurityCamera.CameraYaw(deg);
+                mApplicationUi.CameraSelected(SelectedModel.SelectedSecurityCamera.Properties);
             }
 
         }
@@ -338,6 +339,7 @@ namespace ApplicationLogic
             if (IsSecurityCameraSelected())
             {
                 SelectedModel.SelectedSecurityCamera.CameraPitch(deg);
+                mApplicationUi.CameraSelected(SelectedModel.SelectedSecurityCamera.Properties);
             }
         }
 
@@ -780,6 +782,7 @@ namespace ApplicationLogic
             {
                 DeleteModel(loadedModel.Key);
             }
+            mApplicationUi.ClearScene();
         }
 
         #endregion
@@ -824,9 +827,12 @@ namespace ApplicationLogic
 
         public void Exit()
         {
-            SerializeLibrary(@ApplicationLogicResources.LibraryFilename);
-            if(mIsStarted)
-                Engine.Instance.Shutdown();
+            try {
+                SerializeLibrary(@ApplicationLogicResources.LibraryFilename);
+                if (mIsStarted)
+                    Engine.Instance.Shutdown();
+            }
+            catch (Exception e) {}
         }
     }
 }

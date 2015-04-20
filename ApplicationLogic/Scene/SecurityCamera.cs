@@ -160,6 +160,7 @@ namespace ApplicationLogic.Scene
         {
             var diff = Properties.PitchDeg - deg;
             Camera.Pitch(new Degree(diff).ValueRadians);
+            Properties.Direction = Camera.MogreCamera.Direction;
             Properties.PitchDeg = deg;
         }
 
@@ -167,6 +168,7 @@ namespace ApplicationLogic.Scene
         {
             var diff = Properties.YawDeg - deg;
             Camera.Yaw(new Degree(diff).ValueRadians);
+            Properties.Direction = Camera.MogreCamera.Direction;
             Properties.YawDeg = deg;
         }
 
