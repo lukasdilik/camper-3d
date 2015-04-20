@@ -11,8 +11,6 @@ using ApplicationLogic.Scene.Seriaziable;
 using Mogre;
 using RenderingEngine.Engine;
 using RenderingEngine.Interfaces;
-using Math = System.Math;
-using PixelFormat = Mogre.PixelFormat;
 using Rectangle = System.Drawing.Rectangle;
 
 
@@ -680,6 +678,13 @@ namespace ApplicationLogic
         {
             if (!mIsStarted) return;
             HandleMouseDoubleClick(e);
+        }
+
+        public void MouseWheel(MouseEventArgs e)
+        {
+            if (!mIsStarted) return;
+            LogMessage("wheel");
+            HandleMouseWheel(e);
         }
 
 

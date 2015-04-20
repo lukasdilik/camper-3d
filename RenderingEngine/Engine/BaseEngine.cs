@@ -11,7 +11,10 @@ namespace RenderingEngine.Engine
     {
         public Camera MainCamera;
         public CameraMan CameraMan;
-        
+
+        protected Vector3 OriginalDirection;
+        protected Matrix4 OriginalViewMatrix;
+
         protected IApplication ApplicationLogic;
         
         protected Root Root;
@@ -146,7 +149,9 @@ namespace RenderingEngine.Engine
 
             MainCamera.LookAt(new Vector3(0, 0, -1));
             MainCamera.NearClipDistance = 5;
+            MainCamera.FarClipDistance = 10000;
 
+            OriginalViewMatrix = MainCamera.ViewMatrix;
             CameraMan = new CameraMan(MainCamera);
         }
 

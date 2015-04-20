@@ -145,6 +145,13 @@ namespace ApplicationUI
                 mAppController.MouseDoubleClick(e);
         }
 
+        void MainForm_MouseWheel(object sender, MouseEventArgs e)
+        {
+            LogMessage(isMainWindowActive.ToString());
+            if (isMainWindowActive)
+                mAppController.MouseWheel(e);
+        }
+
         #endregion
 
         public String GetSelectedModelName()

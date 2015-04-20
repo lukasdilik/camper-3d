@@ -48,7 +48,17 @@ namespace ApplicationLogic
                 case Keys.F5:
                     Engine.Instance.ChangeTerrainClamping();
                     break;
-                case Keys.Delete:
+                case Keys.X:
+                    Engine.Instance.SetSideView();
+                    break;
+                case Keys.Y:
+                    Engine.Instance.SetTopView();
+                    break;
+                case Keys.Z:
+                    Engine.Instance.SetFrontView();
+                    break;
+                case Keys.Escape:
+                    Engine.Instance.ResetToNormalView();
                     break;
                 case Keys.Enter:
                     if (ActiveMode == Mode.CAMERA_MODE)
@@ -126,7 +136,6 @@ namespace ApplicationLogic
                 case Keys.E:
                     Engine.Instance.CameraMan.GoingDown = false;
                     break;
-
                 case Keys.RShiftKey:
                     Engine.Instance.CameraMan.FastMove = false;
                     break;
@@ -167,9 +176,22 @@ namespace ApplicationLogic
 
         }
 
+        protected virtual void HandleMouseWheel(MouseEventArgs e)
+        {
+            var factor = e.Delta;
+            if (factor > 0)
+            {
+                Engine.Instance.ZoomIn();
+            }
+            else
+            {
+                Engine.Instance.ZoomOut();
+            }
+        }
+
         public void Dispose()
         {
-            
+         
         }
     }
 }

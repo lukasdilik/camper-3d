@@ -31,6 +31,7 @@ namespace ApplicationUI
         /// </summary>
         private void InitializeComponent()
         {
+            this.MouseWheel +=MainForm_MouseWheel;
             this.MainWindow = new System.Windows.Forms.Panel();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
@@ -140,7 +141,6 @@ namespace ApplicationUI
             this.MainWindow.MouseEnter += new System.EventHandler(this.MainWindow_MouseEnter);
             this.MainWindow.MouseLeave += new System.EventHandler(this.MainWindow_MouseLeave);
             this.MainWindow.MouseMove += new System.Windows.Forms.MouseEventHandler(this.MainWindow_MouseMove);
-            this.MainWindow.MouseUp += new System.Windows.Forms.MouseEventHandler(this.MainWindow_MouseUp);
             // 
             // menuStrip1
             // 
@@ -285,8 +285,6 @@ namespace ApplicationUI
             this.Mode_tabControl.TabIndex = 14;
             this.Mode_tabControl.SelectedIndexChanged += new System.EventHandler(this.Mode_tabControl_SelectedIndexChanged);
             this.Mode_tabControl.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Mode_tabControl_KeyDown);
-            this.Mode_tabControl.MouseEnter += new System.EventHandler(this.ActivateMainWindow);
-            this.Mode_tabControl.MouseLeave += new System.EventHandler(this.DeactivateMainWindow);
             // 
             // Cameras_tab
             // 

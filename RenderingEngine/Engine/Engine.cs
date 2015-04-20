@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Security.Policy;
 using Mogre;
 using RenderingEngine.Interfaces;
 using Math = System.Math;
@@ -10,6 +11,9 @@ namespace RenderingEngine.Engine
     {
         public const String WindowName = "MOGRE Window";
         public const float MaxHeight = 10f;
+        public const float ZoomStep = 0.5f;
+
+        private float mScaleFactor;
 
         private static Engine mInstance;
 
@@ -192,6 +196,104 @@ namespace RenderingEngine.Engine
         {
             base.DestroyScene();
             RaySceneQuery.Dispose();
+        }
+
+        public void SetOrthoProjection()
+        {
+            MainCamera.ProjectionType = ProjectionType.PT_ORTHOGRAPHIC;
+        }
+
+        public void SetPerpsectiveProjection()
+        {
+            MainCamera.ProjectionType = ProjectionType.PT_PERSPECTIVE;
+        }
+
+        public void SaveCurrentProjection()
+        {
+            OriginalDirection = MainCamera.Direction;
+            OriginalViewMatrix = MainCamera.ViewMatrix;
+        }
+
+        public void ResetToNormalView()
+        {
+            MainCamera.Direction = OriginalDirection;
+            MainCamera.SetCustomViewMatrix(true,OriginalViewMatrix);
+            SetPerpsectiveProjection();
+        }
+
+        public void SetTopView()
+        {
+            SaveCurrentProjection();
+            SetOrthoProjection();
+            MainCamera.Direction = Vector3.NEGATIVE_UNIT_Y;
+        }
+
+        public void SetSideView()
+        {
+            SaveCurrentProjection();
+            SetOrthoProjection();
+            MainCamera.Direction = Vector3.UNIT_X;
+        }
+
+        public void SetFrontView()
+        {
+            SaveCurrentProjection();
+            SetOrthoProjection();
+            MainCamera.Direction = Vector3.NEGATIVE_UNIT_Z;
+        }
+
+        public void ZoomIn()
+        {
+            
+            if (MainCamera.ProjectionType == ProjectionType.PT_ORTHOGRAPHIC)
+            {
+                mScaleFactor += ZoomStep;
+                var scale = mScaleFactor;
+                Console.Write(mScaleFactor);
+
+                Matrix4 p = this.BuildScaledOrthoMatrix(1280 / scale / -2.0f,
+                                                        1280 / scale / 2.0f,
+                                                        720 / scale / -2.0f,
+                                                        720 / scale / 2.0f, 0, 10000);
+
+                MainCamera.SetCustomProjectionMatrix(true, p);
+            }
+            
+        }
+
+        public void ZoomOut()
+        {
+            if (MainCamera.ProjectionType == ProjectionType.PT_ORTHOGRAPHIC)
+            {
+                mScaleFactor -= ZoomStep;
+                var scale = mScaleFactor;
+                Console.Write(mScaleFactor);
+
+                Matrix4 p = this.BuildScaledOrthoMatrix(1280 / scale / -2.0f,
+                                                        1280 / scale / 2.0f,
+                                                        720 / scale / -2.0f,
+                                                        720 / scale / 2.0f, 0, 10000);
+
+                MainCamera.SetCustomProjectionMatrix(true, p);
+            }
+        }
+
+        private Matrix4 BuildScaledOrthoMatrix(float left, float right, float bottom, float top, float near, float far)
+        {
+            float invw = 1 / (right - left);
+            float invh = 1 / (top - bottom);
+            float invd = 1 / (far - near);
+
+            Matrix4 proj = Matrix4.ZERO;
+            proj[0, 0] = 2 * invw;
+            proj[0, 3] = -(right + left) * invw;
+            proj[1, 1] = 2 * invh;
+            proj[1, 3] = -(top + bottom) * invh;
+            proj[2, 2] = -2 * invd;
+            proj[2, 3] = -(far + near) * invd;
+            proj[3, 3] = 1;
+
+            return proj;
         }
 
         public void SetUpRenderingWindow(IntPtr handle, int width, int height)
