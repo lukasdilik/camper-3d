@@ -780,8 +780,11 @@ namespace ApplicationLogic
         {
             foreach (var loadedModel in LoadedModels)
             {
-                DeleteModel(loadedModel.Key);
+                var toDelete = LoadedModels[loadedModel.Key];
+                toDelete.Delete();
+                SelectedModel = null;
             }
+            LoadedModels.Clear();
             mApplicationUi.ClearScene();
         }
 

@@ -137,6 +137,7 @@ namespace ApplicationLogic.Scene
 
         public void Delete()
         {
+            StopRenderingToTexture();
             Camera.Delete();
         }
 

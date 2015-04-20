@@ -70,5 +70,21 @@ namespace RenderingEngine
             spotLight.SpecularColour = color;
             return spotLight;
         }
+
+        public void DeleteLight(string name)
+        {
+            if (SpotLights.ContainsKey(name))
+            {
+                mSceneManager.DestroyLight(SpotLights[name]);
+                SpotLights.Remove(name);
+            }
+
+            if (PointLights.ContainsKey(name))
+            {
+                mSceneManager.DestroyLight(PointLights[name]);
+                PointLights.Remove(name);
+            }
+        }
+
     }
 }

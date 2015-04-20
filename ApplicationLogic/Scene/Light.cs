@@ -63,7 +63,7 @@ namespace ApplicationLogic.Scene
 
         public void Delete()
         {
-            Engine.Instance.SceneManager.DestroyLight(OgreLight);
+            LightManager.Instance.DeleteLight(Properties.Name);
             SceneNode.ShowBoundingBox = false;
             SceneNode.RemoveAndDestroyAllChildren();
             Engine.Instance.SceneManager.DestroyEntity(Mesh);
