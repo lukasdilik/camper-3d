@@ -21,7 +21,20 @@ namespace ApplicationLogic
     public partial class AppController : IKeyboardInput, IMouseInput,IApplication
     {
         public static string DefaultMaterialGroupName = ResourceGroupManager.DEFAULT_RESOURCE_GROUP_NAME;
-        public bool FullPreview = false;
+
+        private bool mFullPreview;
+        public bool FullPreview
+        {
+            get { return mFullPreview; }
+            set {
+                if (IsSecurityCameraSelected())
+                {
+                    SelectedModel.SelectedSecurityCamera.IsNativeRendering = value;
+                }
+                mFullPreview = value;
+            }
+        }
+
         public enum Mode { CAMERA_MODE, LIGHT_MODE, MODEL_MODE };
 
         public Mode ActiveMode = Mode.CAMERA_MODE;
@@ -33,8 +46,7 @@ namespace ApplicationLogic
         private bool mIsStarted;
         private bool mIsMainCameraActivated = true;
         private readonly IApplicationUI mApplicationUi;
-        private Size mCameraViewDimension;
-
+        public static Size CameraViewDimension;
         private String mSelectedSceneNode;
 
         public Dictionary<string, Model> LoadedModels { get; private set; }
@@ -45,7 +57,7 @@ namespace ApplicationLogic
             LoadedModels = new Dictionary<string, Model>();
             Engine.Instance.SetApplicationInstance(this);
             mApplicationUi = appUi;
-            mCameraViewDimension = mApplicationUi.GetCameraPreviewDimension();
+            CameraViewDimension = mApplicationUi.GetCameraPreviewDimension();
 
             if (File.Exists(@ApplicationLogicResources.LibraryFilename))
             {
@@ -255,13 +267,14 @@ namespace ApplicationLogic
                 if (model.Value.SecurityCameras.ContainsKey(key))
                 {
                     model.Value.SelectSecurityCamera(key);
-
+                    SelectModel(model.Value.ModelProperties.Name);
                     if (IsSecurityCameraSelected())
                     {
                         LogMessage("Seletected Camera: " + SelectedModel.SelectedSecurityCamera.Properties.Name);
                         SetCameraMode();
                         mApplicationUi.CameraSelected(model.Value.SecurityCameras[key].Properties);
                     }
+
                 }
             }
         }
@@ -464,6 +477,26 @@ namespace ApplicationLogic
         {
             camera.RenderTexture.PreRenderTargetUpdate += RenderTexture_PreRenderTargetUpdate;
             camera.RenderTexture.PostRenderTargetUpdate += RenderTextureOnPostRenderTargetUpdate;
+            camera.RenderTextureNative.PreRenderTargetUpdate += RenderTextureNative_PreRenderTargetUpdate;
+            camera.RenderTextureNative.PostRenderTargetUpdate += RenderTextureNative_PostRenderTargetUpdate;
+        }
+
+        void RenderTextureNative_PostRenderTargetUpdate(RenderTargetEvent_NativePtr evt)
+        {
+            if (SelectedModel != null && SelectedModel.SelectedSecurityCamera != null)
+            {
+                var bmp = MogreTexturePtrToBitmap(SelectedModel.SelectedSecurityCamera.RenderTextureNativePtr);
+                mApplicationUi.UpdateCameraViewNative(SelectedModel.SelectedSecurityCamera.Properties, bmp);
+                SelectedModel.SelectedSecurityCamera.Camera.ShowFrustum();
+            }
+        }
+
+        void RenderTextureNative_PreRenderTargetUpdate(RenderTargetEvent_NativePtr evt)
+        {
+            if (SelectedModel != null && SelectedModel.SelectedSecurityCamera != null)
+            {
+                SelectedModel.SelectedSecurityCamera.Camera.HideFrustum();
+            }
         }
 
         private void RenderTexture_PreRenderTargetUpdate(RenderTargetEvent_NativePtr evt)
@@ -479,12 +512,6 @@ namespace ApplicationLogic
             if (SelectedModel != null && SelectedModel.SelectedSecurityCamera != null)
             {
                 var bmp = MogreTexturePtrToBitmap(SelectedModel.SelectedSecurityCamera.RenderTexturePtr);
-
-                if (!FullPreview)
-                {
-                    bmp = ResizeBitmap(bmp, mCameraViewDimension.Width, mCameraViewDimension.Height);
-                }
-
                 mApplicationUi.UpdateCameraView(SelectedModel.SelectedSecurityCamera.Properties, bmp);
                 SelectedModel.SelectedSecurityCamera.Camera.ShowFrustum();
             }
@@ -574,25 +601,24 @@ namespace ApplicationLogic
 
         private void MouseLeftClick(MouseEventArgs e)
         {
-            var selectedObjectName = GetMovableObjectName(e.X, e.Y);
-            
-            if (selectedObjectName == null) return;
-            
-            DeselectAllCameras();
-            DeselectAllLights();
-            DeselectAllModels();
+            mSelectedSceneNode = GetMovableObjectName(e.X, e.Y);
 
-            if (selectedObjectName.Contains("SecurityCamera"))
+            if (mSelectedSceneNode == null) return;
+            
+            if (mSelectedSceneNode.Contains("SecurityCamera"))
             {
-                SelectCamera(selectedObjectName);
+                DeselectAllCameras();
+                SelectCamera(mSelectedSceneNode);
             }
-            else if (selectedObjectName.Contains("Light"))
+            else if (mSelectedSceneNode.Contains("Light"))
             {
-                SelectLight(selectedObjectName);
+                DeselectAllLights();
+                SelectLight(mSelectedSceneNode);
             }
             else
             {
-                SelectModel(selectedObjectName);
+                DeselectAllModels();
+                SelectModel(mSelectedSceneNode);
                 SetModelMode();
             }
             mApplicationUi.ActiveModeChanged(ActiveMode);
@@ -611,6 +637,7 @@ namespace ApplicationLogic
                     }
                     break;
             }
+            UpdateStatusBar();
         }
 
         private void MouseRightClick(MouseEventArgs e)

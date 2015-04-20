@@ -9,6 +9,16 @@ namespace ApplicationLogic.Scene
         public string MeshName = ApplicationLogicResources.SecurityCameraMeshName;
         private bool mSelected;
         private int mOldX, mOldY;
+        public bool mNativeRendering;
+        public bool IsNativeRendering
+        {
+            get { return mNativeRendering; }
+            set
+            {
+                mNativeRendering = value;
+                StartRenderingToTexture();
+            }
+        }
 
         public bool Selected
         {
@@ -32,8 +42,9 @@ namespace ApplicationLogic.Scene
         public SecurityCameraProperties Properties { get; private set; }
         public Camera Camera { get; private set; }
         public RenderTexture RenderTexture { get; private set; }
-
+        public RenderTexture RenderTextureNative { get; private set; }
         public TexturePtr RenderTexturePtr { get; private set; }
+        public TexturePtr RenderTextureNativePtr { get; private set; }
         public SecurityCamera(string name, Vector3 position, Vector3 normal)
         {
             normal.Normalise();
@@ -47,12 +58,20 @@ namespace ApplicationLogic.Scene
         private void InitRTT()
         {
             CreateTexturePtr();
+            CreateTexturePtrNative();
             RenderTexture = RenderTexturePtr.GetBuffer().GetRenderTarget();
             RenderTexture.AddViewport(Camera.MogreCamera);
             RenderTexture.GetViewport(0).SetClearEveryFrame(true);
             RenderTexture.GetViewport(0).BackgroundColour = ColourValue.Black;
             RenderTexture.GetViewport(0).OverlaysEnabled = false;
             RenderTexture.IsAutoUpdated = true;
+
+            RenderTextureNative = RenderTextureNativePtr.GetBuffer().GetRenderTarget();
+            RenderTextureNative.AddViewport(Camera.MogreCamera);
+            RenderTextureNative.GetViewport(0).SetClearEveryFrame(true);
+            RenderTextureNative.GetViewport(0).BackgroundColour = ColourValue.Black;
+            RenderTextureNative.GetViewport(0).OverlaysEnabled = false;
+            RenderTextureNative.IsAutoUpdated = false;
         }
 
         public void UpdateCameraProperties(SecurityCameraProperties newProperties)
@@ -73,26 +92,39 @@ namespace ApplicationLogic.Scene
         private void CreateTexturePtr()
         {
             var textureName = "Texture" + Properties.Name;
-            var width = (uint)Properties.Resolution.x;
-            var height = (uint) Properties.Resolution.y;
+            var width = (uint)AppController.CameraViewDimension.Width;
+            var height = (uint)AppController.CameraViewDimension.Height;
             RenderTexturePtr = TextureManager.Singleton.CreateManual(textureName, AppController.DefaultMaterialGroupName,
+                TextureType.TEX_TYPE_2D, width, height, 0, PixelFormat.PF_B8G8R8, (int)TextureUsage.TU_RENDERTARGET);
+        }
+
+        private void CreateTexturePtrNative()
+        {
+            var textureName = "TextureNative" + Properties.Name;
+            var width = (uint)Properties.Resolution.x;
+            var height = (uint)Properties.Resolution.y;
+            RenderTextureNativePtr = TextureManager.Singleton.CreateManual(textureName, AppController.DefaultMaterialGroupName,
                 TextureType.TEX_TYPE_2D, width, height, 0, PixelFormat.PF_B8G8R8, (int)TextureUsage.TU_RENDERTARGET);
         }
 
         public void StartRenderingToTexture()
         {
-            if (RenderTexture != null)
+            if (mNativeRendering)
             {
+                RenderTextureNative.IsAutoUpdated = true;
+                RenderTexture.IsAutoUpdated = false;
+            }
+            else
+            {
+                RenderTextureNative.IsAutoUpdated = false;
                 RenderTexture.IsAutoUpdated = true;
             }
         }
 
         public void StopRenderingToTexture()
         {
-            if (RenderTexture != null)
-            {
-                RenderTexture.IsAutoUpdated = false;
-            }
+            RenderTextureNative.IsAutoUpdated = false;
+            RenderTexture.IsAutoUpdated = false;
         }
 
         public void HandleKey(Keys key)

@@ -36,6 +36,8 @@ namespace ApplicationUI
 
             mFullPreviewForm = new FullPreviewForm();
             mFullPreviewForm.Hide();
+            mFullPreviewForm.VisibleChanged += mFullPreviewForm_VisibleChanged;
+            
             mLibraryForm.FormClosed += mLibraryForm_FormClosed;
 
             CameraProperties_panel.Hide();
@@ -53,6 +55,11 @@ namespace ApplicationUI
             {
                 AvailableModels_combo.SelectedIndex = 0;    
             }
+        }
+
+        void mFullPreviewForm_VisibleChanged(object sender, EventArgs e)
+        {
+            mAppController.FullPreview = mFullPreviewForm.Visible;
         }
 
         void mLibraryForm_FormClosed(object sender, FormClosedEventArgs e)
@@ -284,19 +291,17 @@ namespace ApplicationUI
 
         public void UpdateCameraView(SecurityCameraProperties properties, Bitmap bmp)
         {
-            if (mAppController.FullPreview)
-            {
-                mFullPreviewForm.Text = "Preview: "+properties.Name + string.Format("{0:f:0}x{1:f:0}",properties.Resolution.x,properties.Resolution.y);
-                var pb = mFullPreviewForm.GetPicturebox();
-                pb.Image = bmp;
-                pb.Invalidate();
+            preview_label.Text = "Preview:" + properties.Name;
+            CameraView_pictureBox.Image = bmp;
+            CameraView_pictureBox.Invalidate();
         }
-            else
-            {
-                preview_label.Text = "Preview:" + properties.Name;
-                CameraView_pictureBox.Image = bmp;
-                CameraView_pictureBox.Invalidate();
-            }
+
+        public void UpdateCameraViewNative(SecurityCameraProperties properties, Bitmap bmp)
+        {
+            mFullPreviewForm.Text = "Preview: " + properties.Name + string.Format("{0:f:0}x{1:f:0}", properties.Resolution.x, properties.Resolution.y);
+            var pb = mFullPreviewForm.GetPictureBox();
+            pb.Image = bmp;
+            pb.Invalidate();
         }
 
         public void UpdateCameraOrientation(int yawDeg, int pitchDeg)
@@ -738,6 +743,7 @@ namespace ApplicationUI
             {
                 Clipboard.SetDataObject(Cameras_listBox.Items[Cameras_listBox.SelectedIndex], true);
                 e.SuppressKeyPress = true;
+                e.Handled = true;
             }
         }
 
@@ -780,17 +786,16 @@ namespace ApplicationUI
 
         private void CameraView_pictureBox_DoubleClick(object sender, EventArgs e)
         {
-            mAppController.FullPreview = !mAppController.FullPreview;
+            if (mFullPreviewForm.Visible) return;
+
+            mAppController.FullPreview = true;
+            
             if (mAppController.FullPreview)
             {
                 int width = (int) mAppController.GetActiveResolution().x;
                 int height = (int) mAppController.GetActiveResolution().y;
                 mFullPreviewForm.Size = new Size(width, height);
                 mFullPreviewForm.Show();
-            }
-            else
-            {
-                mFullPreviewForm.Hide();
             }
         }
 
