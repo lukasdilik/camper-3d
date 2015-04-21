@@ -147,7 +147,6 @@ namespace ApplicationUI
 
         void MainForm_MouseWheel(object sender, MouseEventArgs e)
         {
-            LogMessage(isMainWindowActive.ToString());
             if (isMainWindowActive)
                 mAppController.MouseWheel(e);
         }
