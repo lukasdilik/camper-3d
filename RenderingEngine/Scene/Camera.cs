@@ -49,6 +49,20 @@ namespace RenderingEngine.Scene
             MogreCamera.FOVy*aspectRatio, MogreCamera.FOVy*aspectRatio);
 
             UpdateSpotLight();
+
+            ChangeMeshColor(Frustum.Color);
+        }
+
+        private void ChangeMeshColor(ColourValue color)
+        {
+            var subMeshesCount = Mesh.GetMesh().NumSubMeshes;
+            for (int i = 0; i < subMeshesCount; i++)
+            {
+                var materialName = Mesh.GetMesh().GetSubMesh((ushort) i).MaterialName;
+                var materialPtr = (MaterialPtr)MaterialManager.Singleton.GetByName(materialName);
+                var pass = materialPtr.GetTechnique(0).GetPass(0);
+                pass.Diffuse = color;
+            }
         }
 
         private void UpdateSpotLight()

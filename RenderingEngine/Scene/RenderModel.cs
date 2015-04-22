@@ -12,7 +12,6 @@ namespace RenderingEngine.Scene
         public RenderModel(string name, string meshName)
         {
             Entity = mEngine.SceneManager.CreateEntity(name, meshName);
-            Entity.SetMaterial(MaterialManager.Singleton.GetByName("Ogre/Compositor/BlackAndWhite"));
             
             SceneNode = mEngine.SceneManager.RootSceneNode.CreateChildSceneNode(name + "Node");
             SceneNode.AttachObject(Entity);

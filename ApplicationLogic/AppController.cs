@@ -485,7 +485,7 @@ namespace ApplicationLogic
             {
                 var bmp = MogreTexturePtrToBitmap(SelectedModel.SelectedSecurityCamera.RenderTextureNativePtr);
                 mApplicationUi.UpdateCameraViewNative(SelectedModel.SelectedSecurityCamera.Properties, bmp);
-                SelectedModel.SelectedSecurityCamera.Camera.ShowFrustum();
+                //SelectedModel.SelectedSecurityCamera.Camera.ShowFrustum();
             }
         }
 
@@ -511,7 +511,7 @@ namespace ApplicationLogic
             {
                 var bmp = MogreTexturePtrToBitmap(SelectedModel.SelectedSecurityCamera.RenderTexturePtr);
                 mApplicationUi.UpdateCameraView(SelectedModel.SelectedSecurityCamera.Properties, bmp);
-                SelectedModel.SelectedSecurityCamera.Camera.ShowFrustum();
+                //SelectedModel.SelectedSecurityCamera.Camera.ShowFrustum();
             }
         }
 
@@ -853,6 +853,17 @@ namespace ApplicationLogic
             ModelLibrary = (ModelLibrary)reader.Deserialize(file);
             file.Close();
             LogMessage("Model library loaded from file: " + fileName);
+        }
+
+        public void ShowCoverage()
+        {
+            foreach (var loadedModel in LoadedModels)
+            {
+                foreach (var securityCamera in loadedModel.Value.SecurityCameras)
+                {
+                    securityCamera.Value.Camera.HideFrustum();
+                }
+            }
         }
 
         public void LogMessage(string msg)

@@ -112,6 +112,31 @@ namespace ApplicationLogic
             return modelNames;
         }
 
+
+        public List<string> GetModelMaterials(string modelName)
+        {
+            foreach (var availableModel in AvailableModels)
+            {
+                if (availableModel.Name == modelName)
+                {
+                    return availableModel.Materials;
+                }
+            }
+            return null;
+        }
+
+        public List<string> GetModelTextures(string modelName)
+        {
+            foreach (var availableModel in AvailableModels)
+            {
+                if (availableModel.Name == modelName)
+                {
+                    return availableModel.Textures;
+                }
+            }
+            return null;
+        } 
+
         public ModelData GetModelMesh(string name)
         {
             if (String.IsNullOrEmpty(name)) return null;

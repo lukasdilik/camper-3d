@@ -15,7 +15,7 @@ namespace RenderingEngine
          new ColourValue(1f,0f,0f,0),
          //new ColourValue(1f,1f,0f,0),
          new ColourValue(0.5f,0.5f,0f,0),
-         new ColourValue(0.75f,0.75f,0.75f,0),
+         //new ColourValue(0.75f,0.75f,0.75f,0),
          new ColourValue(0f,1f,0f,0),
          new ColourValue(0f,0.5f,0f,0),
          new ColourValue(0f,1f,1f,0),

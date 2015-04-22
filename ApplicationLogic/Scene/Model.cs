@@ -23,6 +23,8 @@ namespace ApplicationLogic.Scene
         public Dictionary<string, Light> Lights { get; private set; }
         public Light SelectedLight { get; private set; }
 
+        private List<MaterialPtr> mMaterialsPointers; 
+
         public bool Selected
         {
             get { return mSelected; }
@@ -43,6 +45,7 @@ namespace ApplicationLogic.Scene
 
         public Model(string name, string meshName)
         {
+            mMaterialsPointers = new List<MaterialPtr>();
             ModelProperties = new ModelProperties {Name = name, MeshName = meshName};
 
             SecurityCameras = new Dictionary<string, SecurityCamera>();
@@ -50,7 +53,15 @@ namespace ApplicationLogic.Scene
             SelectedSecurityCamera = null;
             SelectedLight = null;
 
-            RenderModel = new RenderingEngine.Scene.RenderModel(name,meshName);
+            RenderModel = new RenderingEngine.Scene.RenderModel(name, meshName);
+            var nMaxSubMesh = RenderModel.Entity.GetMesh().NumSubMeshes;
+            for (int i = 0; i < nMaxSubMesh; i++)
+            {
+                var materialName = RenderModel.Entity.GetMesh().GetSubMesh((ushort) i).MaterialName;
+                var materialPtr = MaterialManager.Singleton.GetByName(materialName);
+                mMaterialsPointers.Add(materialPtr);
+            }
+            SetNoTextureMaterial();
         }
 
         public void Translate(Vector3 t)
@@ -78,6 +89,19 @@ namespace ApplicationLogic.Scene
             
         }
 
+
+        public void SetNoTextureMaterial()
+        {
+            foreach (var mMaterialsPointer in mMaterialsPointers)
+            {
+                var pass =  mMaterialsPointer.GetTechnique(0).GetPass(0);
+                pass.RemoveAllTextureUnitStates();
+                pass.ShadingMode = ShadeOptions.SO_PHONG;
+                pass.Diffuse = new ColourValue(1,1,1);
+                pass.Specular = new ColourValue(0,0,0);
+                pass.Ambient = new ColourValue(0,0,0);
+            }
+        }
 
         public void RotateY(Degree deg)
         {

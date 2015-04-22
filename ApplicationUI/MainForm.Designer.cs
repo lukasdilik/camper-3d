@@ -31,7 +31,6 @@ namespace ApplicationUI
         /// </summary>
         private void InitializeComponent()
         {
-            this.MouseWheel +=MainForm_MouseWheel;
             this.MainWindow = new System.Windows.Forms.Panel();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
@@ -58,7 +57,6 @@ namespace ApplicationUI
             this.Yaw_hScrollBar = new System.Windows.Forms.HScrollBar();
             this.label10 = new System.Windows.Forms.Label();
             this.YawAngle_label = new System.Windows.Forms.Label();
-            this.Cameras_listBox = new System.Windows.Forms.ListBox();
             this.label1 = new System.Windows.Forms.Label();
             this.CameraProperties_panel = new System.Windows.Forms.TableLayoutPanel();
             this.Position_label = new System.Windows.Forms.Label();
@@ -112,6 +110,8 @@ namespace ApplicationUI
             this.LightColor_dialog = new System.Windows.Forms.ColorDialog();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.LoadScene_openFileDialog = new System.Windows.Forms.OpenFileDialog();
+            this.AddedCameras_comboBox = new System.Windows.Forms.ComboBox();
+            this.ShowCoverage_button = new System.Windows.Forms.Button();
             this.MainWindow.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -288,8 +288,9 @@ namespace ApplicationUI
             // 
             // Cameras_tab
             // 
+            this.Cameras_tab.Controls.Add(this.ShowCoverage_button);
+            this.Cameras_tab.Controls.Add(this.AddedCameras_comboBox);
             this.Cameras_tab.Controls.Add(this.cameraRotation_panel);
-            this.Cameras_tab.Controls.Add(this.Cameras_listBox);
             this.Cameras_tab.Controls.Add(this.label1);
             this.Cameras_tab.Controls.Add(this.CameraProperties_panel);
             this.Cameras_tab.Location = new System.Drawing.Point(4, 25);
@@ -369,22 +370,10 @@ namespace ApplicationUI
             this.YawAngle_label.TabIndex = 22;
             this.YawAngle_label.Text = "0";
             // 
-            // Cameras_listBox
-            // 
-            this.Cameras_listBox.FormattingEnabled = true;
-            this.Cameras_listBox.ItemHeight = 16;
-            this.Cameras_listBox.Location = new System.Drawing.Point(6, 23);
-            this.Cameras_listBox.Name = "Cameras_listBox";
-            this.Cameras_listBox.ScrollAlwaysVisible = true;
-            this.Cameras_listBox.Size = new System.Drawing.Size(318, 132);
-            this.Cameras_listBox.TabIndex = 17;
-            this.Cameras_listBox.SelectedIndexChanged += new System.EventHandler(this.Cameras_listBox_SelectedIndexChanged);
-            this.Cameras_listBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Cameras_listBox_KeyDown);
-            // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 3);
+            this.label1.Location = new System.Drawing.Point(6, 99);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(109, 17);
             this.label1.TabIndex = 13;
@@ -936,6 +925,26 @@ namespace ApplicationUI
             // 
             this.LoadScene_openFileDialog.Filter = "\"Scene File|*scene";
             // 
+            // AddedCameras_comboBox
+            // 
+            this.AddedCameras_comboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.AddedCameras_comboBox.FormattingEnabled = true;
+            this.AddedCameras_comboBox.Location = new System.Drawing.Point(6, 119);
+            this.AddedCameras_comboBox.Name = "AddedCameras_comboBox";
+            this.AddedCameras_comboBox.Size = new System.Drawing.Size(318, 24);
+            this.AddedCameras_comboBox.TabIndex = 25;
+            this.AddedCameras_comboBox.SelectedIndexChanged += new System.EventHandler(this.AddedCameras_comboBox_SelectedIndexChanged);
+            // 
+            // ShowCoverage_button
+            // 
+            this.ShowCoverage_button.Location = new System.Drawing.Point(6, 15);
+            this.ShowCoverage_button.Name = "ShowCoverage_button";
+            this.ShowCoverage_button.Size = new System.Drawing.Size(128, 26);
+            this.ShowCoverage_button.TabIndex = 26;
+            this.ShowCoverage_button.Text = "Show Coverage";
+            this.ShowCoverage_button.UseVisualStyleBackColor = true;
+            this.ShowCoverage_button.Click += new System.EventHandler(this.ShowCoverage_button_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -1046,7 +1055,6 @@ namespace ApplicationUI
         private TextBox Angle_textBox;
         private Label LightName_label;
         private Label label5;
-        private ListBox Cameras_listBox;
         private Button Help_btn;
         private Button Update_btn;
         private TextBox Direction_textBox;
@@ -1065,6 +1073,8 @@ namespace ApplicationUI
         private ToolStripMenuItem saveToolStripMenuItem;
         private SaveFileDialog saveFileDialog1;
         private OpenFileDialog LoadScene_openFileDialog;
+        private ComboBox AddedCameras_comboBox;
+        private Button ShowCoverage_button;
 
     }
 }

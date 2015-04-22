@@ -41,7 +41,7 @@ namespace ApplicationUI
             mLibraryForm.FormClosed += mLibraryForm_FormClosed;
 
             CameraProperties_panel.Hide();
-            Cameras_listBox.Hide();
+            AddedCameras_comboBox.Hide();
             cameraRotation_panel.Hide();
 
             LightType_combo.Items.Add("SPOT");
@@ -250,8 +250,8 @@ namespace ApplicationUI
 
         public void CameraAdded(SecurityCameraProperties cameraProperties)
         {
-            Cameras_listBox.Items.Add(cameraProperties.Name);
-            Cameras_listBox.SelectedItem = cameraProperties.Name;
+            AddedCameras_comboBox.Items.Add(cameraProperties.Name);
+            AddedCameras_comboBox.SelectedItem = cameraProperties.Name;
             FillCameraProperties(cameraProperties);
         }
 
@@ -270,13 +270,13 @@ namespace ApplicationUI
 
         public void CameraRemoved(string cameraName)
         {
-            Cameras_listBox.Items.Remove(cameraName);
+            AddedCameras_comboBox.Items.Remove(cameraName);
             ClearCameraProperties();
         }
 
         public void CameraSelected(SecurityCameraProperties cameraProperties)
         {
-            Cameras_listBox.SelectedIndex = Cameras_listBox.FindString(cameraProperties.Name);
+            AddedCameras_comboBox.SelectedIndex = AddedCameras_comboBox.FindString(cameraProperties.Name);
             UpdateCameraProperties(cameraProperties);
         }
 
@@ -358,14 +358,14 @@ namespace ApplicationUI
             FOVy_textBox.Text = "";
             Resolution_textBox.Text = "";
             Rotation_textBox.Text = "";
-            if (Cameras_listBox.Items.Count < 1)
+            if (AddedCameras_comboBox.Items.Count < 1)
             {
                 CameraProperties_panel.Hide();
                 cameraRotation_panel.Hide();
             }
             else
             {
-                mAppController.SelectCamera((string)Cameras_listBox.Items[0]);
+                mAppController.SelectCamera((string)AddedCameras_comboBox.Items[0]);
             }
         }
 
@@ -723,36 +723,6 @@ namespace ApplicationUI
             mAppController.DeleteSelectedLight();
         }
 
-        private void Cameras_listBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (Cameras_listBox.SelectedIndex > -1)
-            {
-                if (Cameras_listBox.Items.Count > 0)
-                {
-                    CameraProperties_panel.Show();
-                    Cameras_listBox.Show();
-                    cameraRotation_panel.Show();
-                }
-                else
-                {
-                    Cameras_listBox.Hide();
-                    cameraRotation_panel.Hide();
-                    CameraProperties_panel.Hide();
-                }
-                mAppController.SelectCamera((string)Cameras_listBox.Items[Cameras_listBox.SelectedIndex]);
-            }
-        }
-
-        private void Cameras_listBox_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Control && (e.KeyCode == Keys.W || e.KeyCode == Keys.D))
-            {
-                Clipboard.SetDataObject(Cameras_listBox.Items[Cameras_listBox.SelectedIndex], true);
-                e.SuppressKeyPress = true;
-                e.Handled = true;
-            }
-        }
-
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             mAppController.Exit();
@@ -807,9 +777,34 @@ namespace ApplicationUI
 
         public void ClearScene()
         {
-            Cameras_listBox.Items.Clear();
+            AddedCameras_comboBox.Items.Clear();
             addedModels_listBox.Items.Clear();
             Lights_listBox.Items.Clear();
+        }
+
+        private void ShowCoverage_button_Click(object sender, EventArgs e)
+        {
+            mAppController.ShowCoverage();
+        }
+
+        private void AddedCameras_comboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (AddedCameras_comboBox.SelectedIndex > -1)
+            {
+                if (AddedCameras_comboBox.Items.Count > 0)
+                {
+                    CameraProperties_panel.Show();
+                    AddedCameras_comboBox.Show();
+                    cameraRotation_panel.Show();
+                }
+                else
+                {
+                    AddedCameras_comboBox.Hide();
+                    cameraRotation_panel.Hide();
+                    CameraProperties_panel.Hide();
+                }
+                mAppController.SelectCamera((string)AddedCameras_comboBox.Items[AddedCameras_comboBox.SelectedIndex]);
+            }
         }
     }
 }
