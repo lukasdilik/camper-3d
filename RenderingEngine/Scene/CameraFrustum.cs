@@ -11,7 +11,9 @@ namespace RenderingEngine.Scene
         private string mMaterialName;
         private string mLineMaterialName;
         private string mRotatedMaterialName;
+
         public string Name { private set; get; }
+
         public ManualObject FrustumManualObject { private set; get; }
         public ColourValue Color { private set; get; }
         public SceneNode FrustumSceneNode { private set; get; }

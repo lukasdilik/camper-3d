@@ -782,11 +782,6 @@ namespace ApplicationUI
             Lights_listBox.Items.Clear();
         }
 
-        private void ShowCoverage_button_Click(object sender, EventArgs e)
-        {
-            mAppController.ShowCoverage();
-        }
-
         private void AddedCameras_comboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (AddedCameras_comboBox.SelectedIndex > -1)
@@ -805,6 +800,21 @@ namespace ApplicationUI
                 }
                 mAppController.SelectCamera((string)AddedCameras_comboBox.Items[AddedCameras_comboBox.SelectedIndex]);
             }
+        }
+
+        private void ShowFrustum_button_Click(object sender, EventArgs e)
+        {
+            if (mAppController.IsFrustumVisible)
+            {
+                mAppController.HideFrustum();
+                ShowFrustum_button.Text = "Show Frustums";
+            }
+            else
+            {
+                mAppController.ShowFrustum();
+                ShowFrustum_button.Text = "Hide Frustums";
+            }
+            
         }
     }
 }

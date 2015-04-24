@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Security.Policy;
 using Mogre;
 using RenderingEngine.Interfaces;
 using Math = System.Math;

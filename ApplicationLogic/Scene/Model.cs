@@ -22,7 +22,7 @@ namespace ApplicationLogic.Scene
 
         public Dictionary<string, Light> Lights { get; private set; }
         public Light SelectedLight { get; private set; }
-
+        private MaterialPtr NoTextureMaterial;
         private List<MaterialPtr> mMaterialsPointers; 
 
         public bool Selected
@@ -54,14 +54,38 @@ namespace ApplicationLogic.Scene
             SelectedLight = null;
 
             RenderModel = new RenderingEngine.Scene.RenderModel(name, meshName);
+
+
+            SaveOriginalMaterials();
+
+
+            NoTextureMaterial = MaterialManager.Singleton.GetByName("textry4");
+        }
+
+        private void SaveOriginalMaterials()
+        {
             var nMaxSubMesh = RenderModel.Entity.GetMesh().NumSubMeshes;
             for (int i = 0; i < nMaxSubMesh; i++)
             {
-                var materialName = RenderModel.Entity.GetMesh().GetSubMesh((ushort) i).MaterialName;
+                var materialName = RenderModel.Entity.GetMesh().GetSubMesh((ushort)i).MaterialName;
                 var materialPtr = MaterialManager.Singleton.GetByName(materialName);
                 mMaterialsPointers.Add(materialPtr);
+
             }
-            SetNoTextureMaterial();
+        }
+
+        public void SetOriginalMaterials()
+        {
+            var nMaxSubMesh = RenderModel.Entity.GetMesh().NumSubMeshes;
+            for (int i = 0; i < nMaxSubMesh; i++)
+            {
+                RenderModel.Entity.SetMaterial(mMaterialsPointers[i]);
+            }
+        }
+
+        public void SetNoTextureMaterial()
+        {
+            RenderModel.Entity.SetMaterial(NoTextureMaterial);
         }
 
         public void Translate(Vector3 t)
@@ -87,20 +111,6 @@ namespace ApplicationLogic.Scene
             RenderModel.SceneNode.SetOrientation(quat.w, quat.x, quat.y, quat.z);
             Translate(trans);
             
-        }
-
-
-        public void SetNoTextureMaterial()
-        {
-            foreach (var mMaterialsPointer in mMaterialsPointers)
-            {
-                var pass =  mMaterialsPointer.GetTechnique(0).GetPass(0);
-                pass.RemoveAllTextureUnitStates();
-                pass.ShadingMode = ShadeOptions.SO_PHONG;
-                pass.Diffuse = new ColourValue(1,1,1);
-                pass.Specular = new ColourValue(0,0,0);
-                pass.Ambient = new ColourValue(0,0,0);
-            }
         }
 
         public void RotateY(Degree deg)

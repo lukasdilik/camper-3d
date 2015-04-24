@@ -254,6 +254,7 @@
     <None Include="Resources\materials\scripts\OgreNewt_Example.material" />
     <None Include="Resources\materials\scripts\OldMovie.material" />
     <None Include="Resources\materials\scripts\OldTV.material" />
+    <None Include="Resources\materials\scripts\Phong.material" />
     <None Include="Resources\materials\scripts\policeStation.material" />
     <None Include="Resources\materials\scripts\Posterize.material" />
     <None Include="Resources\materials\scripts\RZR-002.material" />
@@ -373,6 +374,7 @@
     <Content Include="Resources\materials\programs\HLSL\Example_Basic.hlsl" />
     <Content Include="Resources\materials\programs\HLSL\hdr.hlsl" />
     <Content Include="Resources\materials\programs\HLSL\OffsetMapping.hlsl" />
+    <Content Include="Resources\materials\programs\HLSL\Phong.hlsl" />
     <Content Include="Resources\materials\programs\OffsetMapping_specular.asm" />
     <Content Include="Resources\materials\textures\10points.png" />
     <Content Include="Resources\materials\textures\1386505864_10_w04.jpg" />

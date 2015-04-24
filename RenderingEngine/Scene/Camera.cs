@@ -58,10 +58,15 @@ namespace RenderingEngine.Scene
             var subMeshesCount = Mesh.GetMesh().NumSubMeshes;
             for (int i = 0; i < subMeshesCount; i++)
             {
-                var materialName = Mesh.GetMesh().GetSubMesh((ushort) i).MaterialName;
+                var subMesh = Mesh.GetMesh().GetSubMesh((ushort) i);
+                var materialName = subMesh.MaterialName;
                 var materialPtr = (MaterialPtr)MaterialManager.Singleton.GetByName(materialName);
-                var pass = materialPtr.GetTechnique(0).GetPass(0);
+
+                var newMaterialName = materialName + "_" + color.GetAsRGBA();
+                var newMaterialPtr = materialPtr.Clone(newMaterialName);
+                var pass = newMaterialPtr.GetTechnique(0).GetPass(0);
                 pass.Diffuse = color;
+                subMesh.SetMaterialName(newMaterialName);
             }
         }
 

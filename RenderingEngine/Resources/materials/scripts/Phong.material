@@ -1,0 +1,40 @@
+﻿vertex_program multiLightVS hlsl
+{
+	source multilight.hlsl
+	entry_point multiLightVS
+	target vs_2_0
+	preprocessor_defines lightCount=3
+	default_params
+	{
+		param_named_auto 	worldViewProj_m 	worldviewproj_matrix
+		param_named_auto 	world_m 		world_matrix
+		param_named_auto 	cameraPos		camera_position
+		param_named_auto 	lightPoses		light_position_array 3
+	}
+}
+ 
+fragment_program multiLightPS hlsl
+{
+	source multilight.hlsl
+	entry_point multiLightPS
+	target ps_2_0
+	preprocessor_defines lightCount=3
+	default_params
+	{
+		param_named_auto 	ambientColor		ambient_light_colour 
+		param_named_auto 	diffColors		light_diffuse_colour_array 3
+		param_named_auto 	specColors		light_specular_colour_array 3
+	}
+}
+ 
+material textry4
+{
+	technique
+	{
+		pass
+		{
+			vertex_program_ref multiLightVS {}
+			fragment_program_ref multiLightPS {}
+		}
+	}
+}

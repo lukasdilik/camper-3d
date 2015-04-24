@@ -40,7 +40,7 @@ namespace ApplicationLogic
         private int mModelCounter;
         private int mCameraCounter;
         private int mLightCounter;
-
+        public bool IsFrustumVisible = true;
         private bool mIsStarted;
         private bool mIsMainCameraActivated = true;
         private readonly IApplicationUI mApplicationUi;
@@ -485,7 +485,8 @@ namespace ApplicationLogic
             {
                 var bmp = MogreTexturePtrToBitmap(SelectedModel.SelectedSecurityCamera.RenderTextureNativePtr);
                 mApplicationUi.UpdateCameraViewNative(SelectedModel.SelectedSecurityCamera.Properties, bmp);
-                //SelectedModel.SelectedSecurityCamera.Camera.ShowFrustum();
+                if(IsFrustumVisible)
+                    SelectedModel.SelectedSecurityCamera.Camera.ShowFrustum();
             }
         }
 
@@ -511,7 +512,8 @@ namespace ApplicationLogic
             {
                 var bmp = MogreTexturePtrToBitmap(SelectedModel.SelectedSecurityCamera.RenderTexturePtr);
                 mApplicationUi.UpdateCameraView(SelectedModel.SelectedSecurityCamera.Properties, bmp);
-                //SelectedModel.SelectedSecurityCamera.Camera.ShowFrustum();
+                if (IsFrustumVisible)
+                    SelectedModel.SelectedSecurityCamera.Camera.ShowFrustum();
             }
         }
 
@@ -855,7 +857,20 @@ namespace ApplicationLogic
             LogMessage("Model library loaded from file: " + fileName);
         }
 
-        public void ShowCoverage()
+        public void ShowFrustum()
+        {
+            foreach (var loadedModel in LoadedModels)
+            {
+                foreach (var securityCamera in loadedModel.Value.SecurityCameras)
+                {
+                    securityCamera.Value.Camera.ShowFrustum();
+                }
+                loadedModel.Value.SetOriginalMaterials();
+            }
+            IsFrustumVisible = true;
+        }
+
+        public void HideFrustum()
         {
             foreach (var loadedModel in LoadedModels)
             {
@@ -863,7 +878,9 @@ namespace ApplicationLogic
                 {
                     securityCamera.Value.Camera.HideFrustum();
                 }
+                loadedModel.Value.SetNoTextureMaterial();
             }
+            IsFrustumVisible = false;
         }
 
         public void LogMessage(string msg)

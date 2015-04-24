@@ -50,6 +50,8 @@ namespace ApplicationUI
             this.Help_btn = new System.Windows.Forms.Button();
             this.Mode_tabControl = new System.Windows.Forms.TabControl();
             this.Cameras_tab = new System.Windows.Forms.TabPage();
+            this.ShowFrustum_button = new System.Windows.Forms.Button();
+            this.AddedCameras_comboBox = new System.Windows.Forms.ComboBox();
             this.cameraRotation_panel = new System.Windows.Forms.Panel();
             this.Y = new System.Windows.Forms.Label();
             this.Pitch_vScrollBar = new System.Windows.Forms.VScrollBar();
@@ -110,8 +112,6 @@ namespace ApplicationUI
             this.LightColor_dialog = new System.Windows.Forms.ColorDialog();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.LoadScene_openFileDialog = new System.Windows.Forms.OpenFileDialog();
-            this.AddedCameras_comboBox = new System.Windows.Forms.ComboBox();
-            this.ShowCoverage_button = new System.Windows.Forms.Button();
             this.MainWindow.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -288,7 +288,7 @@ namespace ApplicationUI
             // 
             // Cameras_tab
             // 
-            this.Cameras_tab.Controls.Add(this.ShowCoverage_button);
+            this.Cameras_tab.Controls.Add(this.ShowFrustum_button);
             this.Cameras_tab.Controls.Add(this.AddedCameras_comboBox);
             this.Cameras_tab.Controls.Add(this.cameraRotation_panel);
             this.Cameras_tab.Controls.Add(this.label1);
@@ -300,6 +300,26 @@ namespace ApplicationUI
             this.Cameras_tab.TabIndex = 0;
             this.Cameras_tab.Text = "Cameras";
             this.Cameras_tab.UseVisualStyleBackColor = true;
+            // 
+            // ShowFrustum_button
+            // 
+            this.ShowFrustum_button.Location = new System.Drawing.Point(6, 15);
+            this.ShowFrustum_button.Name = "ShowFrustum_button";
+            this.ShowFrustum_button.Size = new System.Drawing.Size(128, 26);
+            this.ShowFrustum_button.TabIndex = 26;
+            this.ShowFrustum_button.Text = "Hide Frustum";
+            this.ShowFrustum_button.UseVisualStyleBackColor = true;
+            this.ShowFrustum_button.Click += new System.EventHandler(this.ShowFrustum_button_Click);
+            // 
+            // AddedCameras_comboBox
+            // 
+            this.AddedCameras_comboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.AddedCameras_comboBox.FormattingEnabled = true;
+            this.AddedCameras_comboBox.Location = new System.Drawing.Point(6, 119);
+            this.AddedCameras_comboBox.Name = "AddedCameras_comboBox";
+            this.AddedCameras_comboBox.Size = new System.Drawing.Size(318, 24);
+            this.AddedCameras_comboBox.TabIndex = 25;
+            this.AddedCameras_comboBox.SelectedIndexChanged += new System.EventHandler(this.AddedCameras_comboBox_SelectedIndexChanged);
             // 
             // cameraRotation_panel
             // 
@@ -925,26 +945,6 @@ namespace ApplicationUI
             // 
             this.LoadScene_openFileDialog.Filter = "\"Scene File|*scene";
             // 
-            // AddedCameras_comboBox
-            // 
-            this.AddedCameras_comboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.AddedCameras_comboBox.FormattingEnabled = true;
-            this.AddedCameras_comboBox.Location = new System.Drawing.Point(6, 119);
-            this.AddedCameras_comboBox.Name = "AddedCameras_comboBox";
-            this.AddedCameras_comboBox.Size = new System.Drawing.Size(318, 24);
-            this.AddedCameras_comboBox.TabIndex = 25;
-            this.AddedCameras_comboBox.SelectedIndexChanged += new System.EventHandler(this.AddedCameras_comboBox_SelectedIndexChanged);
-            // 
-            // ShowCoverage_button
-            // 
-            this.ShowCoverage_button.Location = new System.Drawing.Point(6, 15);
-            this.ShowCoverage_button.Name = "ShowCoverage_button";
-            this.ShowCoverage_button.Size = new System.Drawing.Size(128, 26);
-            this.ShowCoverage_button.TabIndex = 26;
-            this.ShowCoverage_button.Text = "Show Coverage";
-            this.ShowCoverage_button.UseVisualStyleBackColor = true;
-            this.ShowCoverage_button.Click += new System.EventHandler(this.ShowCoverage_button_Click);
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -1074,7 +1074,7 @@ namespace ApplicationUI
         private SaveFileDialog saveFileDialog1;
         private OpenFileDialog LoadScene_openFileDialog;
         private ComboBox AddedCameras_comboBox;
-        private Button ShowCoverage_button;
+        private Button ShowFrustum_button;
 
     }
 }
