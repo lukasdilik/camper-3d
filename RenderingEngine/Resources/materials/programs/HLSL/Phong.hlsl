@@ -52,7 +52,7 @@ float4 multiLightPS(pixelIn input,
 	float4 	diff = float4(0, 0, 0, 0);
 		float4 	spec = float4(0, 0, 0, 0);
 
-	for (int i = 0; i<lightCount; i++)
+	for (int i = 1; i<lightCount; i++)
 	{
 		input.lightDir[i] = normalize(input.lightDir[i]);
 
@@ -61,8 +61,8 @@ float4 multiLightPS(pixelIn input,
 	    float	dotRV = dot(ref, input.viewDir);
 
 		spec += pow(saturate(dotRV), 25) * specColors[i];
-		diff += saturate(dotNL) * diffColors[i];
+		diff +=  diffColors[i];
 	}
 
-	return ambientColor + diff + spec;
+	return ambientColor + diff;
 }

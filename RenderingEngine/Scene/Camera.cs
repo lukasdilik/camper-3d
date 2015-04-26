@@ -63,7 +63,7 @@ namespace RenderingEngine.Scene
                 var materialPtr = (MaterialPtr)MaterialManager.Singleton.GetByName(materialName);
 
                 var newMaterialName = materialName + "_" + color.GetAsRGBA();
-                var newMaterialPtr = materialPtr.Clone(newMaterialName);
+                var newMaterialPtr = materialPtr.Clone(materialName);
                 var pass = newMaterialPtr.GetTechnique(0).GetPass(0);
                 pass.Diffuse = color;
                 subMesh.SetMaterialName(newMaterialName);
