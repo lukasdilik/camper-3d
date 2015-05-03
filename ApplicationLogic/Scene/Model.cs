@@ -382,6 +382,7 @@ namespace ApplicationLogic.Scene
             foreach (var securityCamera in SecurityCameras)
             {
                 securityCamera.Value.Delete();
+                
             }
             SecurityCameras.Clear();
 

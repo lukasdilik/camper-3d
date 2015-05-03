@@ -184,6 +184,7 @@
     <None Include="Resources\materials\programs\Cg\OffsetMapping.cg" />
     <None Include="Resources\materials\programs\Cg\OldMovieFP.cg" />
     <None Include="Resources\materials\programs\Cg\OldTV.cg" />
+    <None Include="Resources\materials\programs\Cg\PhongShading.cg" />
     <None Include="Resources\materials\programs\Cg\PosterizeFP.cg" />
     <None Include="Resources\materials\programs\Cg\SharpenEdgesFP.cg" />
     <None Include="Resources\materials\programs\Cg\StdQuad_vp.cg" />
@@ -255,6 +256,7 @@
     <None Include="Resources\materials\scripts\OldMovie.material" />
     <None Include="Resources\materials\scripts\OldTV.material" />
     <None Include="Resources\materials\scripts\Phong.material" />
+    <None Include="Resources\materials\scripts\PhongShading.material" />
     <None Include="Resources\materials\scripts\policeStation.material" />
     <None Include="Resources\materials\scripts\Posterize.material" />
     <None Include="Resources\materials\scripts\RZR-002.material" />

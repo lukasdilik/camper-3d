@@ -112,7 +112,6 @@ namespace ApplicationLogic
             string meshName = entity.MeshName;
             if (String.IsNullOrEmpty(meshName)) return null;
 
-            var modelData = ModelLibrary.GetModelMesh(meshName);
             var newModel = new Model(entity.Name, entity.MeshName);
        
             newModel.SetTransformationMatrix(entity.GetTransformationMatrix());

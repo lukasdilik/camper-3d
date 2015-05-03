@@ -61,7 +61,9 @@ namespace RenderingEngine.Scene
                 var subMesh = Mesh.GetMesh().GetSubMesh((ushort) i);
                 var materialName = subMesh.MaterialName;
                 var materialPtr = (MaterialPtr)MaterialManager.Singleton.GetByName(materialName);
-
+                
+                if(materialPtr == null) continue;
+                
                 var newMaterialName = materialName + "_" + color.GetAsRGBA();
                 var newMaterialPtr = materialPtr.Clone(materialName);
                 var pass = newMaterialPtr.GetTechnique(0).GetPass(0);
