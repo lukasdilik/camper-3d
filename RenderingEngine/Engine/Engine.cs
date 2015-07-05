@@ -250,10 +250,12 @@ namespace RenderingEngine.Engine
                 var scale = mScaleFactor;
                 Console.Write(mScaleFactor);
 
-                Matrix4 p = this.BuildScaledOrthoMatrix(1280 / scale / -2.0f,
-                                                        1280 / scale / 2.0f,
-                                                        720 / scale / -2.0f,
-                                                        720 / scale / 2.0f, 0, 10000);
+                const int width = 1280;
+                const int height = 720;
+                Matrix4 p = this.BuildScaledOrthoMatrix(width / scale / -2.0f,
+                                                        width / scale / 2.0f,
+                                                        height / scale / -2.0f,
+                                                        height / scale / 2.0f, 0, 10000);
 
                 MainCamera.SetCustomProjectionMatrix(true, p);
             }
@@ -268,10 +270,12 @@ namespace RenderingEngine.Engine
                 var scale = mScaleFactor;
                 Console.Write(mScaleFactor);
 
-                Matrix4 p = this.BuildScaledOrthoMatrix(1280 / scale / -2.0f,
-                                                        1280 / scale / 2.0f,
-                                                        720 / scale / -2.0f,
-                                                        720 / scale / 2.0f, 0, 10000);
+                const int width = 1280;
+                const int height = 720;
+                Matrix4 p = this.BuildScaledOrthoMatrix(width / scale / -2.0f,
+                                                        width / scale / 2.0f,
+                                                        height / scale / -2.0f,
+                                                        height / scale / 2.0f, 0, 10000);
 
                 MainCamera.SetCustomProjectionMatrix(true, p);
             }
