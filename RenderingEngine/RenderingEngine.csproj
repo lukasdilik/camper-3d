@@ -62,6 +62,7 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helpers\MoveableWidget.cs" />
     <Compile Include="Helpers\PolygonRayCast.cs" />
     <Compile Include="Interfaces\IApplication.cs" />
     <Compile Include="ColorMaterialManager.cs" />
@@ -225,6 +226,7 @@
     <None Include="Resources\materials\programs\oceanGLSL.vert" />
     <None Include="Resources\materials\programs\oceanHLSL_Cg.frag" />
     <None Include="Resources\materials\programs\oceanHLSL_Cg.vert" />
+    <None Include="Resources\materials\scripts\arrow.material" />
     <None Include="Resources\materials\scripts\BlackAndWhite.material" />
     <None Include="Resources\materials\scripts\Bloom.material" />
     <None Include="Resources\materials\scripts\bulb.material" />
@@ -275,6 +277,7 @@
     <None Include="Resources\materials\textures\Sepia1D.tga" />
     <None Include="Resources\materials\textures\WaterNormal1.tga" />
     <None Include="Resources\materials\textures\WaterNormal2.tga" />
+    <None Include="Resources\models\misc\arrow.mesh" />
     <None Include="Resources\models\misc\bulb.mesh" />
     <None Include="Resources\models\misc\cctv1.mesh" />
     <None Include="Resources\models\misc\cctvCamera.mesh" />
@@ -412,7 +415,6 @@
     <Content Include="Resources\materials\textures\cloudy_noon_BK.jpg" />
     <Content Include="Resources\materials\textures\cloudy_noon_DN.jpg" />
     <Content Include="Resources\materials\textures\cloudy_noon_FR.jpg" />
-    <Content Include="Resources\materials\textures\cloudy_noon_LF.jpg" />
     <Content Include="Resources\materials\textures\cloudy_noon_RT.jpg" />
     <Content Include="Resources\materials\textures\cloudy_noon_UP.jpg" />
     <Content Include="Resources\materials\textures\cursor.png" />
@@ -429,7 +431,6 @@
     <Content Include="Resources\materials\textures\early_morning_UP.jpg" />
     <Content Include="Resources\materials\textures\egyptrockyfull.jpg" />
     <Content Include="Resources\materials\textures\evening_BK.jpg" />
-    <Content Include="Resources\materials\textures\evening_DN.jpg" />
     <Content Include="Resources\materials\textures\evening_FR.jpg" />
     <Content Include="Resources\materials\textures\evening_LF.jpg" />
     <Content Include="Resources\materials\textures\evening_RT.jpg" />
@@ -441,6 +442,7 @@
     <Content Include="Resources\materials\textures\grass_1024.jpg" />
     <Content Include="Resources\materials\textures\grass_tex.jpg" />
     <Content Include="Resources\materials\textures\gras_02.png" />
+    <Content Include="Resources\materials\textures\Green lush grass seamless texture.jpg" />
     <Content Include="Resources\materials\textures\GreenSkin.jpg" />
     <Content Include="Resources\materials\textures\morning_BK.jpg" />
     <Content Include="Resources\materials\textures\morning_DN.jpg" />
@@ -461,7 +463,6 @@
     <Content Include="Resources\materials\textures\nm_up.png" />
     <Content Include="Resources\materials\textures\NoiseVolume.dds" />
     <Content Include="Resources\materials\textures\normalNoiseColor.png" />
-    <Content Include="Resources\materials\textures\nskingr.jpg" />
     <Content Include="Resources\materials\textures\ogreborder.png" />
     <Content Include="Resources\materials\textures\ogrebordercenter.png" />
     <Content Include="Resources\materials\textures\ogreborderUp.png" />
@@ -484,18 +485,14 @@
     <Content Include="Resources\materials\textures\smoke.png" />
     <Content Include="Resources\materials\textures\smokecolors.png" />
     <Content Include="Resources\materials\textures\snow_1024.jpg" />
-    <Content Include="Resources\materials\textures\spacesky.jpg" />
     <Content Include="Resources\materials\textures\spheremap.png" />
     <Content Include="Resources\materials\textures\steelhead.png" />
     <Content Include="Resources\materials\textures\stormy_BK.jpg" />
-    <Content Include="Resources\materials\textures\stormy_DN.jpg" />
     <Content Include="Resources\materials\textures\stormy_FR.jpg" />
     <Content Include="Resources\materials\textures\stormy_LF.jpg" />
-    <Content Include="Resources\materials\textures\stormy_RT.jpg" />
     <Content Include="Resources\materials\textures\stormy_UP.jpg" />
     <Content Include="Resources\materials\textures\terrain.png" />
     <Content Include="Resources\materials\textures\terrain_detail.jpg" />
-    <Content Include="Resources\materials\textures\terrain_texture.jpg" />
     <Content Include="Resources\materials\textures\terr_dirt-grass.jpg" />
     <Content Include="Resources\materials\textures\terr_rock-dirt.jpg" />
     <Content Include="Resources\materials\textures\terr_rock6.jpg" />

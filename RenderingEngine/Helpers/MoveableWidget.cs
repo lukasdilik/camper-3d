@@ -82,5 +82,72 @@ namespace RenderingEngine.Helpers
                 Console.WriteLine("An exception has occured while creating widgets: " + e);
             }
         }
+
+        public MovableObject GetNode(float mouseScreenX, float mouseScreenY)
+        {
+            Ray mouseRay = Engine.Engine.Instance.MainCamera.GetCameraToViewportRay(mouseScreenX,mouseScreenY);
+            RaySceneQuery mRaySceneQuery = new DefaultRaySceneQuery(mSceneManager);
+            mRaySceneQuery.Ray = mouseRay;
+            mRaySceneQuery.SetSortByDistance(true);
+            RaySceneQueryResult result = mRaySceneQuery.Execute();
+ 
+             MovableObject closestObject = null;
+             double closestDistance = 100000;
+ 
+             RaySceneQueryResult.Iterator rayIterator;
+ 
+             for(rayIterator = result.Begin(); rayIterator != result.End(); rayIterator++ ) 
+             {
+                 if ((rayIterator.Value.movable != null) && (closestDistance > rayIterator.Value.distance) && rayIterator.Value.movable.MovableType != "TerrainMipMap")
+                 {
+                     closestObject = rayIterator.Value.movable;
+                     closestDistance = rayIterator.Value.distance;
+                 }
+             }
+ 
+             mRaySceneQuery.ClearResults();
+             return closestObject;
+         }
+
+        public void SelectObjectForEdit(string idObject, string type)
+        {
+            try
+            {
+                SceneNode widget = mSceneManager.GetSceneNode(type);
+                SceneNode node = mSceneManager.GetSceneNode(idObject);
+
+                Vector3 scale = node.GetScale();
+                if (node.Parent.GetScale() !=  Vector3.UNIT_SCALE)
+                {
+                    scale = node.Parent.GetScale();
+                }
+ 
+                 //size of the editable object
+                AxisAlignedBox ax = node.GetAttachedObject(idObject).BoundingBox;
+                Vector3 min = ax.Minimum * scale;
+                Vector3 max = ax.Maximum * scale;
+                Vector3 size = new Vector3(System.Math.Abs(max.x-min.x), System.Math.Abs(max.y-min.y), System.Math.Abs(max.z-min.z));
+                Vector3 center = new Vector3((max.x+min.x)/2.0f,(max.y+min.y)/2.0f,(max.z+min.z)/2.0f);
+ 
+                 float big = (size.x>size.y)?size.x:size.y;
+                 big = (size.z>big)?size.z:big;
+                 if (big < 1)
+                     big = 1;
+ 
+                 //size of the widgets 60
+                 float size_w = big/60.0f;
+ 
+                 widget.SetScale(2*size_w, 2*size_w, 2*size_w);
+ 
+                 mSceneManager.RootSceneNode.AddChild(widget);
+                var point = node.Position + center;
+                widget.SetPosition(point.x,point.y,point.z);
+                widget.SetVisible(true);
+             }
+             catch(Exception e)
+             {
+                 //
+             }
+    }
     }
 }
