@@ -283,6 +283,8 @@
     <None Include="Resources\models\misc\cctvCamera.mesh" />
     <None Include="Resources\models\misc\cone.mesh" />
     <None Include="Resources\models\misc\cube.mesh" />
+    <None Include="Resources\models\scene\house.mesh" />
+    <None Include="Resources\models\scene\trainStation.mesh" />
     <None Include="Resources\overlays\Compositor.overlay" />
     <None Include="Resources\overlays\DP3.overlay" />
     <None Include="Resources\overlays\Example-CubeMapping.overlay" />
@@ -324,9 +326,7 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Resources\models\scene\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="Includes\BulletSharp.dll" />
     <Content Include="Includes\cg.dll" />

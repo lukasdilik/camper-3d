@@ -46,12 +46,6 @@ namespace ApplicationLogic
             var newModel = new ModelData(modelFileName, Path.Combine(@StoredModelsPath, modelFileName));
             File.Copy(Path.GetFullPath(modelFiles[0]), Path.Combine(@StoredModelsPath, modelFileName), true);
 
-            if (materialFiles.Length < 1)
-            {
-                throw new Exception("No .material file found in folder: " + modelFolderPath);
-                
-            }
-
             foreach (var material in materialFiles)
             {
                 var materialPath = Path.GetFullPath(material);
