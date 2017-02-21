@@ -5,7 +5,7 @@ namespace RenderingEngine.Scene
 {
     public class CameraFrustum
     {
-        public const float FarDistance = 50f;
+        public const float MaxFarDistance = 50f;
         public const float NearDistance = 1f;
         private readonly Camera mParentCamera;
         private string mMaterialName;
@@ -53,9 +53,10 @@ namespace RenderingEngine.Scene
 
             Vector3 camUp = mParentCamera.MogreCamera.Up;
             Vector3 camRight = mParentCamera.MogreCamera.Right;
-            FarCenter = Position + mParentCamera.MogreCamera.Direction*FarDistance;
+            Degree FOVy = mParentCamera.MogreCamera.FOVy;
+            FarCenter = Position + mParentCamera.MogreCamera.Direction*MaxFarDistance;
 
-            float farHeight = (float) (2*System.Math.Tan(mParentCamera.MogreCamera.FOVy.ValueRadians/2)*FarDistance);
+            float farHeight = (float) (2*System.Math.Tan(FOVy.ValueRadians/2)*MaxFarDistance);
             float farWidth = farHeight*mParentCamera.MogreCamera.AspectRatio;
 
             FarPlanePoints.Add(FarCenter + camUp * (farHeight * 0.5f) - camRight * (farWidth * 0.5f));

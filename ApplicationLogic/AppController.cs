@@ -864,7 +864,7 @@ namespace ApplicationLogic
                 {
                     securityCamera.Value.Camera.ShowFrustum();
                 }
-                loadedModel.Value.SetOriginalMaterials();
+                //loadedModel.Value.SetOriginalMaterials();
             }
             IsFrustumVisible = true;
         }
@@ -877,7 +877,7 @@ namespace ApplicationLogic
                 {
                     securityCamera.Value.Camera.HideFrustum();
                 }
-                loadedModel.Value.SetNoTextureMaterial();
+                //loadedModel.Value.SetNoTextureMaterial();
             }
             IsFrustumVisible = false;
         }

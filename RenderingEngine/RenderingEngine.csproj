@@ -62,6 +62,7 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helpers\CollisionTools.cs" />
     <Compile Include="Helpers\MoveableWidget.cs" />
     <Compile Include="Helpers\PolygonRayCast.cs" />
     <Compile Include="Interfaces\IApplication.cs" />
@@ -245,6 +246,7 @@
     <None Include="Resources\materials\scripts\Glass.material" />
     <None Include="Resources\materials\scripts\hdr.material" />
     <None Include="Resources\materials\scripts\HeatVision.material" />
+    <None Include="Resources\materials\scripts\house.material" />
     <None Include="Resources\materials\scripts\Hurt.material" />
     <None Include="Resources\materials\scripts\instancing.material" />
     <None Include="Resources\materials\scripts\Invert.material" />
@@ -398,6 +400,27 @@
     <Content Include="Resources\materials\textures\1427013457_1_Metal_Rough.jpg" />
     <Content Include="Resources\materials\textures\1427013457_2_Translucent_Glass_Tinted.jpg" />
     <Content Include="Resources\materials\textures\1427013457_3_Metal_Corrogated_Shiny.jpg" />
+    <Content Include="Resources\materials\textures\1487598064_10_Tile_Inset_Swirl.jpg" />
+    <Content Include="Resources\materials\textures\1487598064_11_Cladding_Stucco_White_Rough.jpg" />
+    <Content Include="Resources\materials\textures\1487598064_12_Cladding_Stucco_White.jpg" />
+    <Content Include="Resources\materials\textures\1487598064_13_Wood_Bamboo_Medium.jpg" />
+    <Content Include="Resources\materials\textures\1487598064_14_Tile_Ceramic_Natural.jpg" />
+    <Content Include="Resources\materials\textures\1487598064_15_Wood_Plywood_Grains.jpg" />
+    <Content Include="Resources\materials\textures\1487598064_16_Carpet_Loop_Pattern.jpg" />
+    <Content Include="Resources\materials\textures\1487598064_17_Concrete_Aggregate_Gray.jpg" />
+    <Content Include="Resources\materials\textures\1487598064_18_Tile_Granite_Multi.jpg" />
+    <Content Include="Resources\materials\textures\1487598064_19_CertainTeed_Vinyl_Shake_Shingle_Cedar_Impressions_Double_7in_Straight_Edge_Rough_Split_Shakes_Granite_Gray.jpg" />
+    <Content Include="Resources\materials\textures\1487598064_1_Stone_Masonry_Multi.jpg" />
+    <Content Include="Resources\materials\textures\1487598064_20_Wood_Floor2.jpg" />
+    <Content Include="Resources\materials\textures\1487598064_21_Tile_Quartzite.jpg" />
+    <Content Include="Resources\materials\textures\1487598064_2_Stone_Sandstone_Ashlar_Light.jpg" />
+    <Content Include="Resources\materials\textures\1487598064_3_Light_Granite.jpg" />
+    <Content Include="Resources\materials\textures\1487598064_4_Wood_Board_OSB.jpg" />
+    <Content Include="Resources\materials\textures\1487598064_5_CT_ColorMax_PreFinish_Textured_Dutchlap_8-1-4in_Butter_32x144.jpg" />
+    <Content Include="Resources\materials\textures\1487598064_6_Cladding_Stucco_White.jpg" />
+    <Content Include="Resources\materials\textures\1487598064_7_Stone_Speckled_Khaki.jpg" />
+    <Content Include="Resources\materials\textures\1487598064_8_Brick_Rough_Dark.jpg" />
+    <Content Include="Resources\materials\textures\1487598064_9_Stone_Marble.jpg" />
     <Content Include="Resources\materials\textures\1D_Noise.png" />
     <Content Include="Resources\materials\textures\1D_Noise2.png" />
     <Content Include="Resources\materials\textures\8x8PagesSplotches2.png" />

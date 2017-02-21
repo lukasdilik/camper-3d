@@ -123,7 +123,7 @@ namespace RenderingEngine.Scene
             if (Engine.Engine.Instance.ShutDown) return;
 
             Frustum.FrustumSceneNode.SetVisible(false);
-            NormalLine.SceneNode.SetVisible(false);
+            //NormalLine.SceneNode.SetVisible(false);
         }
 
         public void ShowFrustum()
@@ -131,7 +131,7 @@ namespace RenderingEngine.Scene
             if (Engine.Engine.Instance.ShutDown) return;
 
             Frustum.FrustumSceneNode.SetVisible(true);
-            NormalLine.SceneNode.SetVisible(true);
+            //NormalLine.SceneNode.SetVisible(true);
         }
 
         public void ShowBoundingBox()

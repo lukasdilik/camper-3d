@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
 using Mogre;
+using RenderingEngine.Helpers;
 using RenderingEngine.Interfaces;
+using RenderingEngine.Scene;
+using Camera = Mogre.Camera;
 using Math = System.Math;
 
 namespace RenderingEngine.Engine
@@ -11,7 +14,7 @@ namespace RenderingEngine.Engine
         public const String WindowName = "MOGRE Window";
         public const float MaxHeight = 10f;
         public const float ZoomStep = 0.5f;
-
+        
         private float mScaleFactor;
 
         private static Engine mInstance;
@@ -190,6 +193,9 @@ namespace RenderingEngine.Engine
             {
             }
         }
+
+
+
 
          protected override void DestroyScene()
         {

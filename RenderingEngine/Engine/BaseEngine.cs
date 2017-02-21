@@ -15,14 +15,14 @@ namespace RenderingEngine.Engine
         protected Vector3 OriginalDirection;
         protected Matrix4 OriginalViewMatrix;
 
-        protected IApplication ApplicationLogic;
+        public IApplication ApplicationLogic;
         
         protected Root Root;
         
         public SceneManager SceneManager;
 
         protected WindowParams WindowParams;
-        protected RenderWindow RenderWindow;
+        public RenderWindow RenderWindow;
         protected RenderSystem RenderSystem;
         protected Viewport Viewport;
         public bool ShutDown = false;
@@ -283,6 +283,7 @@ namespace RenderingEngine.Engine
         protected virtual void UpdateScene(FrameEvent evt)
         {
         }
+
 
         protected virtual void DestroyScene()
         {

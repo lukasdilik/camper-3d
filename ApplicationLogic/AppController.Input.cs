@@ -1,22 +1,29 @@
 ﻿using System;
 using System.Windows.Forms;
+using Mogre;
 using RenderingEngine.Engine;
+using RenderingEngine.Helpers;
+using RenderingEngine.Scene;
 
 namespace ApplicationLogic
 {
     public partial class AppController : IDisposable
     {
+        private Engine mEngine = Engine.Instance;
+
         protected virtual void HandleKeyPress(char keyChar)
         {
             
         }
+
+ 
 
         protected virtual void HandleKeyDown(Keys key)
         {
             switch (key)
             {
                 case Keys.W:
-                    Engine.Instance.CameraMan.GoingForward = true;
+                    Engine.Instance.CameraMan.GoingForward = true;    
                     break;
                 case Keys.S:
                     Engine.Instance.CameraMan.GoingBack = true;
@@ -157,8 +164,9 @@ namespace ApplicationLogic
 
         protected virtual void HandleMouseUp(MouseEventArgs e)
         {
-            if(e.Button == MouseButtons.Left)
-                ;
+            if (e.Button == MouseButtons.Left)
+            {
+            }
         }
 
         protected virtual void HandleMouseDown(MouseEventArgs e)

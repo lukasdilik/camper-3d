@@ -4,6 +4,7 @@ namespace RenderingEngine.Scene
 {
     public class RenderModel
     {
+        public const uint QueryMask = 1 << 1;
         public Entity Entity { get; private set; }
         public SceneNode SceneNode { get; private set; }
 
@@ -12,9 +13,10 @@ namespace RenderingEngine.Scene
         public RenderModel(string name, string meshName)
         {
             Entity = mEngine.SceneManager.CreateEntity(name, meshName);
-            
+            Entity.AddQueryFlags(QueryMask);
             SceneNode = mEngine.SceneManager.RootSceneNode.CreateChildSceneNode(name + "Node");
             SceneNode.AttachObject(Entity);
+            SceneNode.Scale(10,10,10);
         }
 
         public void ShowBoundingBox()
