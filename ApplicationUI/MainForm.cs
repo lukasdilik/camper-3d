@@ -816,5 +816,10 @@ namespace ApplicationUI
             }
             
         }
+
+        private void Pitch_vScrollBar_Scroll(object sender, ScrollEventArgs e)
+        {
+
+        }
     }
 }

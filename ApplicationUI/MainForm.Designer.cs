@@ -351,6 +351,7 @@ namespace ApplicationUI
             this.Pitch_vScrollBar.Name = "Pitch_vScrollBar";
             this.Pitch_vScrollBar.Size = new System.Drawing.Size(17, 80);
             this.Pitch_vScrollBar.TabIndex = 19;
+            this.Pitch_vScrollBar.Scroll += new System.Windows.Forms.ScrollEventHandler(this.Pitch_vScrollBar_Scroll);
             this.Pitch_vScrollBar.ValueChanged += new System.EventHandler(this.Pitch_vScrollBar_ValueChanged);
             // 
             // PitchAngle_label

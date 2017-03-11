@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using Mogre;
+using RenderingEngine.Helpers;
+using Ray = Ogre.Ray;
 
 namespace RenderingEngine.Scene
 {
@@ -49,14 +51,25 @@ namespace RenderingEngine.Scene
 
         private void CalculateFarPointsWorld()
         {
+            float farDistance = MaxFarDistance;
+            var rayCast = new PolygonRayCast();
+            Vector3 contactPoint =new Vector3();
+            Vector3 normal = new Vector3();
+            bool isHit = rayCast.RaycastFromPoint(mParentCamera.MogreCamera.Position, mParentCamera.MogreCamera.Direction, ref contactPoint, ref normal);
+
+            if (isHit)
+            {
+                farDistance = (contactPoint - mParentCamera.MogreCamera.Position).Length;
+            }
+
             Position = mParentCamera.GetCameraCenterWorld();
 
             Vector3 camUp = mParentCamera.MogreCamera.Up;
             Vector3 camRight = mParentCamera.MogreCamera.Right;
             Degree FOVy = mParentCamera.MogreCamera.FOVy;
-            FarCenter = Position + mParentCamera.MogreCamera.Direction*MaxFarDistance;
+            FarCenter = Position + mParentCamera.MogreCamera.Direction*farDistance;
 
-            float farHeight = (float) (2*System.Math.Tan(FOVy.ValueRadians/2)*MaxFarDistance);
+            float farHeight = (float) (2*System.Math.Tan(FOVy.ValueRadians/2)*farDistance);
             float farWidth = farHeight*mParentCamera.MogreCamera.AspectRatio;
 
             FarPlanePoints.Add(FarCenter + camUp * (farHeight * 0.5f) - camRight * (farWidth * 0.5f));
